@@ -1,2 +1,0 @@
-# SevenGuys
-Household-App
