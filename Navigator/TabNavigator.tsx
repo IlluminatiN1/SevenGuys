@@ -4,11 +4,11 @@ import HouseholdScreen from '../Screen/HouseholdScreen';
 export type TabParamList = {
     Household: undefined;
     Today: undefined;
-    LastWeek: undefined;
-    ThisMonth: undefined;
-    LastMonth: undefined;
-    ThisYear: undefined;
-    LastYear: undefined;
+    LastWeekStats: undefined;
+    ThisMonthStats: undefined;
+    LastMonthStats: undefined;
+    ThisYearStats: undefined;
+    LastYearStats: undefined;
 }
 const Tab = createMaterialTopTabNavigator<TabParamList>();
 export default function TabNavigator () {
