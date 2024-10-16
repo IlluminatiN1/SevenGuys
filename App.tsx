@@ -1,20 +1,15 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
-import RootStackNavigator from './Navigator/RootStackNavigator';
+import { NavigationContainer } from "@react-navigation/native";
+import { PaperProvider } from "react-native-paper";
+import RootStackNavigator from "./Navigator/RootStackNavigator";
+
+// const theme = {};
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootStackNavigator/>
-    </NavigationContainer>
+    <PaperProvider>
+      <NavigationContainer>
+        <RootStackNavigator />
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
