@@ -1,4 +1,4 @@
-export interface FakeMember {
+export interface MockMember {
   id: number;
   name: string;
   emojiId: number;
@@ -7,7 +7,7 @@ export interface FakeMember {
   userId: number;
   isRequest: boolean;
 }
-export interface FakeTask {
+export interface MockTask {
   id: number;
   title: string;
   description: string;
@@ -16,33 +16,33 @@ export interface FakeTask {
   reoccurence: number;
   score: number;
 }
-export interface FakeHousehold {
+export interface MockHousehold {
   id: number;
   name: string;
   code: string;
 }
-export interface FakeUser {
+export interface MockUser {
   id: number;
   username: string;
   password: string;
 }
-export interface FakeCompletedTask {
+export interface MockCompletedTask {
   id: number;
   memberId: number;
   taskId: number;
   date: Date;
 }
-export const myFakeHousehold: FakeHousehold = {
+export const myMockedHousehold: MockHousehold = {
   id: 1,
   name: "Borås YH",
   code: "ABC123",
 };
-export const myFakeUser: FakeUser = {
+export const myMockedUser: MockUser = {
   id: 1,
   username: "john",
   password: "doe",
 };
-export const myFakeMember: FakeMember = {
+export const myMockedMember: MockMember = {
   id: 1,
   name: "John Doe",
   emojiId: 2,
@@ -51,14 +51,14 @@ export const myFakeMember: FakeMember = {
   userId: 1,
   isRequest: false,
 };
-export const myFakeCompletedTask: FakeCompletedTask = {
+export const myMockedCompletedTask: MockCompletedTask = {
   id: 1,
   memberId: 1,
   taskId: 1,
   date: new Date(),
 };
 
-export const myFakeTask: FakeTask = {
+export const myMockedTask: MockTask = {
   id: 1,
   title: "Clean the kitchen",
   description: "Do all the dishes and wipe down the counters",
