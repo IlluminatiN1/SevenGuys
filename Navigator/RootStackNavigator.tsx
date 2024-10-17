@@ -24,10 +24,10 @@ export const RootStack = createNativeStackNavigator<RootStackParamList>();
 export default function RootStackNavigator() {
   return (
     <RootStack.Navigator>
+      <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="LogIn" component={LogInScreen} />
       <RootStack.Screen name="Profile" component={ProfileScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
-      <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
       <RootStack.Screen
         name="CreateHousehold"
