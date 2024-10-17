@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { IconButton } from "react-native-paper";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
@@ -23,9 +24,18 @@ export const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStackNavigator() {
   return (
-    <RootStack.Navigator>
+    <RootStack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerLeft: () => <ArrowLeftComponent />,
+      }}
+    >
+      <RootStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ title: "My Profile" }}
+      />
       <RootStack.Screen name="LogIn" component={LogInScreen} />
-      <RootStack.Screen name="Profile" component={ProfileScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
@@ -37,3 +47,5 @@ export default function RootStackNavigator() {
     </RootStack.Navigator>
   );
 }
+
+const ArrowLeftComponent = () => <IconButton icon="arrow-left" size={20} />;
