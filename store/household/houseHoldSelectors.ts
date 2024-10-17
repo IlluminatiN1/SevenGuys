@@ -1,0 +1,1 @@
+// Gör det lätt att hämta specifik data från state. Selectors är återanvändbara och hjälper till att hålla applikationslogiken centraliserad.
