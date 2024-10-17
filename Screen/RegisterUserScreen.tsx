@@ -1,9 +1,11 @@
 import * as React from "react";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { registerUserStyles } from "../styles";
 
 export default function SignUpScreen() {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   //const [username, setUsername] = useState("");
   //const [password, setPassword] = useState("");
   //const dispatch = useAppDispatch(); // ska jag använda appdispatch eller ha en useRegisterDispatch?
@@ -26,15 +28,20 @@ export default function SignUpScreen() {
         mode="outlined"
         label="Ange lösenord"
         placeholder="Lösenord"
-        secureTextEntry
+        secureTextEntry={!isPasswordVisible}
+        right={
+          <TextInput.Icon
+            icon={isPasswordVisible ? "eye-off" : "eye"}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+          />
+        }
         style={registerUserStyles.inputField}
       />
-
       <Button
         mode="contained"
         icon="arrow-right"
         style={registerUserStyles.button} //Todo lägg till onPress navigation
-      > 
+      >
         Registrera konto
       </Button>
 
