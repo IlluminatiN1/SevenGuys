@@ -1,10 +1,14 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { validatePassword } from "../utils/validations/PasswordValidator";
 import { validateUsername } from "../utils/validations/UsernameValidator";
 
-export default function LogInScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, "LogIn">;
+
+export default function LogInScreen(props: Props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -87,7 +91,7 @@ export default function LogInScreen() {
 
       <View style={styles.textContainer}>
         <Text style={{ paddingLeft: 5, color: "gray" }}>Har du inget konto?</Text>
-        <Pressable onPress={() => console.log("Navigating to sign up screen 'RegisterUserScreen.tsx'")}>
+        <Pressable onPress={() => props.navigation.navigate("RegisterUser")}>
           <Text style={styles.linkText}>Registrera dig</Text>
         </Pressable>
       </View>

@@ -32,12 +32,12 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
+      <RootStack.Screen name="LogIn" component={LogInScreen} />
       <RootStack.Screen
         name="Profile"
         component={ProfileScreen}
         options={{ title: "My Profile" }}
       />
-      <RootStack.Screen name="LogIn" component={LogInScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
