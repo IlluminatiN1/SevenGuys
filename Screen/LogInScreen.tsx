@@ -1,6 +1,36 @@
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { validatePassword } from "../utils/validations/PasswordValidator";
+import { validateUsername } from "../utils/validations/UsernameValidator";
+import { useState } from "react";
 export default function LogInScreen() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    const usernameValidationMessage = validateUsername(username);
+    if (usernameValidationMessage !== 'Username is valid') {
+      Alert.alert("Validation Error", usernameValidationMessage);
+      return;
+    }
+    const validationMessage = validatePassword(password);
+    if (validationMessage !== 'Password is valid') {
+      Alert.alert("Validation Error", validationMessage);
+      return;
+    }
+
+    // TODO: Bör fungera med rätt action och reducer?
+    /*    
+    dispatch(loginUser({ username, password }))
+      .unwrap()
+      .then((result) => {
+        Alert.alert("Success", `Welcome ${result.username}`);
+      })
+      .catch((error) => {
+        Alert.alert("Error", error);
+      });
+   */
+    };
   return (
 
     <View style={styles.container}>
