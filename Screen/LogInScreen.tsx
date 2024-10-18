@@ -25,6 +25,7 @@ export default function LoginScreen(props: Props) {
       return;
     }
 
+    props.navigation.navigate("Profile");
     // TODO: Bör fungera med rätt action och reducer?
     /*    
     dispatch(loginUser({ username, password }))

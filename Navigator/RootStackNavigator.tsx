@@ -6,7 +6,7 @@ import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
 import HouseholdListScreen from "../Screen/HouseholdListScreen";
-import LoginScreen from "../Screen/LogInScreen";
+import LoginScreen from "../Screen/LoginScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import TabNavigator, { TabParamList } from "./TabNavigator";
