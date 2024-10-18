@@ -6,6 +6,7 @@ import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
 import HouseholdListScreen from "../Screen/HouseholdListScreen";
+import HouseholdScreen from "../Screen/HouseholdScreen";
 import LogInScreen from "../Screen/LogInScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   CreateHousehold: undefined;
   HomeNavigator: NavigatorScreenParams<TabParamList>;
   HouseholdList: undefined;
+  Household: undefined;
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +39,13 @@ export default function RootStackNavigator() {
         component={ProfileScreen}
         options={{ title: "My Profile" }}
       />
+      <RootStack.Screen name="Household" component={HouseholdScreen} />
+      <RootStack.Screen
+        name="HouseholdList"
+        options={{ title: "Aktiva hushåll" }}
+        component={HouseholdListScreen}
+      />
+      <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
       <RootStack.Screen name="LogIn" component={LogInScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
@@ -45,12 +54,6 @@ export default function RootStackNavigator() {
         name="CreateHousehold"
         component={CreateHouseholdScreen}
       />
-      <RootStack.Screen
-        name="HouseholdList"
-        options={{ title: "Aktiva hushåll" }}
-        component={HouseholdListScreen}
-      />
-      <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
     </RootStack.Navigator>
   );
 }

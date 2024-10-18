@@ -1,30 +1,48 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
+import {
+  emojis,
+  mockedHouseholds,
+  mockedMembers,
+  mockedUser,
+} from "../data/data";
+
+const activeHouseholds = mockedHouseholds.length > 0 ? mockedHouseholds : [];
+const activeUser = mockedUser;
+const activeMembers = mockedMembers.filter(
+  (member) => member.userId === activeUser.id
+);
+const activeEmojis = emojis.length > 0 ? emojis : [];
 
 const HouseholdButton = ({
   title,
-  icon,
+  emojiId,
   onTitlePress,
 }: {
   title: string;
-  icon: string;
+  emojiId: number;
   onTitlePress: () => void;
-}) => (
-  <View style={styles.householdButtonContainer}>
-    <TouchableOpacity onPress={onTitlePress}>
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
-    <View style={{ flexDirection: "row" }}>
-      <IconButton
-        icon={icon}
-        size={20}
-        onPress={() => console.log("Avatar button pressed")}
-        mode="contained-tonal"
-      />
+}) => {
+  const emoji = activeEmojis.find((e) => e.id === emojiId) || activeEmojis[8];
+
+  return (
+    <View style={styles.householdButtonContainer}>
+      <TouchableOpacity onPress={onTitlePress}>
+        <Text style={styles.buttonText}>{title}</Text>
+      </TouchableOpacity>
+      <View style={{ flexDirection: "row" }}>
+        <IconButton
+          key={emoji.id}
+          icon={emoji.name}
+          size={40}
+          iconColor={emoji.color}
+          onPress={() => console.log(`Icon ${emojiId} pressed`)}
+        />
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const CreateHouseholdButton = () => {
   return (
@@ -64,21 +82,19 @@ export default function ProfileScreen() {
         <Text style={{ fontWeight: "bold", fontSize: 17 }}>SevenGuys</Text>
       </View>
       <View style={styles.buttonsContainer}>
-        <HouseholdButton
-          title="Hushåll 1"
-          icon="cat"
-          onTitlePress={() => console.log("Hushåll 1 pressed")}
-        />
-        <HouseholdButton
-          title="Hushåll 2"
-          icon="unicorn"
-          onTitlePress={() => console.log("Hushåll 2 pressed")}
-        />
-        <HouseholdButton
-          title="Hushåll 3"
-          icon="cow"
-          onTitlePress={() => console.log("Hushåll 3 pressed")}
-        />
+        {activeHouseholds.map((household, index) => {
+          const member = activeMembers.find(
+            (member) => member.houseHoldId === household.id
+          );
+          return (
+            <HouseholdButton
+              key={index}
+              title={household.name}
+              emojiId={member?.emojiId || 9}
+              onTitlePress={() => console.log(`${household.name} pressed`)}
+            />
+          );
+        })}
       </View>
       <View style={styles.optionsContainer}>
         <View style={styles.joinOrCreateHouseholdButton}>
