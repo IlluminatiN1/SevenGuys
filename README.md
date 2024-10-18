@@ -17,3 +17,8 @@ npx create-expo-app@latest --template
 
 7. npm install @reduxjs/toolkit
 8. npm install react-redux
+
+-- React Paper
+
+1. npm install react-native-paper
+2. npm install react-native-vector-icons
