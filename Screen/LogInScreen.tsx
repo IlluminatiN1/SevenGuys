@@ -6,9 +6,9 @@ import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { validatePassword } from "../utils/validations/PasswordValidator";
 import { validateUsername } from "../utils/validations/UsernameValidator";
 
-type Props = NativeStackScreenProps<RootStackParamList, "LogIn">;
+type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
-export default function LogInScreen(props: Props) {
+export default function LoginScreen(props: Props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

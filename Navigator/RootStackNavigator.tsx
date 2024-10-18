@@ -6,7 +6,7 @@ import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
 import HouseholdListScreen from "../Screen/HouseholdListScreen";
-import LogInScreen from "../Screen/LogInScreen";
+import LoginScreen from "../Screen/LogInScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import TabNavigator, { TabParamList } from "./TabNavigator";
@@ -14,7 +14,7 @@ import TabNavigator, { TabParamList } from "./TabNavigator";
 export type RootStackParamList = {
   Profile: undefined;
   Chores: undefined;
-  LogIn: undefined;
+  Login: undefined;
   RegisterUser: undefined;
   EditChores: undefined;
   CreateHousehold: undefined;
@@ -32,7 +32,7 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
-      <RootStack.Screen name="LogIn" component={LogInScreen} />
+      <RootStack.Screen name="Login" component={LoginScreen} />
       <RootStack.Screen
         name="Profile"
         component={ProfileScreen}
