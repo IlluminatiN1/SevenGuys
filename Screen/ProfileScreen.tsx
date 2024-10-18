@@ -12,20 +12,21 @@ const HouseholdButton = ({
   onTitlePress: () => void;
 }) => (
   <View style={styles.householdButtonContainer}>
-    <TouchableOpacity onPress={onTitlePress} style={styles.pointer}>
+    <TouchableOpacity onPress={onTitlePress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
-    <IconButton
-      icon={icon}
-      size={20}
-      onPress={() => console.log("Avatar button pressed")}
-      style={styles.pointer}
-      mode="contained-tonal"
-    />
+    <View style={{ flexDirection: "row" }}>
+      <IconButton
+        icon={icon}
+        size={20}
+        onPress={() => console.log("Avatar button pressed")}
+        mode="contained-tonal"
+      />
+    </View>
   </View>
 );
 
-const CreateHousehold = () => {
+const CreateHouseholdButton = () => {
   return (
     <View>
       <IconButton
@@ -40,8 +41,19 @@ const CreateHousehold = () => {
   );
 };
 
-const JoinHousehold = () => {
-  console.log("Join household pressed");
+const JoinHouseholdButton = () => {
+  return (
+    <View>
+      <IconButton
+        icon={"plus"}
+        size={15}
+        iconColor="white"
+        onPress={() => console.log("Gå med i hushåll pressed")}
+        mode="outlined"
+        style={{ borderColor: "white", borderWidth: 2 }}
+      />
+    </View>
+  );
 };
 
 export default function ProfileScreen() {
@@ -69,8 +81,14 @@ export default function ProfileScreen() {
         />
       </View>
       <View style={styles.optionsContainer}>
-        <CreateHousehold />
-        <Text style={styles.createHouseholdText}>Skapa hushåll</Text>
+        <View style={styles.joinOrCreateHouseholdButton}>
+          <CreateHouseholdButton />
+          <Text style={styles.createHouseholdText}>Skapa hushåll</Text>
+        </View>
+        <View style={styles.joinOrCreateHouseholdButton}>
+          <JoinHouseholdButton />
+          <Text style={styles.createHouseholdText}>Gå med i hushåll</Text>
+        </View>
       </View>
     </View>
   );
@@ -96,14 +114,10 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   optionsContainer: {
-    width: "40%",
+    width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     flexDirection: "row",
-    backgroundColor: "#5856D6",
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: 30,
   },
   householdButtonContainer: {
     flexDirection: "row",
@@ -126,7 +140,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 15,
   },
-  pointer: {
-    cursor: "pointer",
+
+  joinOrCreateHouseholdButton: {
+    width: "43%",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 20,
+    borderColor: "black",
+    backgroundColor: "#5856D6",
   },
 });
