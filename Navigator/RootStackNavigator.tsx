@@ -4,6 +4,7 @@ import React from "react";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
+import HouseholdListScreen from "../Screen/HouseholdListScreen";
 import LogInScreen from "../Screen/LogInScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   EditChores: undefined;
   CreateHousehold: undefined;
   HomeNavigator: NavigatorScreenParams<TabParamList>;
+  HouseholdList: undefined;
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -33,6 +35,7 @@ export default function RootStackNavigator() {
         name="CreateHousehold"
         component={CreateHouseholdScreen}
       />
+      <RootStack.Screen name="HouseholdList" component={HouseholdListScreen} />
       <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
     </RootStack.Navigator>
   );
