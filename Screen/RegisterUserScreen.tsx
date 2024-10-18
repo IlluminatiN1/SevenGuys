@@ -1,12 +1,16 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as React from "react";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { registerUserStyles } from "../styles";
 import { validatePassword } from "../utils/validations/PasswordValidator";
 import { validateUsername } from "../utils/validations/UsernameValidator";
 
-export default function SignUpScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, "RegisterUser">;
+
+export default function SignUpScreen(props: Props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +26,9 @@ export default function SignUpScreen() {
       Alert.alert("Validation Error", validationMessage);
       return;
     }
-  }
+
+    props.navigation.navigate("Profile");
+  };
   //const dispatch = useAppDispatch(); // ska jag använda appdispatch eller ha en useRegisterDispatch?
 
   //const handleSignUp = async () => {
@@ -60,14 +66,14 @@ export default function SignUpScreen() {
         mode="contained"
         icon="arrow-right"
         style={registerUserStyles.button}
-        onPress={handleRegisterUser} //Todo lägg till onPress navigation
+        onPress={handleRegisterUser} 
       >
         Registrera konto
       </Button>
 
       <View style={registerUserStyles.footer}>
         <Text>Har du redan ett konto?</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => props.navigation.navigate("Login")}>
           <Text style={registerUserStyles.link}>Logga in</Text>
         </TouchableOpacity>
       </View>
