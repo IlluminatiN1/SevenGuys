@@ -31,10 +31,10 @@ const CreateHousehold = () => {
       <IconButton
         icon={"plus"}
         size={15}
-        iconColor="black"
+        iconColor="white"
         onPress={() => console.log("Create household pressed")}
         mode="outlined"
-        style={{ borderColor: "black", borderWidth: 2 }}
+        style={{ borderColor: "white", borderWidth: 2 }}
       />
     </View>
   );
@@ -70,7 +70,7 @@ export default function ProfileScreen() {
       </View>
       <View style={styles.optionsContainer}>
         <CreateHousehold />
-        <Text style={styles.buttonText}>Skapa hushåll</Text>
+        <Text style={styles.createHouseholdText}>Skapa hushåll</Text>
       </View>
     </View>
   );
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    backgroundColor: "yellow",
+    backgroundColor: "#5856D6",
     borderColor: "black",
     borderWidth: 1,
     borderRadius: 30,
@@ -118,6 +118,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   buttonText: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  createHouseholdText: {
+    color: "white",
     fontWeight: "bold",
     fontSize: 15,
   },
