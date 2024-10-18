@@ -7,6 +7,7 @@ import { validateUsername } from "../utils/validations/UsernameValidator";
 export default function LogInScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleLogin = () => {
     const usernameValidationMessage = validateUsername(username);
@@ -56,8 +57,13 @@ export default function LogInScreen() {
           style={styles.input}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
-          right={<TextInput.Icon icon="eye" />}
+          secureTextEntry={!isPasswordVisible}
+          right={
+            <TextInput.Icon
+              icon={isPasswordVisible ? "eye-off" : "eye"}
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            />
+          }
           outlineColor="transparent"
           activeOutlineColor="transparent"
           mode="outlined"
