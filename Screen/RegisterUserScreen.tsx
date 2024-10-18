@@ -37,7 +37,7 @@ export default function SignUpScreen() {
         label="Ange användarnamn"
         placeholder="Användarnamn"
         value={username}
-        onChangeText={()}
+        onChangeText={setUsername}
         style={registerUserStyles.inputField}
       />
 
@@ -45,6 +45,8 @@ export default function SignUpScreen() {
         mode="outlined"
         label="Ange lösenord"
         placeholder="Lösenord"
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry={!isPasswordVisible}
         right={
           <TextInput.Icon
@@ -57,7 +59,8 @@ export default function SignUpScreen() {
       <Button
         mode="contained"
         icon="arrow-right"
-        style={registerUserStyles.button} //Todo lägg till onPress navigation
+        style={registerUserStyles.button}
+        onPress={handleRegisterUser} //Todo lägg till onPress navigation
       >
         Registrera konto
       </Button>
