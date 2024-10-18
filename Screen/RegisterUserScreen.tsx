@@ -26,7 +26,9 @@ export default function SignUpScreen(props: Props) {
       Alert.alert("Validation Error", validationMessage);
       return;
     }
-  }
+
+    props.navigation.navigate("Profile");
+  };
   //const dispatch = useAppDispatch(); // ska jag använda appdispatch eller ha en useRegisterDispatch?
 
   //const handleSignUp = async () => {
@@ -64,14 +66,14 @@ export default function SignUpScreen(props: Props) {
         mode="contained"
         icon="arrow-right"
         style={registerUserStyles.button}
-        onPress={handleRegisterUser} //Todo lägg till onPress navigation
+        onPress={handleRegisterUser} 
       >
         Registrera konto
       </Button>
 
       <View style={registerUserStyles.footer}>
         <Text>Har du redan ett konto?</Text>
-        <TouchableOpacity onPress={() => props.navigation.navigate("LogIn")}>
+        <TouchableOpacity onPress={() => props.navigation.navigate("Login")}>
           <Text style={registerUserStyles.link}>Logga in</Text>
         </TouchableOpacity>
       </View>
