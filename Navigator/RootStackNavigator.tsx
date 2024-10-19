@@ -5,8 +5,8 @@ import { IconButton } from "react-native-paper";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
-import HouseholdListScreen from "../Screen/HouseholdListScreen";
-import LoginScreen from "../Screen/LoginScreen";
+import LoginScreen from "../Screen/LogInScreen";
+import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import TabNavigator, { TabParamList } from "./TabNavigator";
@@ -19,7 +19,7 @@ export type RootStackParamList = {
   EditChores: undefined;
   CreateHousehold: undefined;
   HomeNavigator: NavigatorScreenParams<TabParamList>;
-  HouseholdList: undefined;
+  NoHousehold: undefined;
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -46,9 +46,9 @@ export default function RootStackNavigator() {
         component={CreateHouseholdScreen}
       />
       <RootStack.Screen
-        name="HouseholdList"
-        options={{ title: "Aktiva hushåll" }}
-        component={HouseholdListScreen}
+        name="NoHousehold"
+        options={{ title: "" }}
+        component={NoHouseholdScreen}
       />
       <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
     </RootStack.Navigator>
