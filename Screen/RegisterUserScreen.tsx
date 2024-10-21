@@ -3,23 +3,30 @@ import * as React from "react";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { useDispatch } from "react-redux";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { registerUserStyles } from "../styles";
 import { validatePassword } from "../utils/validations/PasswordValidator";
-import { validateUsername } from "../utils/validations/UsernameValidator";
+import { validateEmail } from "../utils/validations/EmailValidator";
+import { AppDispatch } from "../store/store";
+import { signUpUser } from "../store/user/userActions";
+import { useAppDispatch } from "../store/hooks";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RegisterUser">;
 
 export default function SignUpScreen(props: Props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useAppDispatch();
 
   const handleRegisterUser = () => {
-    const usernameValidationMessage = validateUsername(username);
-    if (usernameValidationMessage !== "Username is valid") {
-      Alert.alert("Validation Error", usernameValidationMessage);
+
+    const emailValidationMessage = validateEmail(email);
+    if (emailValidationMessage !== "Email is valid") {
+      Alert.alert("Validation Error", emailValidationMessage);
       return;
+    
     }
     const validationMessage = validatePassword(password);
     if (validationMessage !== "Password is valid") {
@@ -27,23 +34,27 @@ export default function SignUpScreen(props: Props) {
       return;
     }
 
-    props.navigation.navigate("Profile");
+    dispatch(signUpUser({ email, password }))
+      .unwrap()
+      .then((user) => {
+        Alert.alert("Success", `User ${email} registered successfully`);
+        props.navigation.navigate("Profile");
+      })
+      .catch((error) => {
+        Alert.alert("Error", error);
+      });
   };
-  //const dispatch = useAppDispatch(); // ska jag använda appdispatch eller ha en useRegisterDispatch?
 
-  //const handleSignUp = async () => {
-  //dispatch(signUpUser({username, password}));
-  //};
   return (
     <View style={registerUserStyles.container}>
       <Text style={registerUserStyles.title}>Registrera Användare</Text>
 
       <TextInput
         mode="outlined"
-        label="Ange användarnamn"
-        placeholder="Användarnamn"
-        value={username}
-        onChangeText={setUsername}
+        label="Ange e-post"
+        placeholder="E-post"
+        value={email}
+        onChangeText={setEmail}
         style={registerUserStyles.inputField}
       />
 
@@ -66,7 +77,7 @@ export default function SignUpScreen(props: Props) {
         mode="contained"
         icon="arrow-right"
         style={registerUserStyles.button}
-        onPress={handleRegisterUser} 
+        onPress={handleRegisterUser}
       >
         Registrera konto
       </Button>
