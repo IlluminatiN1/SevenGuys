@@ -37,7 +37,7 @@ const HouseholdButton = ({
           icon={emoji.name}
           size={40}
           iconColor={emoji.color}
-          onPress={() => console.log(`Icon ${emojiId} pressed`)}
+          onPress={() => console.log(`Icon ${emoji.name} pressed`)}
         />
       </View>
     </View>

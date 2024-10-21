@@ -124,7 +124,7 @@ export const mockedMembers: Member[] = [
     name: "Magical Raindeer",
     emojiId: 4,
     isOwner: true,
-    houseHoldId: 2,
+    houseHoldId: 1,
     userId: 1,
     isRequest: false,
   },
@@ -133,7 +133,7 @@ export const mockedMembers: Member[] = [
 export const mockedCompletedTasks: CompletedTask[] = [
   {
     id: 1,
-    memberId: 1,
+    memberId: 2,
     taskId: 2,
     date: new Date(),
   },
@@ -147,6 +147,12 @@ export const mockedCompletedTasks: CompletedTask[] = [
     id: 3,
     memberId: 2,
     taskId: 3,
+    date: new Date(),
+  },
+  {
+    id: 3,
+    memberId: 1,
+    taskId: 1,
     date: new Date(),
   },
   {
@@ -190,6 +196,16 @@ export const mockedTasks: Task[] = [
     title: "Vacuum cleaning",
     description:
       "Get the vaccum cleaner from the städskåp and clean the whole household.",
+    houseHoldId: 1,
+    isArchived: false,
+    reoccurence: 7,
+    score: 9,
+  },
+  {
+    id: 5,
+    title: "Clean the bathroom",
+    description:
+      "Scrub the toilet, clean the sink and the mirror, and mop the floor",
     houseHoldId: 1,
     isArchived: false,
     reoccurence: 7,
