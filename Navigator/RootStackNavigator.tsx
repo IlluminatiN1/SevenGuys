@@ -5,7 +5,7 @@ import { IconButton } from "react-native-paper";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
-import LoginScreen from "../Screen/LoginScreen";
+import LoginScreen from "../Screen/LogInScreen";
 import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
@@ -39,7 +39,7 @@ export default function RootStackNavigator() {
         options={{ title: "My Profile" }}
       />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
-      
+
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
       <RootStack.Screen
