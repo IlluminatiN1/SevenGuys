@@ -4,19 +4,22 @@ import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { validatePassword } from "../utils/validations/PasswordValidator";
-import { validateUsername } from "../utils/validations/UsernameValidator";
+import { validateEmail } from "../utils/validations/EmailValidator";
+import { useAppDispatch } from "../store/hooks";
+import { signInUser } from "../store/user/userActions";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 export default function LoginScreen(props: Props) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleLogin = () => {
-    const usernameValidationMessage = validateUsername(username);
-    if (usernameValidationMessage !== 'Username is valid') {
-      Alert.alert("Validation Error", usernameValidationMessage);
+    const emailValidationMessage = validateEmail(email);
+    if (emailValidationMessage !== 'Email is valid') {
+      Alert.alert("Validation Error", emailValidationMessage);
       return;
     }
     const validationMessage = validatePassword(password);
@@ -25,29 +28,21 @@ export default function LoginScreen(props: Props) {
       return;
     }
 
+    dispatch(signInUser({ email, password }))
+
     props.navigation.navigate("Profile");
-    // TODO: Bör fungera med rätt action och reducer?
-    /*    
-    dispatch(loginUser({ username, password }))
-      .unwrap()
-      .then((result) => {
-        Alert.alert("Success", `Welcome ${result.username}`);
-      })
-      .catch((error) => {
-        Alert.alert("Error", error);
-      });
-    */
+
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Användarnamn</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="Användarnamn"
-          value={username}
-          onChangeText={setUsername}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
           outlineColor="transparent"
           activeOutlineColor="transparent"
           mode="outlined"
@@ -82,8 +77,6 @@ export default function LoginScreen(props: Props) {
           mode="contained"
           onPress={() => {
             handleLogin();
-            console.log("Login button pressed");
-            console.log("username: " + username);
           }}
         >
           Logga in

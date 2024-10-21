@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { registerUserStyles } from "../styles";
 import { validatePassword } from "../utils/validations/PasswordValidator";
-import { validateUsername } from "../utils/validations/UsernameValidator";
+import { validateEmail } from "../utils/validations/EmailValidator";
 import { AppDispatch } from "../store/store";
 import { signUpUser } from "../store/user/userActions";
 import { useAppDispatch } from "../store/hooks";
@@ -16,30 +16,28 @@ type Props = NativeStackScreenProps<RootStackParamList, "RegisterUser">;
 
 export default function SignUpScreen(props: Props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
 
-  //För att slippa fylla i användaruppgifterna hela tiden':
-  //dispatch(signUpUser({ username: "Admin3", password: "Admin12!" }))
-
   const handleRegisterUser = () => {
-    const usernameValidationMessage = validateUsername(username);
-    if (usernameValidationMessage !== "Username is valid") {
-      Alert.alert("Validation Error", usernameValidationMessage);
+
+    const emailValidationMessage = validateEmail(email);
+    if (emailValidationMessage !== "Email is valid") {
+      Alert.alert("Validation Error", emailValidationMessage);
       return;
+    
     }
     const validationMessage = validatePassword(password);
     if (validationMessage !== "Password is valid") {
       Alert.alert("Validation Error", validationMessage);
       return;
     }
-    console.log("Registering user with username:", username);
-    dispatch(signUpUser({ username, password }))
-    
+
+    dispatch(signUpUser({ email, password }))
       .unwrap()
       .then((user) => {
-        Alert.alert("Success", `User ${username} registered successfully`);
+        Alert.alert("Success", `User ${email} registered successfully`);
         props.navigation.navigate("Profile");
       })
       .catch((error) => {
@@ -53,10 +51,10 @@ export default function SignUpScreen(props: Props) {
 
       <TextInput
         mode="outlined"
-        label="Ange användarnamn"
-        placeholder="Användarnamn"
-        value={username}
-        onChangeText={setUsername}
+        label="Ange e-post"
+        placeholder="E-post"
+        value={email}
+        onChangeText={setEmail}
         style={registerUserStyles.inputField}
       />
 
