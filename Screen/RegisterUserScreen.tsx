@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import { registerUserStyles } from "../styles";
+import { BasicStyles } from "../styles";
 import { validatePassword } from "../utils/validations/PasswordValidator";
 import { validateUsername } from "../utils/validations/UsernameValidator";
 
@@ -35,8 +35,8 @@ export default function SignUpScreen(props: Props) {
   //dispatch(signUpUser({username, password}));
   //};
   return (
-    <View style={registerUserStyles.container}>
-      <Text style={registerUserStyles.title}>Registrera Användare</Text>
+    <View style={BasicStyles.container}>
+      <Text style={BasicStyles.title}>Registrera Användare</Text>
 
       <TextInput
         mode="outlined"
@@ -44,13 +44,17 @@ export default function SignUpScreen(props: Props) {
         placeholder="Användarnamn"
         value={username}
         onChangeText={setUsername}
-        style={registerUserStyles.inputField}
+        style={BasicStyles.inputField}
+        outlineColor="#A9A9A9"
+        activeOutlineColor="#5856D6"
       />
 
       <TextInput
         mode="outlined"
         label="Ange lösenord"
         placeholder="Lösenord"
+        outlineColor="#A9A9A9"
+        activeOutlineColor="#5856D6"
         value={password}
         onChangeText={setPassword}
         secureTextEntry={!isPasswordVisible}
@@ -58,23 +62,24 @@ export default function SignUpScreen(props: Props) {
           <TextInput.Icon
             icon={isPasswordVisible ? "eye-off" : "eye"}
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            
           />
         }
-        style={registerUserStyles.inputField}
+        style={BasicStyles.inputField}
       />
       <Button
         mode="contained"
         icon="arrow-right"
-        style={registerUserStyles.button}
+        style={BasicStyles.button}
         onPress={handleRegisterUser} 
       >
         Registrera konto
       </Button>
 
-      <View style={registerUserStyles.footer}>
+      <View style={BasicStyles.footer}>
         <Text>Har du redan ett konto?</Text>
         <TouchableOpacity onPress={() => props.navigation.navigate("Login")}>
-          <Text style={registerUserStyles.link}>Logga in</Text>
+          <Text style={BasicStyles.link}>Logga in</Text>
         </TouchableOpacity>
       </View>
     </View>

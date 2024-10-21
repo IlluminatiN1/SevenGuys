@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Chip, Dialog, Portal, Text, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
+import { BasicStyles, ChoreStyles } from "../styles";
 
 type Props = NativeStackScreenProps<RootStackParamList, "EditChore">;
 
@@ -18,18 +19,25 @@ export default function EditChoreScreen(props: Props) {
   const daysList = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13" ];
 
   return (
-    <View>
+    <View style={ChoreStyles.container}>
       <TextInput
         mode="outlined"
         placeholder="Title"
         value={title}
         onChangeText={setTitle}
+        style={BasicStyles.inputField}
+        outlineColor="#A9A9A9"
+        activeOutlineColor="#5856D6"
       />
       <TextInput
         mode="outlined"
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
+        style={ChoreStyles.choreDescriptionField}
+        multiline={true}
+        outlineColor="#A9A9A9"
+        activeOutlineColor="#5856D6"
       />
 
       <Pressable onPress={showDialog}>
@@ -37,7 +45,12 @@ export default function EditChoreScreen(props: Props) {
           <View>
           <Text>Recurring:</Text>
             <Text>every</Text>
-            <Chip mode="outlined">{selectedDay}</Chip>
+            <Chip 
+            mode="outlined"
+            style={ChoreStyles.chip}
+            >
+              {selectedDay}
+              </Chip>
             <Text>day</Text>
           </View>
         
