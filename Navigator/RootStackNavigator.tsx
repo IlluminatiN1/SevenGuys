@@ -1,4 +1,4 @@
-import { NavigatorScreenParams } from "@react-navigation/native";
+import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { IconButton } from "react-native-paper";
@@ -11,6 +11,7 @@ import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import TabNavigator, { TabParamList } from "./TabNavigator";
+import { size } from "lodash";
 
 export type RootStackParamList = {
   Profile: undefined;
@@ -34,6 +35,12 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
+      <RootStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerLeft: () => null }}
+      />
+      <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen
         name="NoHousehold"
@@ -45,12 +52,9 @@ export default function RootStackNavigator() {
         component={ProfileScreen}
         options={{ title: "My Profile" }}
       />
-      <RootStack.Screen name="Login" component={LoginScreen} />
-      <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
 
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
-
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
@@ -61,4 +65,14 @@ export default function RootStackNavigator() {
   );
 }
 
-const ArrowLeftComponent = () => <IconButton icon="arrow-left" size={20} />;
+function ArrowLeftComponent() {
+  const navigation = useNavigation();
+
+  return (
+    <IconButton
+      icon="arrow-left"
+      onPress={() => navigation.goBack()}
+      size={20}
+    />
+  );
+}
