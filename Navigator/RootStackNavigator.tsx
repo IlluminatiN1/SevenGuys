@@ -35,7 +35,11 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
-      <RootStack.Screen name="Login" component={LoginScreen} />
+      <RootStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerLeft: () => null }}
+      />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen
@@ -67,9 +71,8 @@ function ArrowLeftComponent() {
   return (
     <IconButton
       icon="arrow-left"
-      onPress={() =>
-        navigation.goBack()}
-        size={20}
-      />
+      onPress={() => navigation.goBack()}
+      size={20}
+    />
   );
 }
