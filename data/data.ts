@@ -7,6 +7,11 @@ export interface Member {
   userId: number;
   isRequest: boolean;
 }
+export interface Emoji {
+  id: number;
+  name: string;
+  color: string;
+}
 
 export interface Task {
   id: number;
@@ -36,6 +41,54 @@ export interface CompletedTask {
   taskId: number;
   date: Date;
 }
+
+export const emojis: Emoji[] = [
+  {
+    id: 1,
+    name: "fox",
+    color: "orange",
+  },
+  {
+    id: 2,
+    name: "dolphin",
+    color: "blue",
+  },
+  {
+    id: 3,
+    name: "pig",
+    color: "pink",
+  },
+  {
+    id: 4,
+    name: "bird",
+    color: "gold",
+  },
+  {
+    id: 5,
+    name: "frog",
+    color: "green",
+  },
+  {
+    id: 6,
+    name: "octopus",
+    color: "purple",
+  },
+  {
+    id: 7,
+    name: "unicorn",
+    color: "white",
+  },
+  {
+    id: 8,
+    name: "owl",
+    color: "brown",
+  },
+  {
+    id: 9,
+    name: "",
+    color: "",
+  },
+];
 
 export const mockedUser: User = {
   id: 1,
@@ -71,7 +124,7 @@ export const mockedMembers: Member[] = [
     name: "Magical Raindeer",
     emojiId: 4,
     isOwner: true,
-    houseHoldId: 2,
+    houseHoldId: 1,
     userId: 1,
     isRequest: false,
   },
@@ -80,7 +133,7 @@ export const mockedMembers: Member[] = [
 export const mockedCompletedTasks: CompletedTask[] = [
   {
     id: 1,
-    memberId: 1,
+    memberId: 2,
     taskId: 2,
     date: new Date(),
   },
@@ -94,6 +147,12 @@ export const mockedCompletedTasks: CompletedTask[] = [
     id: 3,
     memberId: 2,
     taskId: 3,
+    date: new Date(),
+  },
+  {
+    id: 3,
+    memberId: 1,
+    taskId: 1,
     date: new Date(),
   },
   {
@@ -137,6 +196,16 @@ export const mockedTasks: Task[] = [
     title: "Vacuum cleaning",
     description:
       "Get the vaccum cleaner from the städskåp and clean the whole household.",
+    houseHoldId: 1,
+    isArchived: false,
+    reoccurence: 7,
+    score: 9,
+  },
+  {
+    id: 5,
+    title: "Clean the bathroom",
+    description:
+      "Scrub the toilet, clean the sink and the mirror, and mop the floor",
     houseHoldId: 1,
     isArchived: false,
     reoccurence: 7,
