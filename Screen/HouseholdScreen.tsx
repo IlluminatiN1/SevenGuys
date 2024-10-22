@@ -122,7 +122,7 @@ const HouseholdScreen = () => {
       <View style={s.addTaskButtonContainer}>
         <View style={s.addTaskButtonStyle}>
           <AddTaskButton />
-          <Text style={s.createHouseholdText}>Add task</Text>
+          <Text style={s.createHouseholdText}>Lägg till syssla</Text>
         </View>
       </View>
     </View>
