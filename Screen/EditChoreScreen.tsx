@@ -1,7 +1,12 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Button, Chip, Dialog, Portal, Text, TextInput } from "react-native-paper";
+import { Pressable, ScrollView, View } from "react-native";
+import {
+  Dialog,
+  Portal,
+  Text,
+  TextInput
+} from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { BasicStyles, ChoreStyles } from "../styles";
 
@@ -16,7 +21,21 @@ export default function EditChoreScreen(props: Props) {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  const daysList = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13" ];
+  const daysList = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+  ];
 
   return (
     <View style={ChoreStyles.container}>
@@ -28,7 +47,9 @@ export default function EditChoreScreen(props: Props) {
         style={BasicStyles.inputField}
         outlineColor="#A9A9A9"
         activeOutlineColor="#5856D6"
+        theme={{ roundness: 10 }}
       />
+
       <TextInput
         mode="outlined"
         placeholder="Description"
@@ -38,60 +59,61 @@ export default function EditChoreScreen(props: Props) {
         multiline={true}
         outlineColor="#A9A9A9"
         activeOutlineColor="#5856D6"
+        theme={{ roundness: 10 }}
       />
 
       <Pressable onPress={showDialog}>
-        
-          <View>
-          <Text>Recurring:</Text>
-            <Text>every</Text>
-            <Chip 
-            mode="outlined"
-            style={ChoreStyles.chip}
+        <View style={ChoreStyles.recurringContainer}>
+          <Text style={ChoreStyles.recurringTitle}>Recurring:</Text>
+
+          <View style={ChoreStyles.recurringKeepRowRight}>
+            <Text style={ChoreStyles.text}>every</Text>
+
+            <Pressable 
+            onPress={showDialog} 
+            style={ChoreStyles.selectedDayButton}
             >
-              {selectedDay}
-              </Chip>
-            <Text>day</Text>
+              <Text style={ChoreStyles.selectedDayStyle}>
+                {selectedDay}
+              </Text>
+            </Pressable>
+            <Text style={ChoreStyles.text}>
+              day
+            </Text>
           </View>
-        
+        </View>
       </Pressable>
       <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
-          <Dialog.Content>
-            <ScrollView horizontal>
+        <Dialog 
+        visible={visible} 
+        onDismiss={hideDialog}
+        style={{backgroundColor: "white"}}
+        >
+          <Dialog.Content style={ChoreStyles.dialogContent}>
+            <ScrollView 
+            horizontal
+            persistentScrollbar={true} 
+            contentContainerStyle={ChoreStyles.scrollViewStyle}
+            >
               {daysList.map((day) => (
-                <Chip
-                key={day}
-                style={[styles.dayChip,
-                  selectedDay === day && styles.selectedDayChip, 
-                ]}
-                onPress={() => setDay(day)}
-                >
-                  {day}
-                </Chip>
+                <Pressable key={day}
+                  onPress={() => {
+                    setDay(day);
+                    hideDialog();}}
+                  style={[
+                    ChoreStyles.dialogButton,
+                    selectedDay === day && ChoreStyles.selectedDayPressable
+                    ]}
+                  >
+                <Text> 
+                  {day} 
+                </Text>
+              </Pressable>
               ))}
-
             </ScrollView>
           </Dialog.Content>
-          <Dialog.Actions>
-            <Button
-            mode="contained"
-            onPress={hideDialog}
-            >
-              Done
-            </Button>
-          </Dialog.Actions>
         </Dialog>
       </Portal>
     </View>
   );
 }
-const styles = StyleSheet.create({
-  dayChip: {
-    marginHorizontal: 5,
-    borderRadius: 50,
-  },
-  selectedDayChip: {
-    backgroundColor: "red", 
-  },
-});
