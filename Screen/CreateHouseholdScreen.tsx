@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Checkbox, Text, TextInput } from "react-native-paper";
+import { useAppDispatch } from "../store/hooks";
+import { getAuth } from "firebase/auth";
+import { createHousehold } from "../store/household/houseHoldActions";
 // Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 
@@ -21,6 +24,8 @@ export default function CreateHouseholdScreen() {
     { name: "Torka golvet 🧼", checked: false },
     { name: "Vattna blommor 🌸", checked: false },
   ]);
+  const dispatch = useAppDispatch();
+  const auth = getAuth();
 
   // Toggle-funktion för att ändra checked-statusen på en syssla
   const toggleChore = (index: number) => {
@@ -29,6 +34,29 @@ export default function CreateHouseholdScreen() {
         i === index ? { ...chore, checked: !chore.checked } : chore
       )
     );
+  };
+
+  // Dispatch-funktion för att skapa hushållet
+  const handleCreateHousehold = () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      Alert.alert("Error", "User not authenticated");
+      return;
+    }
+
+    if (!householdName.trim()) {
+      Alert.alert("Validation Error", "Household name cannot be empty");
+      return;
+    }
+
+    dispatch(createHousehold({ name: householdName }))
+      .unwrap()
+      .then(() => {
+        Alert.alert("Success", "Household created successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message || "An error occurred");
+      });
   };
 
   // Funktion för att spara hushållet i databasen(?) (kommer implementeras senare)
@@ -60,7 +88,7 @@ export default function CreateHouseholdScreen() {
 
       {/* Icke-funktionell Spara-knapp (coming soon [fixa i nästa issue?]) */}
       {/* Glöm också inte lägga till validering här för hushållsnamn */}
-      <Button mode="contained" style={s.saveButton}>
+      <Button mode="contained" onPress={handleCreateHousehold} style={s.saveButton}>
         Spara
       </Button>
     </View>
