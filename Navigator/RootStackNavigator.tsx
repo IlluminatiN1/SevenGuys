@@ -6,7 +6,7 @@ import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
 import HouseholdScreen from "../Screen/HouseholdScreen";
-import LoginScreen from "../Screen/LogInScreen";
+import LoginScreen from "../Screen/LoginScreen";
 import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
