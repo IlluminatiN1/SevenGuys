@@ -54,6 +54,7 @@ export default function RootStackNavigator() {
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
+        options={{ title: "Skapa nytt Hushåll" }}
       />
       <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
     </RootStack.Navigator>
