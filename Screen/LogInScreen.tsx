@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import { validatePassword } from "../utils/validations/PasswordValidator";
-import { validateEmail } from "../utils/validations/EmailValidator";
+import { validatePassword } from "../utils/validations/user/PasswordValidator";
+import { validateEmail } from "../utils/validations/user/EmailValidator";
 import { useAppDispatch } from "../store/hooks";
 import { signInUser } from "../store/user/userActions";
 
