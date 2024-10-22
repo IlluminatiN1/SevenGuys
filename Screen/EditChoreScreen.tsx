@@ -8,7 +8,8 @@ import {
   TextInput
 } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import { BasicStyles, ChoreStyles } from "../styles";
+import { ChoreStyles } from "../Style/editChoreStyle";
+
 
 type Props = NativeStackScreenProps<RootStackParamList, "EditChore">;
 
@@ -44,7 +45,7 @@ export default function EditChoreScreen(props: Props) {
         placeholder="Title"
         value={title}
         onChangeText={setTitle}
-        style={BasicStyles.inputField}
+        style={ChoreStyles.inputField}
         outlineColor="#A9A9A9"
         activeOutlineColor="#5856D6"
         theme={{ roundness: 10 }}
