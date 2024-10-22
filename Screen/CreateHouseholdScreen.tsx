@@ -12,12 +12,57 @@ interface Chore {
 // Håprdkodad lista av sysslor som användaren kan välja mellan
 // Vi kan ändra det sen när vi har en backend(?)
 export default function CreateHouseholdScreen() {
-  
-  // Använd validateHouseholdName("name"); för att kontrollera att namnet på household är längre än 3 tecken.
+  const [householdName, setHouseholdName] = useState<string>("");
+  const [chores, setChores] = useState<Chore[]>([
+    { name: "Laga mat 🍳", checked: false },
+    { name: "Damma 🧹", checked: false },
+    { name: "Diska 🍽️", checked: false },
+    { name: "Ta hand om My 🐱", checked: false },
+    { name: "Torka golvet 🧼", checked: false },
+    { name: "Vattna blommor 🌸", checked: false },
+  ]);
+
+  // Toggle-funktion för att ändra checked-statusen på en syssla
+  const toggleChore = (index: number) => {
+    setChores(
+      chores.map((chore, i) =>
+        i === index ? { ...chore, checked: !chore.checked } : chore
+      )
+    );
+  };
+
+  // Funktion för att spara hushållet i databasen(?) (kommer implementeras senare)
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Create Household screen</Text>
-      
+    <View style={s.container}>
+      <Text variant="titleMedium">Ange Hushållsnamn:</Text>
+      <TextInput
+        label="Namn"
+        value={householdName}
+        onChangeText={setHouseholdName}
+        style={s.input}
+      />
+      <Text variant="titleMedium">Sysslor:</Text>
+      {chores.map((chore, index) => (
+        <TouchableOpacity
+          key={index}
+          style={s.choreItem}
+          onPress={() => toggleChore(index)}
+        >
+          <Text>{chore.name}</Text>
+          <View style={s.checkboxContainer}>
+            <Checkbox
+              status={chore.checked ? "checked" : "unchecked"}
+              onPress={() => toggleChore(index)}
+            />
+          </View>
+        </TouchableOpacity>
+      ))}
+
+      {/* Icke-funktionell Spara-knapp (coming soon [fixa i nästa issue?]) */}
+      {/* Glöm också inte lägga till validering här för hushållsnamn */}
+      <Button mode="contained" style={s.saveButton}>
+        Spara
+      </Button>
     </View>
   );
 }
