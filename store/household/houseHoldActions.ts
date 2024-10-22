@@ -1,22 +1,23 @@
 // store/household/householdActions.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../config/firebase";
-import { doc, setDoc, collection, addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
+import { generateRandomCode } from "../../utils/household/HouseholdCodeGenerator";
 
-type HouseholdPayload = { name: string; owner: string; members: string[] };
+type HouseholdPayload = { name: string };
 
 export const createHousehold = createAsyncThunk(
   "household/create",
-  async ({ name, owner, members }: HouseholdPayload, thunkAPI) => {
+  async ({ name }: HouseholdPayload, thunkAPI) => {
     try {
-        console.log("Creating household");
+      console.log("Creating household");
+      const code = generateRandomCode(8);
       const docRef = await addDoc(collection(db, "households"), {
         name,
-        owner,
-        members,
+        code,
       });
-      console.log("Household created");
-      return { id: docRef.id, name, owner, members };
+      console.log("Household created with ID:", docRef.id);
+      return { id: docRef.id, name, code };
     } catch (error) {
       console.error("Error creating household:", error);
       return thunkAPI.rejectWithValue("Could not create household");

@@ -1,36 +1,56 @@
-import { Alert, Text, View } from "react-native";
-import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { createHousehold } from "../store/household/houseHoldAction";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Button, Checkbox, Text, TextInput } from "react-native-paper";
+// Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
+// import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 
+interface Chore {
+  name: string;
+  checked: boolean;
+}
+
+// Håprdkodad lista av sysslor som användaren kan välja mellan
+// Vi kan ändra det sen när vi har en backend(?)
 export default function CreateHouseholdScreen() {
   
- /*  const [name, setName] = useState("");
-  const dispatch = useDispatch<AppDispatch>();
-  const handleCreateHousehold = () => {
-      const owner = "currentUserId"; // Ersätt med admin's ID
-      const members = [owner];
-      dispatch(createHousehold({ name, owner, members }))
-        .unwrap()
-        .then(() => {
-          Alert.alert("Success", "Household created successfully");
-        })
-        .catch((error) => {
-          Alert.alert("Error", error);
-        });
-    }; */
-
   // Använd validateHouseholdName("name"); för att kontrollera att namnet på household är längre än 3 tecken.
   return (
-    
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Create Household screen</Text>
       
     </View>
-    
-    
   );
-  
 }
+
+const s = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "white",
+  },
+  input: {
+    marginBottom: 16,
+  },
+  choreItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+    padding: 8,
+    borderWidth: 0.5,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+  },
+  // Glöm inte ändra stylingen på checkboxen senare 😡
+  checkboxContainer: {
+    borderWidth: 0.5,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    padding: 0.5,
+  },
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  saveButton: {
+    marginTop: 14,
+  },
+});
