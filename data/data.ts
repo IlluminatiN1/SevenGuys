@@ -45,7 +45,7 @@ export interface CompletedTask {
 export const emojis: Emoji[] = [
   {
     id: 1,
-    name: "fox",
+    name: "duck",
     color: "orange",
   },
   {
@@ -65,18 +65,18 @@ export const emojis: Emoji[] = [
   },
   {
     id: 5,
-    name: "frog",
+    name: "snake",
     color: "green",
   },
   {
     id: 6,
-    name: "octopus",
+    name: "elephant",
     color: "purple",
   },
   {
     id: 7,
     name: "unicorn",
-    color: "white",
+    color: "black",
   },
   {
     id: 8,
@@ -123,8 +123,8 @@ export const mockedMembers: Member[] = [
     id: 2,
     name: "Magical Raindeer",
     emojiId: 4,
-    isOwner: true,
-    houseHoldId: 1,
+    isOwner: false,
+    houseHoldId: 2,
     userId: 1,
     isRequest: false,
   },
