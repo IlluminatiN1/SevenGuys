@@ -34,7 +34,6 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
-      <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen
         name="NoHousehold"
         options={{ title: "" }}
@@ -45,6 +44,7 @@ export default function RootStackNavigator() {
         component={ProfileScreen}
         options={{ title: "My Profile" }}
       />
+      <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen name="Login" component={LoginScreen} />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
 
