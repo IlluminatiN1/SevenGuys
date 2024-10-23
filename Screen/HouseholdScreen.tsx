@@ -69,18 +69,29 @@ const TaskRow = ({
 };
 
 const AddTaskButton = () => {
-  return (
-    <View>
-      <IconButton
-        icon={"plus"}
-        size={15}
-        iconColor="white"
-        onPress={() => console.log("Add task pressed")}
-        mode="outlined"
-        style={{ borderColor: "white", borderWidth: 2 }}
-      />
-    </View>
+  const isAdmin = activeMembers.some(
+    (member) =>
+      member.houseHoldId === activeHousehold &&
+      member.isOwner &&
+      member.id === activeUser.id
   );
+
+  if (isAdmin) {
+    return (
+      <View style={s.addTaskButtonStyle}>
+        <IconButton
+          icon={"plus"}
+          size={15}
+          iconColor="white"
+          onPress={() => console.log("Add task pressed")}
+          mode="outlined"
+          style={{ borderColor: "white", borderWidth: 2 }}
+        />
+        <Text style={s.createHouseholdText}>Lägg till syssla</Text>
+      </View>
+    );
+  }
+  return null;
 };
 
 const HouseholdScreen = () => {
@@ -120,9 +131,8 @@ const HouseholdScreen = () => {
           })}
       </View>
       <View style={s.addTaskButtonContainer}>
-        <View style={s.addTaskButtonStyle}>
+        <View>
           <AddTaskButton />
-          <Text style={s.createHouseholdText}>Lägg till syssla</Text>
         </View>
       </View>
     </View>
