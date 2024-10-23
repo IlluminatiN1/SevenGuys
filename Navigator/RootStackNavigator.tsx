@@ -1,16 +1,17 @@
-import { NavigatorScreenParams } from "@react-navigation/native";
+import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { IconButton } from "react-native-paper";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
+import LoginScreen from "../Screen/LoginScreen";
 import HouseholdScreen from "../Screen/HouseholdScreen";
-import LoginScreen from "../Screen/LogInScreen";
 import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import TabNavigator, { TabParamList } from "./TabNavigator";
+import { size } from "lodash";
 
 export type RootStackParamList = {
   Profile: undefined;
@@ -34,6 +35,12 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
+
+      <RootStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerLeft: () => null }}
+      />
       <RootStack.Screen
         name="NoHousehold"
         options={{ title: "" }}
@@ -50,7 +57,6 @@ export default function RootStackNavigator() {
 
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
-
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
@@ -61,4 +67,14 @@ export default function RootStackNavigator() {
   );
 }
 
-const ArrowLeftComponent = () => <IconButton icon="arrow-left" size={20} />;
+function ArrowLeftComponent() {
+  const navigation = useNavigation();
+
+  return (
+    <IconButton
+      icon="arrow-left"
+      onPress={() => navigation.goBack()}
+      size={20}
+    />
+  );
+}
