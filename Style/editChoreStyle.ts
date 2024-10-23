@@ -46,14 +46,18 @@ export const ChoreStyles = StyleSheet.create({
       padding: 15,
       marginTop: 20,
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       justifyContent: "space-between",
     },
   
-    recurringKeepRowRight: {
+    keepRowRight: {
       flexDirection: "row",
       justifyContent: "flex-end",
       alignItems: "center",
+    },
+    keepRowLeft: {
+      textAlign: "left",
+      alignSelf: "flex-start",
     },
   
     recurringTitle: {
@@ -64,6 +68,7 @@ export const ChoreStyles = StyleSheet.create({
     text: {
       marginHorizontal: 10,
       fontSize: 18,
+      fontWeight: "bold",
     },
   
     dialogButton: {
@@ -91,5 +96,4 @@ export const ChoreStyles = StyleSheet.create({
       paddingVertical: 20,
       paddingHorizontal: 10,
     },
-  
   });
