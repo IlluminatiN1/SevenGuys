@@ -5,13 +5,12 @@ import { IconButton } from "react-native-paper";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
-import LoginScreen from "../Screen/LoginScreen";
 import HouseholdScreen from "../Screen/HouseholdScreen";
+import LoginScreen from "../Screen/LogInScreen";
 import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import TabNavigator, { TabParamList } from "./TabNavigator";
-import { size } from "lodash";
 
 export type RootStackParamList = {
   Profile: undefined;
@@ -35,7 +34,6 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
-
       <RootStack.Screen
         name="Login"
         component={LoginScreen}
@@ -52,7 +50,6 @@ export default function RootStackNavigator() {
         options={{ title: "My Profile" }}
       />
       <RootStack.Screen name="Household" component={HouseholdScreen} />
-      <RootStack.Screen name="Login" component={LoginScreen} />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
 
       <RootStack.Screen name="Chores" component={ChoresScreen} />
