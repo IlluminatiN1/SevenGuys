@@ -15,6 +15,7 @@ const Tab = createMaterialTopTabNavigator<TabParamList>();
 
 export default function TabNavigator() {
   return (
+    // tab navigator for the main screens
     <Tab.Navigator>
       <Tab.Screen name="Household" component={HouseholdScreen} />
       <Tab.Screen name="Today" component={ChoresScreen} />
@@ -24,12 +25,12 @@ export default function TabNavigator() {
         initialParams={{ period: "this-week" }}
       />
       <Tab.Screen
-        name="Stats"
+        name="Stats2"
         component={ChoresStatisticsScreen}
         initialParams={{ period: "prev-week" }}
       />
       <Tab.Screen
-        name="Stats"
+        name="Stats3"
         component={ChoresStatisticsScreen}
         initialParams={{ period: "prev-month" }}
       />
