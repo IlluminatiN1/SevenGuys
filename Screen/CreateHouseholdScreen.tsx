@@ -4,6 +4,7 @@ import { Button, Checkbox, Text, TextInput } from "react-native-paper";
 import { useAppDispatch } from "../store/hooks";
 import { getAuth } from "firebase/auth";
 import { createHousehold } from "../store/household/houseHoldActions";
+import { validateHouseholdName } from "../utils/household/HouseholdNameValidator";
 // Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 
@@ -46,6 +47,12 @@ export default function CreateHouseholdScreen() {
 
     if (!householdName.trim()) {
       Alert.alert("Validation Error", "Household name cannot be empty");
+      return;
+    }
+
+    const householdNameValidationMessage = validateHouseholdName(householdName);
+    if (householdNameValidationMessage !== "Household name is valid") {
+      Alert.alert("Validation Error", householdNameValidationMessage);
       return;
     }
 
