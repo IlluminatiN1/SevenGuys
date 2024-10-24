@@ -2,10 +2,15 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { useAppSelector } from "../store/hooks";
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../Navigator/RootStackNavigator'; // Adjust the path as necessary
 
 export default function NoHouseholdScreen() {
+  
   // Detta kommer användas för att uppdatera statet om man lägger till hushåll
   const households = useAppSelector((state) => state.households); // EJ KLAR
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <View>
@@ -21,7 +26,7 @@ export default function NoHouseholdScreen() {
           icon="plus-circle-outline"
           mode="contained"
           onPress={() => {
-            console.log("Lägg till");
+            navigation.navigate("CreateHousehold");
           }}
         >
           Lägg till
