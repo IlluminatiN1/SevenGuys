@@ -1,4 +1,4 @@
-import { NavigatorScreenParams } from "@react-navigation/native";
+import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { IconButton } from "react-native-paper";
@@ -35,7 +35,11 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
-      <RootStack.Screen name="Household" component={HouseholdScreen} />
+      <RootStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerLeft: () => null }}
+      />
       <RootStack.Screen
         name="NoHousehold"
         options={{ title: "" }}
@@ -46,19 +50,28 @@ export default function RootStackNavigator() {
         component={ProfileScreen}
         options={{ title: "My Profile" }}
       />
-      <RootStack.Screen name="Login" component={LoginScreen} />
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
-
+      <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
       <RootStack.Screen name="EditChores" component={EditChoreScreen} />
-
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
+        options={{ title: "Skapa nytt Hushåll" }}
       />
       <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
     </RootStack.Navigator>
   );
 }
 
-const ArrowLeftComponent = () => <IconButton icon="arrow-left" size={20} />;
+function ArrowLeftComponent() {
+  const navigation = useNavigation();
+
+  return (
+    <IconButton
+      icon="arrow-left"
+      onPress={() => navigation.goBack()}
+      size={20}
+    />
+  );
+}

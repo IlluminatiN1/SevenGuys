@@ -14,7 +14,7 @@ export interface Emoji {
 }
 
 export interface Task {
-  id: number;
+  id: string;
   title: string;
   description: string;
   houseHoldId: number;
@@ -22,6 +22,7 @@ export interface Task {
   reoccurence: number;
   score: number;
 }
+export type TaskCreate = Omit<Task, "id" | "houseHoldId">;
 
 export interface Household {
   id: number;
@@ -45,7 +46,7 @@ export interface CompletedTask {
 export const emojis: Emoji[] = [
   {
     id: 1,
-    name: "fox",
+    name: "duck",
     color: "orange",
   },
   {
@@ -65,18 +66,18 @@ export const emojis: Emoji[] = [
   },
   {
     id: 5,
-    name: "frog",
+    name: "snake",
     color: "green",
   },
   {
     id: 6,
-    name: "octopus",
+    name: "elephant",
     color: "purple",
   },
   {
     id: 7,
     name: "unicorn",
-    color: "white",
+    color: "black",
   },
   {
     id: 8,
@@ -123,8 +124,8 @@ export const mockedMembers: Member[] = [
     id: 2,
     name: "Magical Raindeer",
     emojiId: 4,
-    isOwner: true,
-    houseHoldId: 1,
+    isOwner: false,
+    houseHoldId: 2,
     userId: 1,
     isRequest: false,
   },
@@ -165,7 +166,7 @@ export const mockedCompletedTasks: CompletedTask[] = [
 
 export const mockedTasks: Task[] = [
   {
-    id: 1,
+    id: "1",
     title: "Clean the kitchen",
     description: "Do all the dishes and wipe down the counters",
     houseHoldId: 1,
@@ -174,7 +175,7 @@ export const mockedTasks: Task[] = [
     score: 5,
   },
   {
-    id: 2,
+    id: "2",
     title: "Take out the dog",
     description: "take the dog out for a walk, dont forget to bring poopbags!",
     houseHoldId: 1,
@@ -183,7 +184,7 @@ export const mockedTasks: Task[] = [
     score: 2,
   },
   {
-    id: 3,
+    id: "3",
     title: "Buy weekly groceries",
     description: "Go and buy food for the household",
     houseHoldId: 1,
@@ -192,7 +193,7 @@ export const mockedTasks: Task[] = [
     score: 6,
   },
   {
-    id: 4,
+    id: "4",
     title: "Vacuum cleaning",
     description:
       "Get the vaccum cleaner from the städskåp and clean the whole household.",
@@ -202,7 +203,7 @@ export const mockedTasks: Task[] = [
     score: 9,
   },
   {
-    id: 5,
+    id: "5",
     title: "Clean the bathroom",
     description:
       "Scrub the toilet, clean the sink and the mirror, and mop the floor",

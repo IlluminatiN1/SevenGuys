@@ -70,18 +70,29 @@ const TaskRow = ({
 };
 
 const AddTaskButton = ({ onPress: handlePress }: { onPress: () => void }) => {
-  return (
-    <View>
-      <IconButton
-        icon={"plus"}
-        size={15}
-        iconColor="white"
-        onPress={handlePress}
-        mode="outlined"
-        style={{ borderColor: "white", borderWidth: 2 }}
-      />
-    </View>
+  const isAdmin = activeMembers.some(
+    (member) =>
+      member.houseHoldId === activeHousehold &&
+      member.isOwner &&
+      member.id === activeUser.id
   );
+
+  if (isAdmin) {
+    return (
+      <View style={s.addTaskButtonStyle}>
+        <IconButton
+          icon={"plus"}
+          size={15}
+          iconColor="white"
+          onPress={handlePress}
+          mode="outlined"
+          style={{ borderColor: "white", borderWidth: 2 }}
+        />
+        <Text style={s.createHouseholdText}>Lägg till syssla</Text>
+      </View>
+    );
+  }
+  return null;
 };
 
 const HouseholdScreen = () => {
@@ -125,9 +136,8 @@ const HouseholdScreen = () => {
           })}
       </View>
       <View style={s.addTaskButtonContainer}>
-        <View style={s.addTaskButtonStyle}>
-          <AddTaskButton onPress={showModal} />
-          <Text style={s.createHouseholdText}>Lägg till syssla</Text>
+        <View>
+          <AddTaskButton onPress={showModal}/>
         </View>
       </View>
       {isModalVisible && <CreateChorePopUpScreen onClose={hideModal} />}

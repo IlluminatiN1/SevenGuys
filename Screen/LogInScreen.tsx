@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import { validatePassword } from "../utils/validations/user/PasswordValidator";
-import { validateEmail } from "../utils/validations/user/EmailValidator";
 import { useAppDispatch } from "../store/hooks";
 import { signInUser } from "../store/user/userActions";
+import { validateEmail } from "../utils/user/EmailValidator";
+import { validatePassword } from "../utils/user/PasswordValidator";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -18,20 +18,19 @@ export default function LoginScreen(props: Props) {
 
   const handleLogin = () => {
     const emailValidationMessage = validateEmail(email);
-    if (emailValidationMessage !== 'Email is valid') {
+    if (emailValidationMessage !== "Email is valid") {
       Alert.alert("Validation Error", emailValidationMessage);
       return;
     }
     const validationMessage = validatePassword(password);
-    if (validationMessage !== 'Password is valid') {
+    if (validationMessage !== "Password is valid") {
       Alert.alert("Validation Error", validationMessage);
       return;
     }
 
-    dispatch(signInUser({ email, password }))
+    dispatch(signInUser({ email, password }));
 
     props.navigation.navigate("Profile");
-
   };
 
   return (
@@ -84,7 +83,9 @@ export default function LoginScreen(props: Props) {
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={{ paddingLeft: 5, color: "gray" }}>Har du inget konto?</Text>
+        <Text style={{ paddingLeft: 5, color: "gray" }}>
+          Har du inget konto?
+        </Text>
         <Pressable onPress={() => props.navigation.navigate("RegisterUser")}>
           <Text style={styles.linkText}>Registrera dig</Text>
         </Pressable>
@@ -134,5 +135,6 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#1E90FF", // DodgerBlue
     textDecorationLine: "underline",
+    paddingLeft: 5,
   },
 });
