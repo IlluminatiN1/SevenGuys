@@ -3,10 +3,15 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button, Provider as PaperProvider, Portal } from "react-native-paper";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 import { useAppSelector } from "../store/hooks";
+import CreateHouseholdScreen from "./CreateHouseholdScreen";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../Navigator/RootStackNavigator";
 
 export default function NoHouseholdScreen() {
   // Detta kommer användas för att uppdatera statet om man lägger till hushåll
   const households = useAppSelector((state) => state.households); // EJ KLAR
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // State för att hantera modalens synlighet
   const [isModalVisible, setModalVisible] = useState(false);
@@ -34,7 +39,7 @@ export default function NoHouseholdScreen() {
             icon="plus-circle-outline"
             mode="contained"
             onPress={() => {
-              console.log("Lägg till");
+              navigation.navigate("CreateHousehold");
             }}
           >
             Lägg till
