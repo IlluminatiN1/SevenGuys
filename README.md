@@ -2,15 +2,15 @@
 
 #### Kravlista:
 - [ ] En logga, splashscreen och appikon ska designas och användas. *
-- [ ] Applikationen ska byggas med RN, Expo & TS. *
-- [ ] Designen av appen ska utgå ifrån befintliga skisser, undantag kan ges men ska diskuteras med produktägare, godkännas och dokumenteras. *
+- [X] Applikationen ska byggas med RN, Expo & TS. *
+- [X] Designen av appen ska utgå ifrån befintliga skisser, undantag kan ges men ska diskuteras med produktägare, godkännas och dokumenteras. *
 
 #### Hushåll:
 - [ ] Ett hushåll ska ha ett namn och en genererad (enkel) kod så andra kan gå med i hushållet, namnet ska gå att ändra. *
 
 #### Konto:
-- [ ] En användare ska kunna registrera och logga in sig. *
-- [ ] En användare ska kunna skapa ett nytt hushåll. *
+- [X] En användare ska kunna registrera och logga in sig. *
+- [X] En användare ska kunna skapa ett nytt hushåll. *
 - [ ] En användare ska kunna gå med i ett hushåll genom att ange hushållets kod. *
 
 #### Profil:
@@ -21,7 +21,7 @@
 
 #### Sysslor:
 - [ ] En ägare ska kunna lägga till sysslor att göra i hemmet. *
-- [ ] En syssla ska ha ett namn, en beskrivning (text), hur ofta den ska göras (dagar), och en vikt som beskriver hur energikrävande den är. *
+- [X] En syssla ska ha ett namn, en beskrivning (text), hur ofta den ska göras (dagar), och en vikt som beskriver hur energikrävande den är*
 - [ ] En ägare ska kunna redigera en syssla. *
 
 #### Dagsvyn:
