@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { IconButton } from "react-native-paper";
+import { Button, IconButton, Portal } from "react-native-paper";
 import {
   emojis,
   mockedHouseholds,
   mockedMembers,
   mockedUser,
 } from "../data/data";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../Navigator/RootStackNavigator";
+import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 
 const activeHouseholds = mockedHouseholds.length > 0 ? mockedHouseholds : [];
 const activeUser = mockedUser;
@@ -45,31 +48,46 @@ const HouseholdButton = ({
 };
 
 const CreateHouseholdButton = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   return (
     <View>
-      <IconButton
-        icon={"plus"}
-        size={15}
-        iconColor="white"
-        onPress={() => console.log("Create household pressed")}
-        mode="outlined"
-        style={{ borderColor: "white", borderWidth: 2 }}
-      />
+      <Button
+        icon="plus-circle-outline"
+        mode="contained"
+        onPress={() => {
+          navigation.navigate("CreateHousehold");
+        }}
+      >
+        Skapa Hushåll
+      </Button>
     </View>
   );
 };
 
 const JoinHouseholdButton = () => {
+  // State för att hantera modalens synlighet
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<number | null>(null);
+  const hideModal = () => setModalVisible(false);
+
+  const showModal = () => {
+    setSelectedEmoji(null); // Nollställ vald ikon
+    setModalVisible(true);
+  };
   return (
     <View>
-      <IconButton
-        icon={"plus"}
-        size={15}
-        iconColor="white"
-        onPress={() => console.log("Gå med i hushåll pressed")}
-        mode="outlined"
-        style={{ borderColor: "white", borderWidth: 2 }}
-      />
+      <Button icon="home-plus" mode="contained" onPress={showModal}>
+        Gå med i hushåll
+      </Button>
+      <Portal>
+        <JoinHouseholdPopup
+          visible={isModalVisible}
+          hideModal={hideModal}
+          selectedEmoji={selectedEmoji}
+          setSelectedEmoji={setSelectedEmoji}
+        />
+      </Portal>
     </View>
   );
 };
@@ -78,7 +96,9 @@ export default function ProfileScreen() {
   return (
     <View style={styles.screenContainer}>
       <View style={styles.userContainer}>
-        <Text style={{ fontSize: 12 }}>Användarnamn</Text>
+        <Text style={{ fontSize: 12, alignSelf: "flex-start" }}>
+          Användarnamn
+        </Text>
         <Text style={{ fontWeight: "bold", fontSize: 17 }}>SevenGuys</Text>
       </View>
       <View style={styles.buttonsContainer}>
@@ -97,13 +117,11 @@ export default function ProfileScreen() {
         })}
       </View>
       <View style={styles.optionsContainer}>
-        <View style={styles.joinOrCreateHouseholdButton}>
+        <View style={styles.buttons}>
           <CreateHouseholdButton />
-          <Text style={styles.createHouseholdText}>Skapa hushåll</Text>
         </View>
-        <View style={styles.joinOrCreateHouseholdButton}>
+        <View style={styles.buttons}>
           <JoinHouseholdButton />
-          <Text style={styles.createHouseholdText}>Gå med i hushåll</Text>
         </View>
       </View>
     </View>
@@ -121,8 +139,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: "black",
     borderWidth: 1,
-    width: "30%",
     backgroundColor: "white",
+    alignSelf: "flex-start",
   },
   buttonsContainer: {
     marginTop: 20,
@@ -156,13 +174,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 15,
   },
-
-  joinOrCreateHouseholdButton: {
-    width: "43%",
+  buttons: {
     flexDirection: "row",
-    alignItems: "center",
+    justifyContent: "space-evenly",
+    paddingVertical: 20,
     borderRadius: 20,
-    borderColor: "black",
-    backgroundColor: "#5856D6",
   },
 });
