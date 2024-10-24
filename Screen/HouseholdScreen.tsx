@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import {
@@ -9,6 +9,7 @@ import {
   mockedTasks,
   mockedUser,
 } from "../data/data";
+import { CreateChorePopUpScreen } from "../components/CreateChoreComponent";
 
 const activeHousehold = 1;
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
@@ -68,7 +69,7 @@ const TaskRow = ({
   );
 };
 
-const AddTaskButton = () => {
+const AddTaskButton = ({ onPress: handlePress }: { onPress: () => void }) => {
   const isAdmin = activeMembers.some(
     (member) =>
       member.houseHoldId === activeHousehold &&
@@ -83,7 +84,7 @@ const AddTaskButton = () => {
           icon={"plus"}
           size={15}
           iconColor="white"
-          onPress={() => console.log("Add task pressed")}
+          onPress={handlePress}
           mode="outlined"
           style={{ borderColor: "white", borderWidth: 2 }}
         />
@@ -95,6 +96,10 @@ const AddTaskButton = () => {
 };
 
 const HouseholdScreen = () => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
+
   return (
     <View style={s.screenContainer}>
       <View style={s.headerContainer}>
@@ -132,9 +137,10 @@ const HouseholdScreen = () => {
       </View>
       <View style={s.addTaskButtonContainer}>
         <View>
-          <AddTaskButton />
+          <AddTaskButton onPress={showModal}/>
         </View>
       </View>
+      {isModalVisible && <CreateChorePopUpScreen onClose={hideModal} />}
     </View>
   );
 };
