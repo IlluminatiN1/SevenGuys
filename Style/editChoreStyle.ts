@@ -9,27 +9,29 @@ export const ChoreStyles = StyleSheet.create({
       backgroundColor: "white",
     },
 
-    inputField: {
+    inputFieldTitle: {
         width: "100%",
         marginBottom: 15,
         backgroundColor: "white",
         fontSize: 20,
+        paddingBottom: 50,
       },
   
-    choreDescriptionField: {
+    inputFieldChoreDescription: {
       width: "100%",
       height: 160,
+      marginBottom: 30,
       backgroundColor: "white",
       fontSize: 20,
     },
   
-    selectedDayStyle: {
+    selectedRecurringDayStyle: {
       fontSize: 20,
       fontWeight: "bold",
       color: "white",
     },
   
-    selectedDayButton: {
+    selectedRecurringDayButton: {
       paddingVertical: 3,
       paddingHorizontal: 11,
       borderWidth: 1,
@@ -43,7 +45,7 @@ export const ChoreStyles = StyleSheet.create({
       width: "100%",
       borderColor: "#A9A9A9",
       borderRadius: 10,
-      padding: 15,
+      padding: 20,
       marginTop: 20,
       flexDirection: "row",
       alignItems: "flex-start",
@@ -95,5 +97,35 @@ export const ChoreStyles = StyleSheet.create({
     scrollViewStyle: {
       paddingVertical: 20,
       paddingHorizontal: 10,
+    },
+
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      paddingTop: 40,
+      paddingLeft: 20,
+      paddingRight: 20,
+    },
+
+    buttonLeft: {
+      flex: 1,
+      alignItems: "flex-start",
+    },
+
+    buttonRight: {
+      flex: 1,
+      alignItems: "flex-end",
+    },
+
+    saveButtonContainer: {
+      position: "absolute",
+      bottom: 0,
+      width: "100%",
+    },
+
+    saveButton: {
+      paddingVertical: 18,
+      borderRadius: 0, 
+      justifyContent:"center",
     },
   });

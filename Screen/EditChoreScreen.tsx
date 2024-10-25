@@ -41,141 +41,153 @@ export default function EditChoreScreen(props: Props) {
   const energyList = ["1", "2", "3", "4", "5"];
 
   return (
-    <View style={ChoreStyles.container}>
-      <TextInput
-        mode="outlined"
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-        style={ChoreStyles.inputField}
-        outlineColor="#A9A9A9"
-        activeOutlineColor="#5856D6"
-        theme={{ roundness: 10 }}
-      />
+    <View style={{ flex: 1 }}>
+      <View style={ChoreStyles.container}>
+        <TextInput
+          mode="outlined"
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+          style={ChoreStyles.inputFieldTitle}
+          outlineColor="#A9A9A9"
+          activeOutlineColor="#5856D6"
+          theme={{ roundness: 10 }}
+        />
 
-      <TextInput
-        mode="outlined"
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        style={ChoreStyles.choreDescriptionField}
-        multiline={true}
-        outlineColor="#A9A9A9"
-        activeOutlineColor="#5856D6"
-        theme={{ roundness: 10 }}
-      />
+        <TextInput
+          mode="outlined"
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+          style={ChoreStyles.inputFieldChoreDescription}
+          multiline={true}
+          outlineColor="#A9A9A9"
+          activeOutlineColor="#5856D6"
+          theme={{ roundness: 10 }}
+        />
 
-      <Pressable onPress={showRecurringDialog}>
-        <View style={ChoreStyles.recurringContainer}>
-          <Text style={ChoreStyles.recurringTitle}>Recurring:</Text>
+        <Pressable onPress={showRecurringDialog}>
+          <View style={ChoreStyles.recurringContainer}>
+            <Text style={ChoreStyles.recurringTitle}>Recurring:</Text>
 
-          <View style={ChoreStyles.keepRowRight}>
-            <Text style={ChoreStyles.text}>every</Text>
+            <View style={ChoreStyles.keepRowRight}>
+              <Text style={ChoreStyles.text}>every</Text>
 
-            <Pressable
-              onPress={showRecurringDialog}
-              style={ChoreStyles.selectedDayButton}
-            >
-              <Text style={ChoreStyles.selectedDayStyle}>{selectedDay}</Text>
-            </Pressable>
-            <Text style={ChoreStyles.text}>day</Text>
+              <Pressable
+                onPress={showRecurringDialog}
+                style={ChoreStyles.selectedRecurringDayButton}
+              >
+                <Text style={ChoreStyles.selectedRecurringDayStyle}>{selectedDay}</Text>
+              </Pressable>
+              <Text style={ChoreStyles.text}>day</Text>
+            </View>
           </View>
+        </Pressable>
+        <Portal>
+          <Dialog
+            visible={recurringDialogVisible}
+            onDismiss={hideRecurringDialog}
+            style={{ backgroundColor: "white" }}
+          >
+            <Dialog.Content style={ChoreStyles.dialogContent}>
+              <ScrollView
+                horizontal
+                persistentScrollbar={true}
+                contentContainerStyle={ChoreStyles.scrollViewStyle}
+              >
+                {daysList.map((day) => (
+                  <Pressable
+                    key={day}
+                    onPress={() => {
+                      setDay(day);
+                      hideRecurringDialog();
+                    }}
+                    style={[
+                      ChoreStyles.dialogButton,
+                      selectedDay === day && ChoreStyles.selectedDayPressable,
+                    ]}
+                  >
+                    <Text>{day}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+        <Pressable onPress={showEnergyDialog}>
+          <View style={ChoreStyles.recurringContainer}>
+            <View>
+              <Text style={ChoreStyles.recurringTitle}>Energy:</Text>
+              <Text style={ChoreStyles.keepRowLeft}>
+                How much energy does this chore take?
+              </Text>
+            </View>
+
+            <View style={ChoreStyles.keepRowRight}>
+              <Text style={ChoreStyles.text}>{selectedEnergy}</Text>
+            </View>
+          </View>
+        </Pressable>
+        <Portal>
+          <Dialog
+            visible={energyDialogVisible}
+            onDismiss={hideEnergyDialog}
+            style={{ backgroundColor: "white" }}
+          >
+            <Dialog.Content style={ChoreStyles.dialogContent}>
+              <ScrollView
+                horizontal
+                persistentScrollbar={true}
+                contentContainerStyle={ChoreStyles.scrollViewStyle}
+              >
+                {energyList.map((energy) => (
+                  <Pressable
+                    key={energy}
+                    onPress={() => {
+                      setEnergy(energy);
+                      hideEnergyDialog();
+                    }}
+                    style={[ChoreStyles.dialogButton]}
+                  >
+                    <Text>{energy}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+        <View style={ChoreStyles.buttonContainer}>
+          <View style={ChoreStyles.buttonLeft}>
+            <Button
+              mode="contained"
+              labelStyle={{ color: "white", fontSize: 20 }}
+              buttonColor="red"
+              style={{ paddingHorizontal: 25, paddingVertical: 10 }}
+            >
+              Delete
+            </Button>
+          </View>
+          <Button
+            mode="contained"
+            labelStyle={{ color: "white", fontSize: 20 }}
+            buttonColor="#5856D6"
+            style={{ paddingHorizontal: 25, paddingVertical: 10 }}
+          >
+            Archive
+          </Button>
         </View>
-      </Pressable>
-      <Portal>
-        <Dialog
-          visible={recurringDialogVisible}
-          onDismiss={hideRecurringDialog}
-          style={{ backgroundColor: "white" }}
-        >
-          <Dialog.Content style={ChoreStyles.dialogContent}>
-            <ScrollView
-              horizontal
-              persistentScrollbar={true}
-              contentContainerStyle={ChoreStyles.scrollViewStyle}
-            >
-              {daysList.map((day) => (
-                <Pressable
-                  key={day}
-                  onPress={() => {
-                    setDay(day);
-                    hideRecurringDialog();
-                  }}
-                  style={[
-                    ChoreStyles.dialogButton,
-                    selectedDay === day && ChoreStyles.selectedDayPressable,
-                  ]}
-                >
-                  <Text>{day}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
-      <Pressable onPress={showEnergyDialog}>
-        <View style={ChoreStyles.recurringContainer}>
-          <View>
-            <Text style={ChoreStyles.recurringTitle}>Energy:</Text>
-            <Text style={ChoreStyles.keepRowLeft}>
-              How much energy does this chore take?
-            </Text>
-          </View>
-
-          <View style={ChoreStyles.keepRowRight}>
-            <Text style={ChoreStyles.text}>{selectedEnergy}</Text>
-          </View>
-        </View>
-      </Pressable>
-      <Portal>
-        <Dialog
-          visible={energyDialogVisible}
-          onDismiss={hideEnergyDialog}
-          style={{ backgroundColor: "white" }}
-        >
-          <Dialog.Content style={ChoreStyles.dialogContent}>
-            <ScrollView
-              horizontal
-              persistentScrollbar={true}
-              contentContainerStyle={ChoreStyles.scrollViewStyle}
-            >
-              {energyList.map((energy) => (
-                <Pressable
-                  key={energy}
-                  onPress={() => {
-                    setEnergy(energy);
-                    hideEnergyDialog();
-                  }}
-                  style={[ChoreStyles.dialogButton]}
-                >
-                  <Text>{energy}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
-      <View>
-        <Button
-          mode="contained"
-          labelStyle={{ color: "white" }}
-          buttonColor="red"
-        >
-          Delete
-        </Button>
-        <Button
-        mode="contained"
-        labelStyle={{color: "white"}}
-        buttonColor="#5856D6"
-        >Archive</Button>
       </View>
-      <View>
-        <Button
+      <View style={ChoreStyles.saveButtonContainer}>
+        <Button 
         mode="contained"
-        labelStyle={{color: "white"}}
+        icon={"plus-circle"}
+        labelStyle={{ color: "white", fontSize: 25, lineHeight: 28 }} 
         buttonColor="#5856D6"
+        style={ChoreStyles.saveButton}
+        contentStyle={{ flexDirection: "row-reverse", justifyContent: "center", alignItems:"center"}}
         >
-          Save</Button>
+          Save
+        </Button>
       </View>
     </View>
   );
