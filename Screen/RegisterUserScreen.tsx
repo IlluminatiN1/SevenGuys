@@ -46,11 +46,12 @@ export default function SignUpScreen(props: Props) {
   };
 
   return (
-    <View style={registerUserStyles.container}>
-      <Text style={registerUserStyles.title}>Registrera Användare</Text>
+    <View style={registerUserStyle.container}>
+      <Text style={registerUserStyle.title}>Registrera Användare</Text>
 
       <TextInput
         mode="outlined"
+
         label="Ange e-post"
         placeholder="E-post"
         value={email}
@@ -62,6 +63,8 @@ export default function SignUpScreen(props: Props) {
         mode="outlined"
         label="Ange lösenord"
         placeholder="Lösenord"
+        outlineColor="#A9A9A9"
+        activeOutlineColor="#5856D6"
         value={password}
         onChangeText={setPassword}
         secureTextEntry={!isPasswordVisible}
@@ -69,23 +72,25 @@ export default function SignUpScreen(props: Props) {
           <TextInput.Icon
             icon={isPasswordVisible ? "eye-off" : "eye"}
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            
           />
         }
-        style={registerUserStyles.inputField}
+        style={registerUserStyle.inputField}
       />
       <Button
         mode="contained"
         icon="arrow-right"
+
         style={registerUserStyles.button}
         onPress={handleRegisterUser}
       >
         Registrera konto
       </Button>
 
-      <View style={registerUserStyles.footer}>
+      <View style={registerUserStyle.footer}>
         <Text>Har du redan ett konto?</Text>
         <TouchableOpacity onPress={() => props.navigation.navigate("Login")}>
-          <Text style={registerUserStyles.link}>Logga in</Text>
+          <Text style={registerUserStyle.link}>Logga in</Text>
         </TouchableOpacity>
       </View>
     </View>
