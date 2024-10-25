@@ -2,14 +2,14 @@
 
 #### Kravlista:
 - [ ] En logga, splashscreen och appikon ska designas och användas. *
-- [ ] Applikationen ska byggas med RN, Expo & TS. *
-- [ ] Designen av appen ska utgå ifrån befintliga skisser, undantag kan ges men ska diskuteras med produktägare, godkännas och dokumenteras. *
+- [X] Applikationen ska byggas med RN, Expo & TS. *
+- [X] Designen av appen ska utgå ifrån befintliga skisser, undantag kan ges men ska diskuteras med produktägare, godkännas och dokumenteras. *
 
 #### Hushåll:
 - [ ] Ett hushåll ska ha ett namn och en genererad (enkel) kod så andra kan gå med i hushållet, namnet ska gå att ändra. *
 
 #### Konto:
-- [ ] En användare ska kunna registrera och logga in sig. *
+- [X] En användare ska kunna registrera och logga in sig. *
 - [ ] En användare ska kunna skapa ett nytt hushåll. *
 - [ ] En användare ska kunna gå med i ett hushåll genom att ange hushållets kod. *
 

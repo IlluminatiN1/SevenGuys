@@ -22,6 +22,7 @@ export type RootStackParamList = {
   HomeNavigator: NavigatorScreenParams<TabParamList>;
   Household: undefined;
   NoHousehold: undefined;
+  CreateChoreScreen: undefined;
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
