@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
-import { Portal, Provider } from "react-native-paper";
+import { IconButton, Portal, Provider } from "react-native-paper";
 
 interface EditHouseholdTitleProps {
   visible: boolean;
@@ -33,22 +33,23 @@ export default function EditHouseholdModal({
   return (
     <Provider>
       <Portal>
-        <Modal
-          visible={visible}
-          transparent
-          animationType="slide"
-          onRequestClose={onDismiss}
-        >
+        <Modal visible={visible} transparent onRequestClose={onDismiss}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.title}>Redigera hushållets namn</Text>
+              <Text style={styles.title}>Redigera titel</Text>
+              <IconButton
+                icon={"close"}
+                size={20}
+                iconColor="black"
+                onPress={onDismiss}
+                style={styles.closeButton}
+              />
               <TextInput
                 style={styles.input}
                 value={newTitle}
                 onChangeText={setNewTitle}
               />
               <Button title="Spara" onPress={handleSave} />
-              <Button title="Tillbaka" onPress={onDismiss} />
             </View>
           </View>
         </Modal>
@@ -62,13 +63,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   modalContent: {
     width: "90%",
     backgroundColor: "white",
     borderRadius: 10,
     padding: 20,
-    borderWidth: 1,
   },
   title: {
     fontSize: 20,
@@ -80,5 +81,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    zIndex: 1,
   },
 });
