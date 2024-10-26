@@ -3,14 +3,12 @@ import * as React from "react";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { useDispatch } from "react-redux";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import { registerUserStyles } from "../styles";
-import { validatePassword } from "../utils/user/PasswordValidator";
-import { validateEmail } from "../utils/user/EmailValidator";
-import { AppDispatch } from "../store/store";
-import { signUpUser } from "../store/user/userActions";
 import { useAppDispatch } from "../store/hooks";
+import { signUpUser } from "../store/user/userActions";
+import { registerUserStyle } from "../Style/registerUserStyle";
+import { validateEmail } from "../utils/user/EmailValidator";
+import { validatePassword } from "../utils/user/PasswordValidator";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RegisterUser">;
 
@@ -46,22 +44,25 @@ export default function SignUpScreen(props: Props) {
   };
 
   return (
-    <View style={registerUserStyles.container}>
-      <Text style={registerUserStyles.title}>Registrera Användare</Text>
+    <View style={registerUserStyle.container}>
+      <Text style={registerUserStyle.title}>Registrera Användare</Text>
 
       <TextInput
         mode="outlined"
+
         label="Ange e-post"
         placeholder="E-post"
         value={email}
         onChangeText={setEmail}
-        style={registerUserStyles.inputField}
+        style={registerUserStyle.inputField}
       />
 
       <TextInput
         mode="outlined"
         label="Ange lösenord"
         placeholder="Lösenord"
+        outlineColor="#A9A9A9"
+        activeOutlineColor="#5856D6"
         value={password}
         onChangeText={setPassword}
         secureTextEntry={!isPasswordVisible}
@@ -69,23 +70,25 @@ export default function SignUpScreen(props: Props) {
           <TextInput.Icon
             icon={isPasswordVisible ? "eye-off" : "eye"}
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            
           />
         }
-        style={registerUserStyles.inputField}
+        style={registerUserStyle.inputField}
       />
       <Button
         mode="contained"
         icon="arrow-right"
-        style={registerUserStyles.button}
+
+        style={registerUserStyle.button}
         onPress={handleRegisterUser}
       >
         Registrera konto
       </Button>
 
-      <View style={registerUserStyles.footer}>
+      <View style={registerUserStyle.footer}>
         <Text>Har du redan ett konto?</Text>
         <TouchableOpacity onPress={() => props.navigation.navigate("Login")}>
-          <Text style={registerUserStyles.link}>Logga in</Text>
+          <Text style={registerUserStyle.link}>Logga in</Text>
         </TouchableOpacity>
       </View>
     </View>

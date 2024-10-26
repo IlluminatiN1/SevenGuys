@@ -17,7 +17,7 @@ export type RootStackParamList = {
   Chores: undefined;
   Login: undefined;
   RegisterUser: undefined;
-  EditChores: undefined;
+  EditChore: undefined;
   CreateHousehold: undefined;
   HomeNavigator: NavigatorScreenParams<TabParamList>;
   Household: undefined;
@@ -35,6 +35,7 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
+      <RootStack.Screen name="EditChore" component={EditChoreScreen} />
       <RootStack.Screen
         name="Login"
         component={LoginScreen}
@@ -53,7 +54,6 @@ export default function RootStackNavigator() {
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
-      <RootStack.Screen name="EditChores" component={EditChoreScreen} />
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
