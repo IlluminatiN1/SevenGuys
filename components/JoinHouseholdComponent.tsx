@@ -66,7 +66,7 @@ const JoinHouseholdPopup = ({
       <View>
         <Button
           mode="contained"
-          onPress={() => console.log("Gå med i hushåll pressed")}
+          onPress={hideModal}
         >
           Gå med i hushåll
         </Button>

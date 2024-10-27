@@ -35,7 +35,6 @@ export default function RootStackNavigator() {
         headerLeft: () => <ArrowLeftComponent />,
       }}
     >
-      <RootStack.Screen name="EditChore" component={EditChoreScreen} />
       <RootStack.Screen
         name="Login"
         component={LoginScreen}
@@ -54,6 +53,7 @@ export default function RootStackNavigator() {
       <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
       <RootStack.Screen name="Household" component={HouseholdScreen} />
       <RootStack.Screen name="Chores" component={ChoresScreen} />
+      <RootStack.Screen name="EditChore" component={EditChoreScreen} />
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
