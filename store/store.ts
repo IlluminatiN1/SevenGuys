@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { householdsReducer } from "./household/householdSlice";
+import { userReducer } from "./user/userSlice";
+import { memberReducer } from "./member/memberSlice";
 
 export const store = configureStore({
     reducer: {
         households: householdsReducer,
+        users: userReducer,
+        members: memberReducer,
     }
 });
 
