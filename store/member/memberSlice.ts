@@ -1,7 +1,6 @@
-// store/member/memberSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Member } from "../../types";
-import { createMember, updateMemberEmoji } from "./memberActions";
+import { updateMemberEmoji } from "./memberActions";
+import { Member } from "../../data/data";
 
 interface MemberState {
   members: Member[];
@@ -22,12 +21,6 @@ const memberSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(createMember.fulfilled, (state, action) => {
-      state.members.push(action.payload);
-    });
-    builder.addCase(createMember.rejected, (state, action) => {
-      state.error = action.payload as string;
-    });
     builder.addCase(updateMemberEmoji.fulfilled, (state, action) => {
       const { memberId, emojiId } = action.payload;
       const member = state.members.find((member) => member.id === memberId);
@@ -42,4 +35,4 @@ const memberSlice = createSlice({
 });
 
 export const { setMembers } = memberSlice.actions;
-export default memberSlice.reducer;
+export const memberReducer = memberSlice.reducer;
