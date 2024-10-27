@@ -14,7 +14,7 @@ export interface Emoji {
 }
 
 export interface Task {
-  id: string;
+  id: number;
   title: string;
   description: string;
   houseHoldId: number;
@@ -32,7 +32,7 @@ export interface Household {
 
 export interface User {
   id: number;
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -93,7 +93,7 @@ export const emojis: Emoji[] = [
 
 export const mockedUser: User = {
   id: 1,
-  username: "john",
+  email: "john",
   password: "doe",
 };
 
@@ -166,7 +166,7 @@ export const mockedCompletedTasks: CompletedTask[] = [
 
 export const mockedTasks: Task[] = [
   {
-    id: "1",
+    id: 1,
     title: "Clean the kitchen",
     description: "Do all the dishes and wipe down the counters",
     houseHoldId: 1,
@@ -175,7 +175,7 @@ export const mockedTasks: Task[] = [
     score: 5,
   },
   {
-    id: "2",
+    id: 2,
     title: "Take out the dog",
     description: "take the dog out for a walk, dont forget to bring poopbags!",
     houseHoldId: 1,
@@ -184,7 +184,7 @@ export const mockedTasks: Task[] = [
     score: 2,
   },
   {
-    id: "3",
+    id: 3,
     title: "Buy weekly groceries",
     description: "Go and buy food for the household",
     houseHoldId: 1,
@@ -193,7 +193,7 @@ export const mockedTasks: Task[] = [
     score: 6,
   },
   {
-    id: "4",
+    id: 4,
     title: "Vacuum cleaning",
     description:
       "Get the vaccum cleaner from the städskåp and clean the whole household.",
@@ -203,7 +203,7 @@ export const mockedTasks: Task[] = [
     score: 9,
   },
   {
-    id: "5",
+    id: 5,
     title: "Clean the bathroom",
     description:
       "Scrub the toilet, clean the sink and the mirror, and mop the floor",

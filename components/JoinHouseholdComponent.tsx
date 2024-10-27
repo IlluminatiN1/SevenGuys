@@ -1,8 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
 import { emojis } from "../data/data";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import { updateMemberEmoji } from "../store/member/memberActions";
+import { mockedMembers } from "../data/data";
 
 const activeEmojis = emojis.length > 0 ? emojis : [];
 
@@ -17,6 +21,38 @@ const JoinHouseholdPopup = ({
   selectedEmoji: number | null;
   setSelectedEmoji: (emojiId: number | null) => void;
 }) => {
+  const dispatch = useAppDispatch();
+  //const members = useAppSelector((state: RootState) => state.members.members);
+  const members = mockedMembers;
+  
+  const handleJoinHousehold = () => {
+    const member = members.find((member) => member.userId === 1); // Mockad användar-ID som sträng
+    console.log("Fetched member: ", member); // För att debugga ifall koden hämtar mockad member.
+    if (!member) {
+      Alert.alert("Error", "Member not found");
+      return;
+    }
+    
+    
+
+    if (selectedEmoji === null) {
+      Alert.alert("Validation Error", "Please select an emoji");
+      return;
+    }
+
+    dispatch(updateMemberEmoji({ memberId: member.id, emojiId: selectedEmoji }))
+      .unwrap()
+      .then(() => {
+        Alert.alert("Success", "Joined household and emoji updated successfully");
+        console.log("Joined household and emoji updated successfully");
+        console.log("Selected emoji: ", selectedEmoji + "for member: ", member.id);
+        hideModal();
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message || "An error occurred");
+      });
+  };
+
   const handleEmojiSelect = (emojiId: number) => {
     setSelectedEmoji(emojiId);
   };
@@ -66,8 +102,7 @@ const JoinHouseholdPopup = ({
       <View>
         <Button
           mode="contained"
-          onPress={() => console.log("Gå med i hushåll pressed")}
-        >
+          onPress={handleJoinHousehold}>
           Gå med i hushåll
         </Button>
       </View>
