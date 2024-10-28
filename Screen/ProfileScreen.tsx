@@ -15,12 +15,7 @@ import {
   mockedUser,
 } from "../data/data";
 
-const activeHouseholds = mockedHouseholds.length > 0 ? mockedHouseholds : [];
-const activeUser = mockedUser;
-const activeMembers = mockedMembers.filter(
-  (member) => member.userId === activeUser.id
-);
-const activeEmojis = emojis.length > 0 ? emojis : [];
+
 
 const HouseholdButtons = ({
   title,
@@ -33,6 +28,7 @@ const HouseholdButtons = ({
   onTitlePress: () => void;
   onEditPress: () => void;
 }) => {
+  const activeEmojis = emojis.length > 0 ? emojis : [];
   const emoji = activeEmojis.find((e) => e.id === emojiId) || activeEmojis[8];
 
   return (
@@ -113,6 +109,11 @@ export default function ProfileScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
   const [activeHouseholds, setHouseholdList] = useState(mockedHouseholds);
+
+  const activeUser = mockedUser;
+  const activeMembers = mockedMembers.filter(
+    (member) => member.userId === activeUser.id
+  );
 
   const handleEditPress = (householdTitle: any) => {
     setSelectedHouseholdTitle(householdTitle);

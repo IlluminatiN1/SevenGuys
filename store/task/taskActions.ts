@@ -1,6 +1,5 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { db } from "../../config/firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
 import { Task, TaskCreate } from "../../data/data";
 import { createAppAsyncThunk } from "../hooks";
 
