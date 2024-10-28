@@ -36,7 +36,6 @@ export default function SignUpScreen(props: Props) {
       .unwrap()
       .then((user) => {
         Alert.alert("Success", `User ${email} registered successfully`);
-        props.navigation.navigate("Profile");
       })
       .catch((error) => {
         Alert.alert("Error", error);
