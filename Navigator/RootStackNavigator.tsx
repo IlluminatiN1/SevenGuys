@@ -4,7 +4,6 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import React, { useEffect } from "react";
 import { IconButton } from "react-native-paper";
 import { auth } from "../config/firebase";
-import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
 import LoginScreen from "../Screen/LogInScreen";
@@ -77,7 +76,6 @@ export default function RootStackNavigator() {
           
           <RootStack.Screen name="Household" component={TabNavigator} />
 
-          <RootStack.Screen name="Chores" component={ChoresScreen} />
           <RootStack.Screen name="EditChore" component={EditChoreScreen} />
           <RootStack.Screen
             name="CreateHousehold"
