@@ -5,7 +5,6 @@ import { IconButton } from "react-native-paper";
 import ChoresScreen from "../Screen/ChoresScreen";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
 import EditChoreScreen from "../Screen/EditChoreScreen";
-import HouseholdScreen from "../Screen/HouseholdScreen";
 import LoginScreen from "../Screen/LogInScreen";
 import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
@@ -50,16 +49,30 @@ export default function RootStackNavigator() {
         component={ProfileScreen}
         options={{ title: "My Profile" }}
       />
-      <RootStack.Screen name="RegisterUser" component={RegisterUserScreen} />
-      <RootStack.Screen name="Household" component={HouseholdScreen} />
-      <RootStack.Screen name="Chores" component={ChoresScreen} />
-      <RootStack.Screen name="EditChore" component={EditChoreScreen} />
+      <RootStack.Screen 
+      name="Household" 
+      component={TabNavigator} 
+      />
+      <RootStack.Screen 
+      name="RegisterUser" 
+      component={RegisterUserScreen} 
+      />
+      <RootStack.Screen 
+      name="Chores" 
+      component={ChoresScreen} 
+      />
+      <RootStack.Screen 
+      name="EditChore" 
+      component={EditChoreScreen} 
+      />
       <RootStack.Screen
         name="CreateHousehold"
         component={CreateHouseholdScreen}
         options={{ title: "Skapa nytt Hushåll" }}
       />
-      <RootStack.Screen name="HomeNavigator" component={TabNavigator} />
+      <RootStack.Screen 
+      name="HomeNavigator" 
+      component={TabNavigator} />
     </RootStack.Navigator>
   );
 }
