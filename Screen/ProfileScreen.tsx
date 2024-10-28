@@ -1,16 +1,19 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Button, IconButton, Portal, Surface } from "react-native-paper";
+import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
+import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 import {
   emojis,
   mockedHouseholds,
   mockedMembers,
   mockedUser,
 } from "../data/data";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 
 const activeHouseholds = mockedHouseholds.length > 0 ? mockedHouseholds : [];
 const activeUser = mockedUser;
@@ -106,6 +109,7 @@ const JoinHouseholdButton = () => {
 };
 
 export default function ProfileScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
   const [activeHouseholds, setHouseholdList] = useState(mockedHouseholds);
@@ -151,7 +155,9 @@ export default function ProfileScreen() {
               key={index}
               title={household.name}
               emojiId={member?.emojiId || 9}
-              onTitlePress={() => console.log(`${household.name} pressed`)}
+              onTitlePress={()=> {
+                navigation.navigate("Household");
+              }}
               onEditPress={() => handleEditPress(household)}
             />
           );

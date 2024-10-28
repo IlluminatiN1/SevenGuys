@@ -1,11 +1,14 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { getAuth } from "firebase/auth";
 import { useState } from "react";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Checkbox, Text, TextInput } from "react-native-paper";
+import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { useAppDispatch } from "../store/hooks";
-import { getAuth } from "firebase/auth";
 import { createHousehold } from "../store/household/houseHoldActions";
 // Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
+type Props = NativeStackScreenProps<RootStackParamList, "CreateHousehold">
 
 interface Chore {
   name: string;
@@ -14,7 +17,7 @@ interface Chore {
 
 // Håprdkodad lista av sysslor som användaren kan välja mellan
 // Vi kan ändra det sen när vi har en backend(?)
-export default function CreateHouseholdScreen() {
+export default function CreateHouseholdScreen(props: Props) {
   const [householdName, setHouseholdName] = useState<string>("");
   const [chores, setChores] = useState<Chore[]>([
     { name: "Laga mat 🍳", checked: false },
@@ -53,6 +56,7 @@ export default function CreateHouseholdScreen() {
       .unwrap()
       .then(() => {
         Alert.alert("Success", "Household created successfully");
+        props.navigation.navigate("Profile");
       })
       .catch((error) => {
         Alert.alert("Error", error.message || "An error occurred");

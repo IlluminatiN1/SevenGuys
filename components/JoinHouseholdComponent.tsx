@@ -2,11 +2,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as React from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
-import { emojis } from "../data/data";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
+import { emojis, mockedMembers } from "../data/data";
+import { useAppDispatch } from "../store/hooks";
 import { updateMemberEmoji } from "../store/member/memberActions";
-import { mockedMembers } from "../data/data";
 
 const activeEmojis = emojis.length > 0 ? emojis : [];
 

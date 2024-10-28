@@ -6,7 +6,7 @@ import HouseholdScreen from "../Screen/HouseholdScreen";
 type Period = "this-week" | "prev-week" | "prev-month";
 
 export type TabParamList = {
-  Household: undefined;
+  MainHousehold: undefined;
   Today: undefined;
   Stats: { period: Period };
 };
@@ -15,24 +15,18 @@ const Tab = createMaterialTopTabNavigator<TabParamList>();
 
 export default function TabNavigator() {
   return (
-    // tab navigator for the main screens
-    <Tab.Navigator>
-      <Tab.Screen name="Household" component={HouseholdScreen} />
+    <Tab.Navigator 
+    screenOptions={{
+      swipeEnabled: true,
+      animationEnabled: true,
+    tabBarStyle: {display: "none"},
+    }}>
+      <Tab.Screen name="MainHousehold" component={HouseholdScreen} />
       <Tab.Screen name="Today" component={ChoresScreen} />
       <Tab.Screen
         name="Stats"
         component={ChoresStatisticsScreen}
         initialParams={{ period: "this-week" }}
-      />
-      <Tab.Screen
-        name="Stats2"
-        component={ChoresStatisticsScreen}
-        initialParams={{ period: "prev-week" }}
-      />
-      <Tab.Screen
-        name="Stats3"
-        component={ChoresStatisticsScreen}
-        initialParams={{ period: "prev-month" }}
       />
     </Tab.Navigator>
   );
