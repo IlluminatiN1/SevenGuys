@@ -1,10 +1,29 @@
-import React from "react";
-import { Text, View } from "react-native";
+import { Dimensions } from "react-native";
+import {
+  emojis,
+  mockedCompletedTasks,
+  mockedMembers,
+  mockedTasks
+} from "../data/data";
 
-export default function LastWeekStatsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>LastWeek stats</Text>
-    </View>
-  );
-}
+const screenWidth = Dimensions.get("window").width;
+
+const calculateMemberScore = () => {
+  return mockedMembers.map((member) => {
+    const memberCompletedTasks = mockedCompletedTasks.filter(
+      (completedTask) => completedTask.memberId === member.id
+    );
+    const totalScore = memberCompletedTasks.reduce((acc, completedTask) => {
+      const task = mockedTasks.find((t) => t.id === completedTask.taskId);
+      return acc + (task ? task.score : 0);
+    }, 0);
+
+    const emoji = emojis.find((e) => e.id === member.emojiId);
+    return {
+      name: member.name,
+      score: totalScore,
+      color: emoji?.color,
+      emojiName: emoji?.name,
+    };
+  });
+};
