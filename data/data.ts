@@ -151,13 +151,13 @@ export const mockedCompletedTasks: CompletedTask[] = [
     date: new Date(),
   },
   {
-    id: 3,
+    id: 4,
     memberId: 1,
     taskId: 1,
     date: new Date(),
   },
   {
-    id: 3,
+    id: 5,
     memberId: 2,
     taskId: 1,
     date: new Date(),
