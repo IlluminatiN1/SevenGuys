@@ -1,5 +1,4 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import ChoresScreen from "../Screen/ChoresScreen";
 import ChoresStatisticsScreen from "../Screen/ChoresStatisticsScreen";
 import HouseholdScreen from "../Screen/HouseholdScreen";
 
@@ -22,7 +21,6 @@ export default function TabNavigator() {
     tabBarStyle: {display: "none"},
     }}>
       <Tab.Screen name="MainHousehold" component={HouseholdScreen} />
-      <Tab.Screen name="Today" component={ChoresScreen} />
       <Tab.Screen
         name="Stats"
         component={ChoresStatisticsScreen}
