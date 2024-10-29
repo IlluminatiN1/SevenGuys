@@ -58,3 +58,8 @@ npx create-expo-app@latest --template
 
 1. npm install react-native-paper
 2. npm install react-native-vector-icons
+
+-- React Chart kit
+1. npm install react-native-chart-kit   - Länk: https://www.npmjs.com/package/react-native-chart-kit
+2. npm install react-native-svg
+

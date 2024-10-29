@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import ChoresScreen from "../Screen/ChoresScreen";
-import ChoresStatisticsScreen from "../Screen/ChoresStatisticsScreen";
 import HouseholdScreen from "../Screen/HouseholdScreen";
+import LastMonthStatsScreen from "../Screen/LastMonthStatsScreen";
+import LastWeekStatsScreen from "../Screen/LastWeekStatsScreen";
 
 type Period = "this-week" | "prev-week" | "prev-month";
 
@@ -21,13 +21,22 @@ export default function TabNavigator() {
       animationEnabled: true,
     tabBarStyle: {display: "none"},
     }}>
-      <Tab.Screen name="MainHousehold" component={HouseholdScreen} />
-      <Tab.Screen name="Today" component={ChoresScreen} />
+      <Tab.Screen 
+      name="MainHousehold" 
+      component={HouseholdScreen} 
+      />
+
+      <Tab.Screen 
+      name="Today" 
+      component={LastWeekStatsScreen} 
+      />
+
       <Tab.Screen
         name="Stats"
-        component={ChoresStatisticsScreen}
+        component={LastMonthStatsScreen}
         initialParams={{ period: "this-week" }}
       />
+
     </Tab.Navigator>
   );
 }
