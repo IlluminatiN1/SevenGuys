@@ -65,6 +65,10 @@
 
 1. npm install react-native-paper
 2. npm install react-native-vector-icons
+3. -- React Chart kit
+3. npm install react-native-chart-kit   - Länk: https://www.npmjs.com/package/react-native-chart-kit
+4. npm install react-native-svg
+
 
 REDOVISNING
 del 1 - pitch (2-3 min)
@@ -94,3 +98,4 @@ del 3 - reflektion av projekt
 alla tar fram 2-3 punkter var som vi sammanställer sedan.
 
 del 2+3 ca 20 min
+

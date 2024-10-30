@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function ChoresStatisticsScreen() {
+export default function LastMonthStatsScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>This year stats screen</Text>
+      <Text>Last month stats</Text>
     </View>
   );
 }

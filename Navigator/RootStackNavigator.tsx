@@ -74,7 +74,11 @@ export default function RootStackNavigator() {
             component={NoHouseholdScreen}
           />
           
-          <RootStack.Screen name="Household" component={TabNavigator} />
+          <RootStack.Screen 
+            name="Household" 
+            component={TabNavigator}
+            options={{ title: "Hushållet", headerShown: false }}
+          />
 
           <RootStack.Screen name="EditChore" component={EditChoreScreen} />
           <RootStack.Screen
@@ -99,3 +103,4 @@ function ArrowLeftComponent() {
     />
   );
 }
+
