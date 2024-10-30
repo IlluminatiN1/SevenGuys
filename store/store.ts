@@ -3,13 +3,15 @@ import { householdsReducer } from "./household/householdSlice";
 import { memberReducer } from "./member/memberSlice";
 import tabTitleReducer from "./tabTitle/tabTitleReducer";
 import { userReducer } from "./user/userSlice";
+import { taskReducer } from "./task/taskSlice";
+
 
 export const store = configureStore({
     reducer: {
         households: householdsReducer,
         users: userReducer,
         members: memberReducer,
-        tabTitle: tabTitleReducer,
+        tasks: taskReducer,
     }
 });
 
