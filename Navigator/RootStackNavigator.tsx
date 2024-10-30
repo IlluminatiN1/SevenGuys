@@ -56,6 +56,7 @@ export default function RootStackNavigator() {
             component={LoginScreen}
             options={{ headerLeft: () => null }}
           />
+          
           <RootStack.Screen
             name="RegisterUser"
             component={RegisterUserScreen}
@@ -68,6 +69,7 @@ export default function RootStackNavigator() {
             component={ProfileScreen}
             options={{ title: "My Profile" }}
           />
+
           <RootStack.Screen
             name="NoHousehold"
             options={{ title: "" }}

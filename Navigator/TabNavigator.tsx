@@ -4,8 +4,6 @@ import LastMonthStatsScreen from "../Screen/LastMonthStatsScreen";
 import LastWeekStatsScreen from "../Screen/LastWeekStatsScreen";
 import TabBarHeader from "./TabBarHeader";
 
-
-
 export type TabParamList = {
   Today: undefined;
   LastWeek: undefined;
