@@ -2,7 +2,6 @@ import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { onAuthStateChanged, User } from "firebase/auth";
 import React, { useEffect } from "react";
-import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { auth } from "../config/firebase";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
@@ -12,9 +11,7 @@ import NoHouseholdScreen from "../Screen/NoHouseholdScreen";
 import ProfileScreen from "../Screen/ProfileScreen";
 import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { selectTabTitle } from "../store/tabTitle/tabTitleSelectors";
 import { setUser } from "../store/user/userSlice";
-import { rootStackStyle } from "../Style/rootStackStyle";
 import TabNavigator, { TabParamList } from "./TabNavigator";
 
 export type RootStackParamList = {
@@ -34,7 +31,6 @@ export const RootStack = createNativeStackNavigator<RootStackParamList>();
 export default function RootStackNavigator() {
   // läser från store
   const user = useAppSelector((state) => state.users.user);
-  const tabTitle = useAppSelector(selectTabTitle)
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -79,27 +75,9 @@ export default function RootStackNavigator() {
           />
           
           <RootStack.Screen 
-          name="Household" 
-          component={TabNavigator}
-          options={{
-            headerTitle: () => (
-            <View style={rootStackStyle.headerContainer}>
-              <Text style={rootStackStyle.headerTitle}>Hushållet</Text>
-              <View style={rootStackStyle.subHeaderContainer}>
-                <IconButton
-                icon="chevron-left"
-                size={20}
-                />
-                <Text style={rootStackStyle.subHeaderTitle}>{tabTitle}</Text>
-                <IconButton
-                icon="chevron-right"
-                size={20}
-                />
-              </View>
-            </View>
-          ),
-          headerLeft: () => null
-        }} 
+            name="Household" 
+            component={TabNavigator}
+            options={{ title: "Hushållet", headerShown: false }}
           />
 
           <RootStack.Screen name="EditChore" component={EditChoreScreen} />
