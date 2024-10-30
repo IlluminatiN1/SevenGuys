@@ -2,7 +2,7 @@ import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { onAuthStateChanged, User } from "firebase/auth";
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { auth } from "../config/firebase";
 import CreateHouseholdScreen from "../Screen/CreateHouseholdScreen";
@@ -14,6 +14,7 @@ import RegisterUserScreen from "../Screen/RegisterUserScreen";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { selectTabTitle } from "../store/tabTitle/tabTitleSelectors";
 import { setUser } from "../store/user/userSlice";
+import { rootStackStyle } from "../Style/rootStackStyle";
 import TabNavigator, { TabParamList } from "./TabNavigator";
 
 export type RootStackParamList = {
@@ -82,14 +83,14 @@ export default function RootStackNavigator() {
           component={TabNavigator}
           options={{
             headerTitle: () => (
-            <View style={styles.headerContainer}>
-              <Text style={styles.headerTitle}>Hushållet</Text>
-              <View style={styles.subHeaderContainer}>
+            <View style={rootStackStyle.headerContainer}>
+              <Text style={rootStackStyle.headerTitle}>Hushållet</Text>
+              <View style={rootStackStyle.subHeaderContainer}>
                 <IconButton
                 icon="chevron-left"
                 size={20}
                 />
-                <Text style={styles.subHeaderTitle}>{tabTitle}</Text>
+                <Text style={rootStackStyle.subHeaderTitle}>{tabTitle}</Text>
                 <IconButton
                 icon="chevron-right"
                 size={20}
@@ -125,22 +126,3 @@ function ArrowLeftComponent() {
   );
 }
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  subHeaderContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 4,
-  },
-  subHeaderTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
