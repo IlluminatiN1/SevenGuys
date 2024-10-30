@@ -6,9 +6,10 @@ import { Button, Checkbox, Text, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { useAppDispatch } from "../store/hooks";
 import { createHousehold } from "../store/household/houseHoldActions";
+import { Household } from "../data/data";
 // Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
-type Props = NativeStackScreenProps<RootStackParamList, "CreateHousehold">
+type Props = NativeStackScreenProps<RootStackParamList, "CreateHousehold">;
 
 interface Chore {
   name: string;
@@ -52,12 +53,18 @@ export default function CreateHouseholdScreen(props: Props) {
       return;
     }
 
-    dispatch(createHousehold({ name: householdName }))
+    const newHouseholdPayload = {
+      name: householdName,
+      userId: currentUser.uid,
+    }
+
+    dispatch(createHousehold(newHouseholdPayload))
       .unwrap()
       .then(() => {
-        Alert.alert("Success", "Household created successfully");
+        Alert.alert("Success", "Household created and linked to user successfully 🎉");
         props.navigation.navigate("Profile");
       })
+
       .catch((error) => {
         Alert.alert("Error", error.message || "An error occurred");
       });
@@ -92,7 +99,11 @@ export default function CreateHouseholdScreen(props: Props) {
 
       {/* Icke-funktionell Spara-knapp (coming soon [fixa i nästa issue?]) */}
       {/* Glöm också inte lägga till validering här för hushållsnamn */}
-      <Button mode="contained" onPress={handleCreateHousehold} style={s.saveButton}>
+      <Button
+        mode="contained"
+        onPress={handleCreateHousehold}
+        style={s.saveButton}
+      >
         Spara
       </Button>
     </View>

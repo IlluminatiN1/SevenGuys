@@ -13,7 +13,7 @@ export const addTask = createAppAsyncThunk<Task, TaskCreate>(
       const docRef = doc(collection(db, "Tasks"));
       const task: Task = {
         id: docRef.id,
-        houseHoldId: state.households.current!.id,
+        householdId: state.households.current!.id,
         ...taskPayload,
       };
 
