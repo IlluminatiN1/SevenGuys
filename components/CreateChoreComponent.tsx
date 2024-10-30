@@ -8,49 +8,87 @@ import {
   Surface,
   TextInput,
 } from "react-native-paper";
+import { useAppDispatch } from "../store/hooks";
+import { addTask } from "../store/task/taskActions";
 
-export function CreateChorePopUpScreen({ onClose }: { onClose: () => void }) {
-  const [selectedRecurNumber, setSelectedRecurNumber] = useState(1);
-  const [selectedScoreNumber, setSelectedScoreNumber] = useState(1);
+export function CreateTaskPopUpScreen({ onClose }: { onClose: () => void }) {
+  const dispatch = useAppDispatch();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [reoccurence, setReoccurence] = useState(1);
+  const [score, setScore] = useState(1);
+
+  const handleCreateTask = async () => {
+    await dispatch(
+      addTask({
+        title,
+        description,
+        reoccurence,
+        score,
+        isArchived: false,
+      })
+    ).unwrap();
+    onClose();
+  };
+
+  const increaseReoccurence = () => setReoccurence(reoccurence + 1);
+  const decreaseReoccurence = () => setReoccurence(Math.max(1, reoccurence - 1));
+
+  const increaseScore = () => setScore(score + 1);
+  const decreaseScore = () => setScore(Math.max(1, score - 1));
 
   return (
     <Portal>
-      <Modal visible={true} contentContainerStyle={styles.modalContainer}>
-        <View style={styles.content}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalHeaderText}>Skapa en ny syssla</Text>
+      <Modal visible={true} contentContainerStyle={s.modalContainer}>
+        <View style={s.content}>
+          <View style={s.modalHeader}>
+            <Text style={s.modalHeaderText}>Skapa en ny syssla</Text>
             <IconButton
               icon={"close"}
               onPress={onClose}
-              style={styles.closeIconButton}
+              style={s.closeIconButton}
             />
           </View>
-          <TextInput label="Title" style={styles.titleInput} />
-          <TextInput label="Beskrivning" style={styles.input} />
+          <TextInput
+            label="Title"
+            style={s.titleInput}
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            label="Beskrivning"
+            style={s.input}
+            value={description}
+            onChangeText={setDescription}
+          />
 
-          <Surface style={styles.surface}>
-            <View style={styles.row}>
-              <Text style={styles.label}>Återkommer:</Text>
-              <Button style={styles.surfaceButton}>
-                var {selectedRecurNumber} dag
-              </Button>
+          <Surface style={s.surface}>
+            <View style={s.row}>
+              <Text style={s.label}>Återkommer:</Text>
+              <View style={s.buttonRow}>
+                <Button onPress={decreaseReoccurence}>-</Button>
+                <Text style={s.valueText}>{reoccurence} dag</Text>
+                <Button onPress={increaseReoccurence}>+</Button>
+              </View>
             </View>
           </Surface>
-          <Surface style={styles.surface}>
-            <View style={styles.row}>
-              <Text style={styles.label}>Värde:</Text>
-              <Button style={styles.surfaceButton}>
-                var {selectedScoreNumber} dag
-              </Button>
+          <Surface style={s.surface}>
+            <View style={s.row}>
+              <Text style={s.label}>Värde:</Text>
+              <View style={s.buttonRow}>
+                <Button onPress={decreaseScore}>-</Button>
+                <Text style={s.valueText}>{score}</Text>
+                <Button onPress={increaseScore}>+</Button>
+              </View>
             </View>
           </Surface>
         </View>
         <View>
-          <View style={styles.saveButton}>
+          <View style={s.saveButton}>
             <Button
               icon="plus-circle-outline"
               textColor="white"
-              onPress={() => console.log("Spara")}
+              onPress={handleCreateTask}
             >
               Spara
             </Button>
@@ -60,7 +98,7 @@ export function CreateChorePopUpScreen({ onClose }: { onClose: () => void }) {
     </Portal>
   );
 }
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   modalContainer: {
     alignItems: "center",
   },
@@ -114,7 +152,13 @@ const styles = StyleSheet.create({
   surfaceButton: {
     marginLeft: 10,
   },
-
+  buttonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  valueText: {
+    marginHorizontal: 10,
+  },
   saveButton: {
     width: "100%",
     backgroundColor: "#5856D6",

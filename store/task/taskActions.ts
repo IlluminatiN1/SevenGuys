@@ -17,8 +17,8 @@ export const addTask = createAppAsyncThunk<Task, TaskCreate>(
         ...taskPayload,
       };
 
-      await setDoc(docRef, task);
-      return task;
+      await setDoc(docRef, task); // till firebase
+      return task; // till redux (reducer)
     } catch (error) {
       console.error("Error adding task:", error);
       return thunkAPI.rejectWithValue("Could not add task");
