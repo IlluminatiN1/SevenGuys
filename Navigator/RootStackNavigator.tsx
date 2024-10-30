@@ -51,6 +51,11 @@ export default function RootStackNavigator() {
     >
       {!user ? (
         <>
+                    <RootStack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ title: "My Profile" }}
+          />
           <RootStack.Screen
             name="Login"
             component={LoginScreen}
@@ -63,11 +68,6 @@ export default function RootStackNavigator() {
         </>
       ) : (
         <>
-          <RootStack.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{ title: "My Profile" }}
-          />
           <RootStack.Screen
             name="NoHousehold"
             options={{ title: "" }}

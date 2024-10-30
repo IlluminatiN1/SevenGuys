@@ -13,7 +13,8 @@ import {
   mockedMembers,
   mockedUser,
 } from "../data/data";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
 
 const HouseholdButtons = ({
   title,
@@ -101,7 +102,9 @@ export default function ProfileScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
   const households = useAppSelector((state) => state.households.list);
-
+  const dispatch = useAppDispatch();
+  
+  dispatch(getHouseholdsByUserId(mockedUser.id));
   const activeUser = mockedUser;
   const activeMembers = mockedMembers.filter(
     (member) => member.userId === activeUser.id

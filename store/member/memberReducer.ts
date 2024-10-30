@@ -1,6 +1,6 @@
 // store/member/memberSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Member } from "../../types";
+import { Member } from "../../data/data";
 import { createMember, updateMemberEmoji } from "./memberActions";
 
 interface MemberState {
