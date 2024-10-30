@@ -11,7 +11,7 @@ import { Household } from "../data/data";
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 type Props = NativeStackScreenProps<RootStackParamList, "CreateHousehold">;
 
-interface Chore {
+interface Task {
   name: string;
   checked: boolean;
 }
@@ -20,25 +20,28 @@ interface Chore {
 // Vi kan ändra det sen när vi har en backend(?)
 export default function CreateHouseholdScreen(props: Props) {
   const [householdName, setHouseholdName] = useState<string>("");
-  const [chores, setChores] = useState<Chore[]>([
-    { name: "Laga mat 🍳", checked: false },
-    { name: "Damma 🧹", checked: false },
-    { name: "Diska 🍽️", checked: false },
-    { name: "Ta hand om My 🐱", checked: false },
-    { name: "Torka golvet 🧼", checked: false },
-    { name: "Vattna blommor 🌸", checked: false },
-  ]);
+
+  // const [chores, setChores] = useState<Chore[]>([
+  //   { name: "Laga mat 🍳", checked: false },
+  //   { name: "Damma 🧹", checked: false },
+  //   { name: "Diska 🍽️", checked: false },
+  //   { name: "Ta hand om My 🐱", checked: false },
+  //   { name: "Torka golvet 🧼", checked: false },
+  //   { name: "Vattna blommor 🌸", checked: false },
+  // ]);
+
   const dispatch = useAppDispatch();
   const auth = getAuth();
 
   // Toggle-funktion för att ändra checked-statusen på en syssla
-  const toggleChore = (index: number) => {
-    setChores(
-      chores.map((chore, i) =>
-        i === index ? { ...chore, checked: !chore.checked } : chore
-      )
-    );
-  };
+
+  // const toggleChore = (index: number) => {
+  //   setChores(
+  //     chores.map((chore, i) =>
+  //       i === index ? { ...chore, checked: !chore.checked } : chore
+  //     )
+  //   );
+  // };
 
   // Dispatch-funktion för att skapa hushållet
   const handleCreateHousehold = () => {
@@ -80,7 +83,8 @@ export default function CreateHouseholdScreen(props: Props) {
         onChangeText={setHouseholdName}
         style={s.input}
       />
-      <Text variant="titleMedium">Sysslor:</Text>
+
+      {/* <Text variant="titleMedium">Sysslor:</Text>
       {chores.map((chore, index) => (
         <TouchableOpacity
           key={index}
@@ -95,7 +99,7 @@ export default function CreateHouseholdScreen(props: Props) {
             />
           </View>
         </TouchableOpacity>
-      ))}
+      ))} */}
 
       {/* Icke-funktionell Spara-knapp (coming soon [fixa i nästa issue?]) */}
       {/* Glöm också inte lägga till validering här för hushållsnamn */}
