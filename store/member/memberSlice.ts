@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { updateMemberEmoji } from "./memberActions";
 import { Member } from "../../data/data";
+import { createHousehold } from "../household/houseHoldActions";
 
 interface MemberState {
   members: Member[];
@@ -31,8 +32,25 @@ const memberSlice = createSlice({
     builder.addCase(updateMemberEmoji.rejected, (state, action) => {
       state.error = action.payload as string;
     });
+    builder.addCase(createHousehold.fulfilled, (state, action) => {
+      state.members.push(action.payload.member);
+    })
   },
 });
 
+
 export const { setMembers } = memberSlice.actions;
 export const memberReducer = memberSlice.reducer;
+
+
+// UR EN KOMPONENTS PERSPEKTIV (VIEW)
+// LÄSA
+// const { members } = useContext(MemberContext);
+// const members = useAppSelector(state => state.members.list)
+
+// SKRIVA
+// const { addMember } = useContext(MemberContext);
+// addMember(....);
+
+// const dispatch = useAppDispatch();
+// dispatch(addMembers(...))

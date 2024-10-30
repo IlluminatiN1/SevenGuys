@@ -11,7 +11,7 @@ import {
   mockedUser,
 } from "../data/data";
 
-const activeHousehold = 1;
+const activeHousehold = "1";
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
 const activeUser = mockedUser;
 const activeMembers = mockedMembers.filter(
@@ -19,7 +19,7 @@ const activeMembers = mockedMembers.filter(
 );
 
 const householdMembers = activeMembers.filter(
-  (member) => member.houseHoldId === activeHousehold
+  (member) => member.householdId === activeHousehold
 );
 
 const activeEmojis = emojis.length > 0 ? emojis : [];
@@ -52,7 +52,7 @@ export default function HouseholdScreen() {
       </View>
       <View>
         {activeTasks
-          .filter((task) => task.houseHoldId === activeHousehold)
+          .filter((task) => task.householdId === activeHousehold)
           .map((task, index) => {
             return (
               <TaskRow
@@ -80,7 +80,7 @@ const TaskRow = ({
   onTitlePress,
 }: {
   title: string;
-  taskId: number;
+  taskId: string;
   onTitlePress: () => void;
 }) => {
   const completedMembers = mockedCompletedTasks
@@ -124,7 +124,7 @@ const TaskRow = ({
 const AddTaskButton = ({ onPress: handlePress }: { onPress: () => void }) => {
   const isAdmin = activeMembers.some(
     (member) =>
-      member.houseHoldId === activeHousehold &&
+      member.householdId === activeHousehold &&
       member.isOwner &&
       member.id === activeUser.id
   );

@@ -9,6 +9,8 @@ import { signUpUser } from "../store/user/userActions";
 import { registerUserStyle } from "../Style/registerUserStyle";
 import { validateEmail } from "../utils/user/EmailValidator";
 import { validatePassword } from "../utils/user/PasswordValidator";
+import { Member, MemberCreate } from "../data/data";
+import { createMember } from "../store/member/memberActions";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RegisterUser">;
 
@@ -19,27 +21,19 @@ export default function SignUpScreen(props: Props) {
   const dispatch = useAppDispatch();
 
   const handleRegisterUser = () => {
-
     const emailValidationMessage = validateEmail(email);
     if (emailValidationMessage !== "Email is valid") {
       Alert.alert("Validation Error", emailValidationMessage);
       return;
-    
     }
+
     const validationMessage = validatePassword(password);
     if (validationMessage !== "Password is valid") {
       Alert.alert("Validation Error", validationMessage);
       return;
     }
 
-    dispatch(signUpUser({ email, password }))
-      .unwrap()
-      .then((user) => {
-        Alert.alert("Success", `User ${email} registered successfully`);
-      })
-      .catch((error) => {
-        Alert.alert("Error", error);
-      });
+    dispatch(signUpUser({ email, password }));
   };
 
   return (
@@ -48,7 +42,6 @@ export default function SignUpScreen(props: Props) {
 
       <TextInput
         mode="outlined"
-
         label="Ange e-post"
         placeholder="E-post"
         value={email}
@@ -69,7 +62,6 @@ export default function SignUpScreen(props: Props) {
           <TextInput.Icon
             icon={isPasswordVisible ? "eye-off" : "eye"}
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            
           />
         }
         style={registerUserStyle.inputField}
@@ -77,7 +69,6 @@ export default function SignUpScreen(props: Props) {
       <Button
         mode="contained"
         icon="arrow-right"
-
         style={registerUserStyle.button}
         onPress={handleRegisterUser}
       >

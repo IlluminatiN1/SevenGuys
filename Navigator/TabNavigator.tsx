@@ -14,7 +14,7 @@ const Tab = createMaterialTopTabNavigator<TabParamList>();
 
 export default function TabNavigator() {
   return (
-    <Tab.Navigator 
+    <Tab.Navigator
     screenOptions={{
       swipeEnabled: true,
       animationEnabled: true,
