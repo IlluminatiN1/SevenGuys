@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import {
   emojis,
@@ -42,10 +42,7 @@ export default function LastWeekStatsScreen() {
     legendFontSize: 12,
   }));
   return (
-    <View>
-      <Text>Hushållet</Text>
-      <Text>förra veckan</Text>
-
+    <View style={s.container}>
       <PieChart
       data={chartData}
       width={screenWidth}
@@ -58,7 +55,7 @@ export default function LastWeekStatsScreen() {
     hasLegend={false}
     center={[10, 10]}
     />
-    <View>
+    <View style={s.emojiContainer}>
       {memberScores.map((member, index) => (
         <MaterialCommunityIcons
         key={index}
@@ -72,4 +69,32 @@ export default function LastWeekStatsScreen() {
   );
 }
 
-
+const s = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingHorizontal: 13,
+    top: 0,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  subTitle: {
+    fontSize: 16,
+    color: "#7F7F7F",
+    marginVertical: 10,
+  },
+  emojiContainer: {
+    position: "absolute",
+    top: 100,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "60%",
+  },
+});

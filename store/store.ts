@@ -1,13 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { householdsReducer } from "./household/householdSlice";
-import { userReducer } from "./user/userSlice";
 import { memberReducer } from "./member/memberSlice";
+import tabTitleReducer from "./tabTitle/tabTitleReducer";
+import { userReducer } from "./user/userSlice";
 
 export const store = configureStore({
     reducer: {
         households: householdsReducer,
         users: userReducer,
         members: memberReducer,
+        tabTitle: tabTitleReducer,
     }
 });
 
