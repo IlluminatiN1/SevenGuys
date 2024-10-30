@@ -1,7 +1,6 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Button, IconButton, Portal, Surface } from "react-native-paper";
@@ -14,8 +13,7 @@ import {
   mockedMembers,
   mockedUser,
 } from "../data/data";
-
-
+import { useAppSelector } from "../store/hooks";
 
 const HouseholdButtons = ({
   title,
@@ -24,12 +22,12 @@ const HouseholdButtons = ({
   onEditPress,
 }: {
   title: string;
-  emojiId: number;
+  emojiId: string;
   onTitlePress: () => void;
   onEditPress: () => void;
 }) => {
-  const activeEmojis = emojis.length > 0 ? emojis : [];
-  const emoji = activeEmojis.find((e) => e.id === emojiId) || activeEmojis[8];
+  const emoji = emojis.find((e) => e.id === emojiId);
+  if (!emoji) return null;
 
   return (
     <View style={styles.householdButtonContainer}>
@@ -80,11 +78,9 @@ const CreateHouseholdButton = () => {
 const JoinHouseholdButton = () => {
   // State för att hantera modalens synlighet
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState<number | null>(null);
   const hideModal = () => setModalVisible(false);
 
   const showModal = () => {
-    setSelectedEmoji(null); // Nollställ vald ikon
     setModalVisible(true);
   };
   return (
@@ -93,22 +89,18 @@ const JoinHouseholdButton = () => {
         Gå med i hushåll
       </Button>
       <Portal>
-        <JoinHouseholdPopup
-          visible={isModalVisible}
-          hideModal={hideModal}
-          selectedEmoji={selectedEmoji}
-          setSelectedEmoji={setSelectedEmoji}
-        />
+        <JoinHouseholdPopup visible={isModalVisible} hideModal={hideModal} />
       </Portal>
     </View>
   );
 };
 
 export default function ProfileScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
-  const [activeHouseholds, setHouseholdList] = useState(mockedHouseholds);
+  const households = useAppSelector((state) => state.households.list);
 
   const activeUser = mockedUser;
   const activeMembers = mockedMembers.filter(
@@ -121,20 +113,22 @@ export default function ProfileScreen() {
   };
 
   const handleSaveTitle = (newTitleInput: string) => {
-    if (selectedHouseholdTitle) {
-      setHouseholdList((HouseholdTitle) =>
-        HouseholdTitle.map((chosenHousehold) =>
-          chosenHousehold.id === selectedHouseholdTitle.id
-            ? { ...chosenHousehold, name: newTitleInput }
-            : chosenHousehold
-        )
-      );
-      console.log(`Ändrad till: ${newTitleInput}`);
-      setSelectedHouseholdTitle((selectedTitle: any) => ({
-        ...selectedTitle,
-        name: newTitleInput,
-      }));
-    }
+    // dispatch(updateHousehold());
+
+    // if (selectedHouseholdTitle) {
+    //   setHouseholdList((HouseholdTitle) =>
+    //     HouseholdTitle.map((chosenHousehold) =>
+    //       chosenHousehold.id === selectedHouseholdTitle.id
+    //         ? { ...chosenHousehold, name: newTitleInput }
+    //         : chosenHousehold
+    //     )
+    //   );
+    //   console.log(`Ändrad till: ${newTitleInput}`);
+    //   setSelectedHouseholdTitle((selectedTitle: any) => ({
+    //     ...selectedTitle,
+    //     name: newTitleInput,
+    //   }));
+    // }
     setModalVisible(false);
   };
 
@@ -147,17 +141,18 @@ export default function ProfileScreen() {
         <Text style={{ fontWeight: "bold", fontSize: 17 }}>SevenGuys</Text>
       </View>
       <View style={styles.buttonsContainer}>
-        {activeHouseholds.map((household, index) => {
+        {households.map((household, index) => {
           const member = activeMembers.find(
-            (member) => member.houseHoldId === household.id
+            (member) =>
+              member.householdId.toString() === household.id.toString()
           );
           return (
             <HouseholdButtons
               key={index}
               title={household.name}
-              emojiId={member?.emojiId || 9}
-              onTitlePress={()=> {
-                navigation.navigate("Household");
+              emojiId={member?.emojiId || "1"}
+              onTitlePress={() => {
+                navigation.navigate("Household" as never);
               }}
               onEditPress={() => handleEditPress(household)}
             />

@@ -18,31 +18,30 @@ const Tab = createMaterialTopTabNavigator<TabParamList>();
 export default function TabNavigator() {
   const dispatch = useAppDispatch();
   return (
-    <Tab.Navigator 
-    screenOptions={{
-      swipeEnabled: true,
-      animationEnabled: true,
-    tabBarStyle: {display: "none"},
-
-    }}
-    screenListeners={{
-      state: (e) => {
-        const routeName = e.data.state?.routeNames[e.data.state.index];
-        switch (routeName) {
-          case "MainHousehold":
-            dispatch(setTabTitle("Idag"));
-            break;
-            case "Today": 
-            dispatch(setTabTitle("förra veckan"));
-            break;
-            case "Stats":
-              dispatch(setTabTitle("förra månaden"));
+    <Tab.Navigator
+      screenOptions={{
+        swipeEnabled: true,
+        animationEnabled: true,
+        tabBarStyle: { display: "none" },
+      }}
+      screenListeners={{
+        state: (e) => {
+          const routeName = e.data.state?.routeNames[e.data.state.index];
+          switch (routeName) {
+            case "MainHousehold":
+              dispatch(setTabTitle("Idag"));
               break;
-              default:
-                dispatch(setTabTitle("Idag"));
-        }
-      },
-    }}
+            case "Today":
+              dispatch(setTabTitle("Förra veckan"));
+              break;
+            case "Stats":
+              dispatch(setTabTitle("Senaste månaden"));
+              break;
+            default:
+              dispatch(setTabTitle("Idag"));
+          }
+        },
+      }}
     >
       <Tab.Screen 
       name="MainHousehold" 

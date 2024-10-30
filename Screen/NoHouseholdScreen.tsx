@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { createMember, updateMemberEmoji } from "../store/member/memberActions";
-import { Member, mockedMembers } from "../data/data";
+import { Member, MemberCreate, mockedMembers } from "../data/data";
 import { RootState } from "../store/store";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 import { setMembers } from "../store/member/memberReducer";
 
 const NoHouseholdScreen = () => {
   const [name, setName] = useState<string>("");
-  const [selectedEmoji, setSelectedEmoji] = useState<number | null>(null);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useAppDispatch();
   const members = useAppSelector((state: RootState) => state.members.members);
@@ -25,12 +25,11 @@ const NoHouseholdScreen = () => {
       return;
     }
 
-    const newMember: Member = {
-      id: Date.now(), // För att mocka ett unikt ID åt oss.
+    const newMember: MemberCreate = {
       name,
-      emojiId: selectedEmoji || 0,
+      emojiId: selectedEmoji || "0",
       isOwner: false,
-      houseHoldId: 1,
+      householdId: 1,
       userId: 1,
       isRequest: false,
     };
@@ -77,14 +76,23 @@ const NoHouseholdScreen = () => {
         placeholder="Name"
         value={name}
         onChangeText={setName}
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 20, paddingHorizontal: 10 }}
+        style={{
+          height: 40,
+          borderColor: "gray",
+          borderWidth: 1,
+          marginBottom: 20,
+          paddingHorizontal: 10,
+        }}
       />
       <Button title="Create Member" onPress={handleCreateMember} />
       <Button title="Select Emoji" onPress={showModal} />
       <Text>Selected Emoji: {selectedEmoji}</Text>
       <Text>Household Members:</Text>
       {members.map((member) => (
-        <View key={member.id} style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          key={member.id}
+          style={{ flexDirection: "row", alignItems: "center" }}
+        >
           <Text>{member.name}</Text>
           <Text>{member.emojiId}</Text>
         </View>
