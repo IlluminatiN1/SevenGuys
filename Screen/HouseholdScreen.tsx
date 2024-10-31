@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
+import { CreateTaskPopUpScreen } from "../components/CreateChoreComponent";
 import {
   emojis,
   mockedCompletedTasks,
@@ -9,17 +10,52 @@ import {
   mockedTasks,
   mockedUser,
 } from "../data/data";
+import { useAppSelector } from "../store/hooks";
 
-const activeHousehold = 1;
+const activeHousehold = "1";
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
 const activeUser = mockedUser;
 const activeMembers = mockedMembers.filter(
   (member) => member.userId === activeUser.id
 );
+
 const householdMembers = activeMembers.filter(
-  (member) => member.houseHoldId === activeHousehold
+  (member) => member.householdId === activeHousehold
 );
+
 const activeEmojis = emojis.length > 0 ? emojis : [];
+
+export default function HouseholdScreen() {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
+  const tasks = useAppSelector(state => state.tasks.list);
+
+  return (
+    <View style={s.screenContainer}>
+      <View>
+        {tasks
+          .filter((task) => task.householdId === activeHousehold)
+          .map((task, index) => {
+            return (
+              <TaskRow
+                key={index}
+                title={task.title}
+                taskId={task.id}
+                onTitlePress={() => console.log(`${task.title} pressed`)}
+              />
+            );
+          })}
+      </View>
+      <View style={s.addTaskButtonContainer}>
+        <View>
+          <AddTaskButton onPress={showModal} />
+        </View>
+      </View>
+      {isModalVisible && <CreateTaskPopUpScreen onClose={hideModal} />}
+    </View>
+  );
+}
 
 const TaskRow = ({
   title,
@@ -27,7 +63,7 @@ const TaskRow = ({
   onTitlePress,
 }: {
   title: string;
-  taskId: number;
+  taskId: string;
   onTitlePress: () => void;
 }) => {
   const completedMembers = mockedCompletedTasks
@@ -68,10 +104,10 @@ const TaskRow = ({
   );
 };
 
-const AddTaskButton = () => {
+const AddTaskButton = ({ onPress: handlePress }: { onPress: () => void }) => {
   const isAdmin = activeMembers.some(
     (member) =>
-      member.houseHoldId === activeHousehold &&
+      member.householdId === activeHousehold &&
       member.isOwner &&
       member.id === activeUser.id
   );
@@ -83,60 +119,16 @@ const AddTaskButton = () => {
           icon={"plus"}
           size={15}
           iconColor="white"
-          onPress={() => console.log("Add task pressed")}
+          onPress={handlePress}
           mode="outlined"
           style={{ borderColor: "white", borderWidth: 2 }}
         />
+
         <Text style={s.createHouseholdText}>Lägg till syssla</Text>
       </View>
     );
   }
   return null;
-};
-
-const HouseholdScreen = () => {
-  return (
-    <View style={s.screenContainer}>
-      <View style={s.headerContainer}>
-        <IconButton
-          icon={"chevron-left"}
-          size={30}
-          iconColor="black"
-          onPress={() => console.log("left arrow pressed")}
-          mode="outlined"
-          style={{ borderColor: "transparent", borderWidth: 2 }}
-        />
-        <Text style={{ fontSize: 17, fontWeight: "bold" }}>Idag</Text>
-        <IconButton
-          icon={"chevron-right"}
-          size={30}
-          iconColor="black"
-          onPress={() => console.log("right arrow pressed")}
-          mode="outlined"
-          style={{ borderColor: "transparent", borderWidth: 2 }}
-        />
-      </View>
-      <View>
-        {activeTasks
-          .filter((task) => task.houseHoldId === activeHousehold)
-          .map((task, index) => {
-            return (
-              <TaskRow
-                key={index}
-                title={task.title}
-                taskId={task.id}
-                onTitlePress={() => console.log(`${task.title} pressed`)}
-              />
-            );
-          })}
-      </View>
-      <View style={s.addTaskButtonContainer}>
-        <View>
-          <AddTaskButton />
-        </View>
-      </View>
-    </View>
-  );
 };
 
 const s = StyleSheet.create({
@@ -195,5 +187,3 @@ const s = StyleSheet.create({
     fontSize: 15,
   },
 });
-
-export default HouseholdScreen;

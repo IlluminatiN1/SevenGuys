@@ -1,16 +1,66 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button, Provider as PaperProvider, Portal } from "react-native-paper";
+// components/NoHouseholdScreen.tsx
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Button, Alert } from "react-native";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { createMember, updateMemberEmoji } from "../store/member/memberActions";
+import { Member, MemberCreate, mockedMembers } from "../data/data";
+import { RootState } from "../store/store";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
-import { useAppSelector } from "../store/hooks";
+import { setMembers } from "../store/member/memberReducer";
 
-export default function NoHouseholdScreen() {
-  // Detta kommer användas för att uppdatera statet om man lägger till hushåll
-  const households = useAppSelector((state) => state.households); // EJ KLAR
-
-  // State för att hantera modalens synlighet
+const NoHouseholdScreen = () => {
+  const [name, setName] = useState<string>("");
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState<number | null>(null);
+  const dispatch = useAppDispatch();
+  const members = useAppSelector((state: RootState) => state.members.members);
+
+  useEffect(() => {
+    dispatch(setMembers(mockedMembers));
+  }, [dispatch]);
+
+  const handleCreateMember = () => {
+    if (!name.trim()) {
+      Alert.alert("Validation Error", "Name cannot be empty");
+      return;
+    }
+
+    const newMember: MemberCreate = {
+      name,
+      emojiId: selectedEmoji || "0",
+      isOwner: false,
+      householdId: 1,
+      userId: 1,
+      isRequest: false,
+    };
+
+    dispatch(createMember(newMember))
+      .unwrap()
+      .then(() => {
+        Alert.alert("Success", "Member created successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message || "An error occurred");
+      });
+  };
+
+  const handleSelectEmoji = (emoji: number) => {
+    const member = members.find((member) => member.userId === 1); // Mockad användar-ID som sträng
+    if (!member) {
+      Alert.alert("Error", "Member not found");
+      return;
+    }
+
+    setSelectedEmoji(emoji);
+    dispatch(updateMemberEmoji({ memberId: member.id, emojiId: emoji }))
+      .unwrap()
+      .then(() => {
+        Alert.alert("Success", "Emoji updated successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message || "An error occurred");
+      });
+  };
 
   const showModal = () => {
     setSelectedEmoji(null); // Nollställ vald ikon
@@ -20,65 +70,41 @@ export default function NoHouseholdScreen() {
   const hideModal = () => setModalVisible(false);
 
   return (
-    <PaperProvider>
-      <View style={s.container}>
-        <Text style={s.noActiveHouseholdsTextTitle}>
-          Du har inget hushåll att visa
-        </Text>
-        <Text style={s.householdScreenText}>
-          Tryck på "Lägg till" för att skapa ett nytt hushåll, eller välj "Gå
-          med i hushåll" för att ansluta dig till ett befintligt hushåll.
-        </Text>
-        <View style={s.buttons}>
-          <Button
-            icon="plus-circle-outline"
-            mode="contained"
-            onPress={() => {
-              console.log("Lägg till");
-            }}
-          >
-            Lägg till
-          </Button>
-          <Button icon="home-plus" mode="contained" onPress={showModal}>
-            Gå med i hushåll
-          </Button>
+    <View>
+      <Text>Create Member:</Text>
+      <TextInput
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+        style={{
+          height: 40,
+          borderColor: "gray",
+          borderWidth: 1,
+          marginBottom: 20,
+          paddingHorizontal: 10,
+        }}
+      />
+      <Button title="Create Member" onPress={handleCreateMember} />
+      <Button title="Select Emoji" onPress={showModal} />
+      <Text>Selected Emoji: {selectedEmoji}</Text>
+      <Text>Household Members:</Text>
+      {members.map((member) => (
+        <View
+          key={member.id}
+          style={{ flexDirection: "row", alignItems: "center" }}
+        >
+          <Text>{member.name}</Text>
+          <Text>{member.emojiId}</Text>
         </View>
-        <Portal>
-          <JoinHouseholdPopup
-            visible={isModalVisible}
-            hideModal={hideModal}
-            selectedEmoji={selectedEmoji}
-            setSelectedEmoji={setSelectedEmoji}
-          />
-        </Portal>
-      </View>
-    </PaperProvider>
+      ))}
+      <JoinHouseholdPopup
+        visible={isModalVisible}
+        hideModal={hideModal}
+        selectedEmoji={selectedEmoji}
+        setSelectedEmoji={setSelectedEmoji}
+      />
+    </View>
   );
-}
+};
 
-const s = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "white",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    paddingVertical: 20,
-    borderRadius: 20,
-  },
-  noActiveHouseholdsTextTitle: {
-    paddingTop: 250,
-    fontSize: 23,
-    color: "#888",
-    textAlign: "center",
-  },
-  householdScreenText: {
-    fontSize: 16,
-    color: "#888",
-    textAlign: "center",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-});
+export default NoHouseholdScreen;

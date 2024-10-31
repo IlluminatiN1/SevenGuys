@@ -29,8 +29,6 @@ export default function LoginScreen(props: Props) {
     }
 
     dispatch(signInUser({ email, password }));
-
-    props.navigation.navigate("Profile");
   };
 
   return (

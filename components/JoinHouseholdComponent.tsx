@@ -1,24 +1,64 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import * as React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
-import { emojis } from "../data/data";
+import { emojis, mockedMembers } from "../data/data";
+import { useAppDispatch } from "../store/hooks";
+import { updateMemberEmoji } from "../store/member/memberActions";
 
 const activeEmojis = emojis.length > 0 ? emojis : [];
 
 const JoinHouseholdPopup = ({
   visible,
   hideModal,
-  selectedEmoji,
-  setSelectedEmoji,
 }: {
   visible: boolean;
   hideModal: () => void;
-  selectedEmoji: number | null;
-  setSelectedEmoji: (emojiId: number | null) => void;
 }) => {
-  const handleEmojiSelect = (emojiId: number) => {
-    setSelectedEmoji(emojiId);
+  const [selectedEmoji, setSelectedEmoji] = useState<string>();
+  const dispatch = useAppDispatch();
+  //const members = useAppSelector((state: RootState) => state.members.members);
+  //const households = useAppSelector((state: RootState) => state.households.list);
+  const members = mockedMembers;
+
+  const handleGetHousehold = () => {
+    // Hämta datan om ledig avatar
+    // dispatch(getHouseholdByCode);
+  }
+
+  const handleJoinHousehold = () => {
+    const member = members.find((member) => member.userId === "1"); // Mockad användar-ID som sträng
+    console.log("Fetched member: ", member); // För att debugga ifall koden hämtar mockad member.
+    if (!member) {
+      Alert.alert("Error", "Member not found");
+      return;
+    }
+
+    // dispatch(createMember/joinHousehold);
+
+    if (!selectedEmoji) {
+      Alert.alert("Validation Error", "Please select an emoji");
+      return;
+    }
+
+    dispatch(updateMemberEmoji({ memberId: member.id, emojiId: selectedEmoji }))
+      .unwrap()
+      .then(() => {
+        Alert.alert(
+          "Success",
+          "Joined household and emoji updated successfully"
+        );
+        console.log("Joined household and emoji updated successfully");
+        console.log(
+          "Selected emoji: ",
+          selectedEmoji + "for member: ",
+          member.id
+        );
+        hideModal();
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message || "An error occurred");
+      });
   };
 
   return (
@@ -34,6 +74,8 @@ const JoinHouseholdPopup = ({
         onPress={hideModal}
         style={s.closeButton}
       />
+
+      {/* Hushållet */}
       <View style={s.contentContainer}>
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>
           Ange hushållets kod
@@ -44,8 +86,22 @@ const JoinHouseholdPopup = ({
           activeOutlineColor="black"
           style={s.inputField}
         />
+        <Button mode="contained" onPress={handleGetHousehold}>
+          Hämta hushåll
+        </Button>
       </View>
+
+      {/* Medlem */}
       <View style={s.contentContainer}>
+        <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+          Ange ditt namn
+        </Text>
+        <TextInput
+          label="Namn"
+          mode="outlined"
+          activeOutlineColor="black"
+          style={s.inputField}
+        />
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Välj avatar</Text>
         <View style={s.emojiContainer}>
           {activeEmojis.map((emoji, index) => (
@@ -58,16 +114,13 @@ const JoinHouseholdPopup = ({
                 s.emojiIcon,
                 selectedEmoji === emoji.id && s.selectedEmojiIcon,
               ]}
-              onPress={() => handleEmojiSelect(emoji.id)}
+              onPress={() => setSelectedEmoji(emoji.id)}
             />
           ))}
         </View>
       </View>
       <View>
-        <Button
-          mode="contained"
-          onPress={() => console.log("Gå med i hushåll pressed")}
-        >
+        <Button mode="contained" onPress={handleJoinHousehold}>
           Gå med i hushåll
         </Button>
       </View>

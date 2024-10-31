@@ -1,38 +1,37 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import ChoresScreen from "../Screen/ChoresScreen";
-import ChoresStatisticsScreen from "../Screen/ChoresStatisticsScreen";
 import HouseholdScreen from "../Screen/HouseholdScreen";
-
-type Period = "this-week" | "prev-week" | "prev-month";
+import LastMonthStatsScreen from "../Screen/LastMonthStatsScreen";
+import LastWeekStatsScreen from "../Screen/LastWeekStatsScreen";
+import TabBarHeader from "./TabBarHeader";
 
 export type TabParamList = {
-  Household: undefined;
   Today: undefined;
-  Stats: { period: Period };
+  LastWeek: undefined;
+  LastMonth: undefined;
 };
 
 const Tab = createMaterialTopTabNavigator<TabParamList>();
 
 export default function TabNavigator() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Household" component={HouseholdScreen} />
-      <Tab.Screen name="Today" component={ChoresScreen} />
-      <Tab.Screen
-        name="Stats"
-        component={ChoresStatisticsScreen}
-        initialParams={{ period: "this-week" }}
-      />
-      <Tab.Screen
-        name="Stats"
-        component={ChoresStatisticsScreen}
-        initialParams={{ period: "prev-week" }}
-      />
-      <Tab.Screen
-        name="Stats"
-        component={ChoresStatisticsScreen}
-        initialParams={{ period: "prev-month" }}
-      />
-    </Tab.Navigator>
+        <Tab.Navigator
+          tabBar={TabBarHeader} 
+        >
+          <Tab.Screen 
+          name="Today" 
+          component={HouseholdScreen}
+          />
+
+          <Tab.Screen 
+          name={"LastWeek"} 
+          component={LastWeekStatsScreen}
+          />
+
+          <Tab.Screen
+            name="LastMonth"
+            component={LastMonthStatsScreen}
+          />
+
+        </Tab.Navigator>
   );
 }

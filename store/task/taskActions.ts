@@ -1,23 +1,24 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { Task, TaskCreate } from "../../data/data";
+import { createAppAsyncThunk } from "../hooks";
 
-type TaskPayload = { householdId: string; title: string; description: string; isArchived: boolean; reoccurence: number; score: number };
-
-export const addTask = createAsyncThunk(
+// Används för att skapa en asynkron funktion som kan användas i Redux
+export const addTask = createAppAsyncThunk<Task, TaskCreate>(
   "task/add",
-  async ({ householdId, title, description, isArchived, reoccurence, score }: TaskPayload, thunkAPI) => {
+  async (taskPayload, thunkAPI) => {
     try {
-      const docRef = await addDoc(collection(db, "Tasks"), {
-        householdId,
-        title,
-        description,
-        completed: false,
-        isArchived,
-        reoccurence,
-        score,
-      });
-      return { id: docRef.id, householdId, title, description, completed: false };
+      const state = thunkAPI.getState();
+
+      const docRef = doc(collection(db, "Tasks"));
+      const task: Task = {
+        id: docRef.id,
+        householdId: state.households.current!.id,
+        ...taskPayload,
+      };
+
+      await setDoc(docRef, task); // till firebase
+      return task; // till redux (reducer)
     } catch (error) {
       console.error("Error adding task:", error);
       return thunkAPI.rejectWithValue("Could not add task");
