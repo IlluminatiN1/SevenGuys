@@ -1,15 +1,26 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Button, IconButton, Portal, Surface } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
-import { emojis, mockedMembers, mockedUser } from "../data/data";
+import { emojis, mockedMembers } from "../data/data";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setCurrentHousehold } from "../store/household/householdSlice";
+import { getDoc, doc, collection } from "firebase/firestore";
+import { auth } from "../config/firebase";
+import { getFirestore } from "firebase/firestore";
+import { updateUsername } from "../store/user/userActions";
+
+const firestore = getFirestore();
 
 const HouseholdButtons = ({
   title,
@@ -72,7 +83,6 @@ const CreateHouseholdButton = () => {
 };
 
 const JoinHouseholdButton = () => {
-  // State för att hantera modalens synlighet
   const [isModalVisible, setModalVisible] = useState(false);
   const hideModal = () => setModalVisible(false);
 
@@ -96,13 +106,40 @@ export default function ProfileScreen() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
-  const dispatch = useAppDispatch();
+  const [username, setUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const households = useAppSelector((state) => state.households.list);
+  const [newUsername, setNewUsername] = useState<string>("");
 
-  const activeUser = mockedUser;
-  const activeMembers = mockedMembers.filter(
-    (member) => member.userId === activeUser.id
-  );
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        const userDocRef = doc(collection(firestore, "members"), userId);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          setUsername(userDoc.data()?.username || "Unknown User");
+        }
+      }
+      setLoading(false);
+    };
+    fetchUsername();
+  }, []);
+
+  const handleUsernameChange = () => {
+    if (newUsername.trim()) {
+      dispatch(updateUsername(newUsername))
+        .unwrap()
+        .then(() => {
+          setUsername(newUsername);
+          setNewUsername("");
+        })
+        .catch((error) => console.error("Error updating username:", error));
+    }
+  };
 
   const handleEditPress = (householdTitle: any) => {
     setSelectedHouseholdTitle(householdTitle);
@@ -110,22 +147,6 @@ export default function ProfileScreen() {
   };
 
   const handleSaveTitle = (newTitleInput: string) => {
-    // dispatch(updateHousehold());
-
-    // if (selectedHouseholdTitle) {
-    //   setHouseholdList((HouseholdTitle) =>
-    //     HouseholdTitle.map((chosenHousehold) =>
-    //       chosenHousehold.id === selectedHouseholdTitle.id
-    //         ? { ...chosenHousehold, name: newTitleInput }
-    //         : chosenHousehold
-    //     )
-    //   );
-    //   console.log(`Ändrad till: ${newTitleInput}`);
-    //   setSelectedHouseholdTitle((selectedTitle: any) => ({
-    //     ...selectedTitle,
-    //     name: newTitleInput,
-    //   }));
-    // }
     setModalVisible(false);
   };
 
@@ -135,14 +156,28 @@ export default function ProfileScreen() {
         <Text style={{ fontSize: 12, alignSelf: "flex-start" }}>
           Användarnamn
         </Text>
-        <Text style={{ fontWeight: "bold", fontSize: 17 }}>SevenGuys</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 17 }}>
+          {username || "Guest"}
+        </Text>
       </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Skriv in nytt användarnamn"
+        value={newUsername}
+        onChangeText={setNewUsername}
+      />
+      <Button mode="contained" onPress={handleUsernameChange}>
+        Ändra användarnamn
+      </Button>
+
       <View style={styles.buttonsContainer}>
         {households.map((household, index) => {
-          const member = activeMembers.find(
+          const member = mockedMembers.find(
             (member) =>
               member.householdId.toString() === household.id.toString()
           );
+
           return (
             <HouseholdButtons
               key={index}
@@ -188,6 +223,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: "white",
     alignSelf: "flex-start",
+  },
+  input: {
+    width: "100%",
+    padding: 8,
+    marginVertical: 10,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
   },
   buttonsContainer: {
     marginTop: 20,
