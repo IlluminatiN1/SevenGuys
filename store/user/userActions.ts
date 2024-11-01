@@ -5,7 +5,7 @@ import {
   User,
 } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 
 type AuthData = {
   email: string;
@@ -47,6 +47,23 @@ export const signInUser = createAsyncThunk<User, AuthData>(
       return result.user.toJSON() as User;
     } catch (error) {
       return thunkApi.rejectWithValue("Could not login user");
+    }
+  }
+);
+
+export const updateUsername = createAsyncThunk<void, string>(
+  "user/updateUsername",
+  async (newUsername, thunkApi) => {
+    const userId = auth.currentUser?.uid;
+    if (!userId) return thunkApi.rejectWithValue("User is not logged in");
+
+    try {
+      const userDocRef = doc(db, "members", userId);
+      await updateDoc(userDocRef, {
+        username: newUsername,
+      });
+    } catch (error) {
+      return thunkApi.rejectWithValue("Could not update username");
     }
   }
 );
