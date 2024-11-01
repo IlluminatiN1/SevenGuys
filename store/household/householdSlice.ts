@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Household, mockedHouseholds } from "../../data/data";
 import { createHousehold } from "./houseHoldActions";
 
@@ -15,8 +15,11 @@ const initialState: HouseHoldsState = {
 const householdSlice = createSlice({
   name: "households",
   initialState,
-  //(1.) "Det som skrivs här" export const { "Skrivs också in här"} = todosSlice.actions;
-  reducers: {},
+  reducers: {
+     setCurrentHousehold(state, action: PayloadAction<Household>) {
+      state.current = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(createHousehold.fulfilled, (state, action) => {
         state.list.push(action.payload.household);
@@ -24,5 +27,6 @@ const householdSlice = createSlice({
     });
   },
 });
+
+export const { setCurrentHousehold } = householdSlice.actions;
 export const householdsReducer = householdSlice.reducer;
-export const {} = householdSlice.actions;
