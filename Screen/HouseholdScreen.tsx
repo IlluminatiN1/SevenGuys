@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { CreateTaskPopUpScreen } from "../components/CreateChoreComponent";
@@ -10,7 +10,8 @@ import {
   mockedTasks,
   mockedUser,
 } from "../data/data";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { fetchTasks } from "../store/task/taskActions";
 
 const activeHousehold = "1";
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
@@ -29,13 +30,22 @@ export default function HouseholdScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
-  const tasks = useAppSelector(state => state.tasks.list);
+  const tasks = useAppSelector((state) => state.tasks.list);
+  const dispatch = useAppDispatch();
+
+  const selectedHousehold = useAppSelector((state) => state.households.current);
+
+  useEffect(() => {
+    if (selectedHousehold) {
+      dispatch(fetchTasks(selectedHousehold.id));
+    }
+  }, [dispatch, selectedHousehold]);
 
   return (
     <View style={s.screenContainer}>
       <View>
         {tasks
-          .filter((task) => task.householdId === activeHousehold)
+          .filter((task) => task.householdId === selectedHousehold?.id)
           .map((task, index) => {
             return (
               <TaskRow

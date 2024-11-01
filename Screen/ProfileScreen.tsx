@@ -7,13 +7,9 @@ import { Button, IconButton, Portal, Surface } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
-import {
-  emojis,
-  mockedHouseholds,
-  mockedMembers,
-  mockedUser,
-} from "../data/data";
-import { useAppSelector } from "../store/hooks";
+import { emojis, mockedMembers, mockedUser } from "../data/data";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setCurrentHousehold } from "../store/household/householdSlice";
 
 const HouseholdButtons = ({
   title,
@@ -100,6 +96,7 @@ export default function ProfileScreen() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
+  const dispatch = useAppDispatch();
   const households = useAppSelector((state) => state.households.list);
 
   const activeUser = mockedUser;
@@ -152,6 +149,7 @@ export default function ProfileScreen() {
               title={household.name}
               emojiId={member?.emojiId || "1"}
               onTitlePress={() => {
+                dispatch(setCurrentHousehold(household));
                 navigation.navigate("Household" as never);
               }}
               onEditPress={() => handleEditPress(household)}

@@ -1,4 +1,4 @@
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { Task, TaskCreate } from "../../data/data";
 import { createAppAsyncThunk } from "../hooks";
@@ -22,6 +22,29 @@ export const addTask = createAppAsyncThunk<Task, TaskCreate>(
     } catch (error) {
       console.error("Error adding task:", error);
       return thunkAPI.rejectWithValue("Could not add task");
+    }
+  }
+);
+
+export const fetchTasks = createAppAsyncThunk<Task[], string>(
+  "tasks/fetch",
+  async (householdId, thunkAPI) => {
+    try {
+      const tasksQuery = query(
+        collection(db, "Tasks"),
+        where("householdId", "==", householdId)
+      );
+      const querySnapshot = await getDocs(tasksQuery);
+
+      const tasks: Task[] = [];
+      querySnapshot.forEach((doc) => {
+        tasks.push({ id: doc.id, ...doc.data() } as Task);
+      });
+
+      return tasks;
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      return thunkAPI.rejectWithValue("Could not fetch tasks");
     }
   }
 );
