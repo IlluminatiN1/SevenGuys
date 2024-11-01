@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
-import { CreateChorePopUpScreen } from "../components/CreateChoreComponent";
+import { CreateTaskPopUpScreen } from "../components/CreateChoreComponent";
 import {
   emojis,
   mockedCompletedTasks,
@@ -10,6 +10,7 @@ import {
   mockedTasks,
   mockedUser,
 } from "../data/data";
+import { useAppSelector } from "../store/hooks";
 
 const activeHousehold = "1";
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
@@ -28,30 +29,12 @@ export default function HouseholdScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
+  const tasks = useAppSelector(state => state.tasks.list);
 
   return (
     <View style={s.screenContainer}>
-      <View style={s.headerContainer}>
-        <IconButton
-          icon={"chevron-left"}
-          size={30}
-          iconColor="black"
-          onPress={() => console.log("left arrow pressed")}
-          mode="outlined"
-          style={{ borderColor: "transparent", borderWidth: 2 }}
-        />
-        <Text style={{ fontSize: 17, fontWeight: "bold" }}>Idag</Text>
-        <IconButton
-          icon={"chevron-right"}
-          size={30}
-          iconColor="black"
-          onPress={() => console.log("right arrow pressed")}
-          mode="outlined"
-          style={{ borderColor: "transparent", borderWidth: 2 }}
-        />
-      </View>
       <View>
-        {activeTasks
+        {tasks
           .filter((task) => task.householdId === activeHousehold)
           .map((task, index) => {
             return (
@@ -69,7 +52,7 @@ export default function HouseholdScreen() {
           <AddTaskButton onPress={showModal} />
         </View>
       </View>
-      {isModalVisible && <CreateChorePopUpScreen onClose={hideModal} />}
+      {isModalVisible && <CreateTaskPopUpScreen onClose={hideModal} />}
     </View>
   );
 }
