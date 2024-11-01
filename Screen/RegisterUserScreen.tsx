@@ -9,8 +9,6 @@ import { signUpUser } from "../store/user/userActions";
 import { registerUserStyle } from "../Style/registerUserStyle";
 import { validateEmail } from "../utils/user/EmailValidator";
 import { validatePassword } from "../utils/user/PasswordValidator";
-import { Member, MemberCreate } from "../data/data";
-import { createMember } from "../store/member/memberActions";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RegisterUser">;
 
@@ -18,6 +16,7 @@ export default function SignUpScreen(props: Props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const dispatch = useAppDispatch();
 
   const handleRegisterUser = () => {
@@ -33,7 +32,12 @@ export default function SignUpScreen(props: Props) {
       return;
     }
 
-    dispatch(signUpUser({ email, password }));
+    if (!username) {
+      Alert.alert("Validation Error", "Username cannot be empty.");
+      return;
+    }
+    
+    dispatch(signUpUser({ email, password, username }));
   };
 
   return (
@@ -42,13 +46,20 @@ export default function SignUpScreen(props: Props) {
 
       <TextInput
         mode="outlined"
+        label="Ange användarnamn"
+        placeholder="Användarnamn"
+        value={username}
+        onChangeText={setUsername}
+        style={registerUserStyle.inputField}
+      />
+      <TextInput
+        mode="outlined"
         label="Ange e-post"
         placeholder="E-post"
         value={email}
         onChangeText={setEmail}
         style={registerUserStyle.inputField}
       />
-
       <TextInput
         mode="outlined"
         label="Ange lösenord"
