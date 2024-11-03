@@ -38,8 +38,6 @@ export default function LastWeekTotalStatsComponent() {
     name: member.name,
     population: member.score,
     color: member.color,
-    legendFontColor: "#7F7F7F",
-    legendFontSize: 12,
   }));
 
   return (
@@ -64,7 +62,7 @@ export default function LastWeekTotalStatsComponent() {
         <PieChart
           data={chartData}
           width={screenWidth}
-          height={220}
+          height={280}
           chartConfig={{
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           }}
