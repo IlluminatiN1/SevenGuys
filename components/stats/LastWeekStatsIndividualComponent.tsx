@@ -1,6 +1,5 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Dimensions, FlatList, Text, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import {
     emojis,
@@ -32,7 +31,7 @@ const calculateIndividualTask = () => {
             taskName: task.title,
             energy: memberEnergy,
         };
-    });
+    }).filter((task) => task.energy.length > 0);
 };
 
 export default function LastWeekIndividualTaskStatComponent() {
@@ -42,47 +41,48 @@ export default function LastWeekIndividualTaskStatComponent() {
         <FlatList
             data={taskData}
             keyExtractor={(item) => item.taskName}
+            numColumns={3}
+            contentContainerStyle={s.flatContent}
             renderItem={({ item: task }) => (
-                <View>
-                    <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-                        {task.taskName}
-                    </Text>
+                <View style={s.chartContainer}>
                     <PieChart
                         data={task.energy.map((member) => ({
                             name: member.name,
                             population: member.score,
                             color: member.color,
-                            legendFontColor: "#7F7F7F",
-                            legendFontSize: 12,
                         }))}
-                        width={screenWidth}
-                        height={220}
+                        width={150}
+                        height={150} 
+                        paddingLeft={"10"}
                         chartConfig={{
                             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                         }}
                         accessor="population"
                         backgroundColor="transparent"
-                        paddingLeft="15"
                         hasLegend={false}
+                        center={[25, 10]}
                     />
-                    <View>
-                        {task.energy.map((member) => (
-                            <View key={member.name}>
-                                <View>
-                                    <MaterialCommunityIcons
-                                        name={member.emojiName as keyof typeof MaterialCommunityIcons.glyphMap}
-                                        size={25}
-                                        color={member.color}
-                                    />
-                                    <Text>
-                                        {member.name.slice(0, 3)}
-                                    </Text>
-                                </View>
-                            </View>
-                        ))}
-                    </View>
+                    <Text style={s.taskTitle}>
+                        {task.taskName}
+                    </Text>
                 </View>
             )}
         />
     );
 }
+const s = StyleSheet.create({
+    flatContent: {
+        justifyContent: "center",
+    },
+    chartContainer: {
+        width: screenWidth / 3 - 15,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "flex-start", 
+    },
+    taskTitle: {
+        fontWeight: "bold",
+        marginBottom: 5,
+        textAlign: "center",
+    },
+});
