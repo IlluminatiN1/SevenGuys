@@ -1,9 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { CreateTaskPopUpScreen } from "../components/CreateChoreComponent";
+import TaskDetailsModal from "../components/TaskInfoModal";
 import EditTaskModal from "../components/stats/EditTaskModal";
 import { emojis, mockedMembers, mockedTasks, mockedUser } from "../data/data";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -31,6 +32,34 @@ export default function HouseholdScreen() {
   const [taskList, setTaskList] = useState(tasks);
 
   const selectedHousehold = useAppSelector((state) => state.households.current);
+
+  const [isDetailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState({
+    title: "",
+    description: "",
+    reoccurence: 0,
+    score: 0,
+  });
+
+  const showDetailsModal = async (taskId: string) => {
+    const db = getFirestore();
+    const fetch = doc(db, "Tasks", taskId);
+    const fetchedData = await getDoc(fetch);
+    const taskData = fetchedData.data();
+
+    setSelectedTask({
+      title: taskData?.title,
+      description: taskData?.description,
+      reoccurence: taskData?.reoccurence,
+      score: taskData?.score,
+    });
+
+    setDetailsModalVisible(true);
+  };
+
+  const hideDetailsModal = () => {
+    setDetailsModalVisible(false);
+  };
 
   useEffect(() => {
     if (selectedHousehold) {
@@ -92,7 +121,7 @@ export default function HouseholdScreen() {
                 reoccurence={task.reoccurence}
                 score={task.score}
                 taskId={task.id}
-                onTitlePress={() => console.log(`${task.title} pressed`)}
+                onTitlePress={() => showDetailsModal(task.id)}
                 onSave={handleSave}
               />
             ))
@@ -104,6 +133,13 @@ export default function HouseholdScreen() {
         </View>
       </View>
       {isModalVisible && <CreateTaskPopUpScreen onClose={hideModal} />}
+      {selectedTask && (
+        <TaskDetailsModal
+          isVisible={isDetailsModalVisible}
+          onClose={hideDetailsModal}
+          task={selectedTask}
+        />
+      )}
     </View>
   );
 }
