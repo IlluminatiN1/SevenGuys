@@ -15,6 +15,7 @@ import {
 } from "../data/data";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
+import MembersList  from "../components/MembersList";
 
 const HouseholdButtons = ({
   title,
@@ -31,6 +32,7 @@ const HouseholdButtons = ({
   if (!emoji) return null;
 
   return (
+    
     <View style={styles.householdButtonContainer}>
       <TouchableOpacity onPress={onTitlePress}>
         <Text style={styles.buttonText}>{title}</Text>
@@ -54,6 +56,9 @@ const HouseholdButtons = ({
           </View>
         </TouchableOpacity>
       </Surface>
+      <View>
+        <MembersList members={} />
+      </View>
     </View>
   );
 };
@@ -104,7 +109,7 @@ export default function ProfileScreen() {
   const households = useAppSelector((state) => state.households.list);
   const dispatch = useAppDispatch();
   
-  dispatch(getHouseholdsByUserId(mockedUser.id));
+  //dispatch(getHouseholdsByUserId(mockedUser.id));
   const activeUser = mockedUser;
   const activeMembers = mockedMembers.filter(
     (member) => member.userId === activeUser.id
@@ -177,6 +182,7 @@ export default function ProfileScreen() {
         </View>
       </View>
     </View>
+    
   );
 }
 
