@@ -33,25 +33,6 @@ export default function HouseholdScreen() {
 
   return (
     <View style={s.screenContainer}>
-      <View style={s.headerContainer}>
-        <IconButton
-          icon={"chevron-left"}
-          size={30}
-          iconColor="black"
-          onPress={() => console.log("left arrow pressed")}
-          mode="outlined"
-          style={{ borderColor: "transparent", borderWidth: 2 }}
-        />
-        <Text style={{ fontSize: 17, fontWeight: "bold" }}>Idag</Text>
-        <IconButton
-          icon={"chevron-right"}
-          size={30}
-          iconColor="black"
-          onPress={() => console.log("right arrow pressed")}
-          mode="outlined"
-          style={{ borderColor: "transparent", borderWidth: 2 }}
-        />
-      </View>
       <View>
         {tasks
           .filter((task) => task.householdId === activeHousehold)
