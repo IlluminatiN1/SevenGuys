@@ -117,6 +117,7 @@ export default function HouseholdScreen() {
               <TaskRow
                 key={index}
                 title={task.title}
+                TaskArchivedStatus={task.isArchived}
                 description={task.description}
                 reoccurence={task.reoccurence}
                 score={task.score}
@@ -146,6 +147,7 @@ export default function HouseholdScreen() {
 
 const TaskRow = ({
   title,
+  TaskArchivedStatus,
   description,
   reoccurence,
   score,
@@ -154,6 +156,7 @@ const TaskRow = ({
   onSave,
 }: {
   title: string;
+  TaskArchivedStatus: Boolean;
   description: string;
   reoccurence: number;
   score: number;
@@ -173,6 +176,9 @@ const TaskRow = ({
     <View style={s.taskContainer}>
       <TouchableOpacity onPress={onTitlePress}>
         <Text style={{ fontWeight: "bold", fontSize: 18 }}>{title}</Text>
+        <Text style={{ color: TaskArchivedStatus ? "green" : "red" }}>
+          {TaskArchivedStatus ? "Utförd" : "Ej Utförd"}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setIsEditing(true)}>
         <MaterialCommunityIcons
