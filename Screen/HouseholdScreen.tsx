@@ -34,12 +34,34 @@ export default function HouseholdScreen() {
   const selectedHousehold = useAppSelector((state) => state.households.current);
 
   const [isDetailsModalVisible, setDetailsModalVisible] = useState(false);
-  const [selectedTask, setSelectedTask] = useState({
+  const [selectedTask, setSelectedTask] = useState<{
+    title: string;
+    description: string;
+    reoccurence: number;
+    score: number;
+    id: string;
+    isArchived: boolean;
+  }>({
     title: "",
     description: "",
     reoccurence: 0,
     score: 0,
+    id: "",
+    isArchived: false,
   });
+
+  const handleArchivedStatusChange = (taskId: string, newStatus: boolean) => {
+    setTaskList((prevList) =>
+      prevList.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              isArchived: newStatus,
+            }
+          : task
+      )
+    );
+  };
 
   const showDetailsModal = async (taskId: string) => {
     const db = getFirestore();
@@ -52,6 +74,8 @@ export default function HouseholdScreen() {
       description: taskData?.description,
       reoccurence: taskData?.reoccurence,
       score: taskData?.score,
+      id: taskId,
+      isArchived: taskData?.isArchived ?? false,
     });
 
     setDetailsModalVisible(true);
@@ -139,6 +163,7 @@ export default function HouseholdScreen() {
           isVisible={isDetailsModalVisible}
           onClose={hideDetailsModal}
           task={selectedTask}
+          onArchivedStatusChange={handleArchivedStatusChange}
         />
       )}
     </View>
@@ -217,7 +242,6 @@ const AddTaskButton = ({ onPress: handlePress }: { onPress: () => void }) => {
           mode="outlined"
           style={{ borderColor: "white", borderWidth: 2 }}
         />
-
         <Text style={s.createHouseholdText}>Lägg till syssla</Text>
       </View>
     );
