@@ -1,5 +1,12 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  onSnapshot,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -12,12 +19,10 @@ import { Button, IconButton, Portal, Surface } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
-import { emojis, mockedMembers } from "../data/data";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setCurrentHousehold } from "../store/household/householdSlice";
-import { getDoc, doc, collection } from "firebase/firestore";
 import { auth } from "../config/firebase";
-import { getFirestore } from "firebase/firestore";
+import { emojis } from "../data/data";
+import { useAppDispatch } from "../store/hooks";
+import { setCurrentHousehold } from "../store/household/householdSlice";
 import { updateUsername } from "../store/user/userActions";
 
 const firestore = getFirestore();
@@ -108,8 +113,9 @@ export default function ProfileScreen() {
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const households = useAppSelector((state) => state.households.list);
+
   const [newUsername, setNewUsername] = useState<string>("");
+  const [households, setHouseholds] = useState<any[]>([]);
 
   const dispatch = useAppDispatch();
 
@@ -129,6 +135,21 @@ export default function ProfileScreen() {
     fetchUsername();
   }, []);
 
+  useEffect(() => {
+    const listenToHouseholdUpdates = onSnapshot(
+      collection(firestore, "households"),
+      (querySnapshot) => {
+        const updatedHouseholdList = querySnapshot.docs.map((document) => ({
+          id: document.id,
+          ...document.data(),
+        }));
+        setHouseholds(updatedHouseholdList);
+      }
+    );
+
+    return () => listenToHouseholdUpdates();
+  }, []);
+
   const handleUsernameChange = () => {
     if (newUsername.trim()) {
       dispatch(updateUsername(newUsername))
@@ -146,7 +167,7 @@ export default function ProfileScreen() {
     setModalVisible(true);
   };
 
-  const handleSaveTitle = (newTitleInput: string) => {
+  const handleSaveTitle = async (householdId: string, newName: string) => {
     setModalVisible(false);
   };
 
@@ -172,31 +193,24 @@ export default function ProfileScreen() {
       </Button>
 
       <View style={styles.buttonsContainer}>
-        {households.map((household, index) => {
-          const member = mockedMembers.find(
-            (member) =>
-              member.householdId.toString() === household.id.toString()
-          );
-
-          return (
-            <HouseholdButtons
-              key={index}
-              title={household.name}
-              emojiId={member?.emojiId || "1"}
-              onTitlePress={() => {
-                dispatch(setCurrentHousehold(household));
-                navigation.navigate("Household" as never);
-              }}
-              onEditPress={() => handleEditPress(household)}
-            />
-          );
-        })}
+        {households.map((household) => (
+          <HouseholdButtons
+            key={household.id}
+            title={household.name}
+            emojiId={household.emojiId || "1"}
+            onTitlePress={() => {
+              dispatch(setCurrentHousehold(household));
+              navigation.navigate("Household" as never);
+            }}
+            onEditPress={() => handleEditPress(household)}
+          />
+        ))}
       </View>
       <EditHouseholdModal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-        title={selectedHouseholdTitle ? selectedHouseholdTitle.name : ""}
-        onSave={handleSaveTitle}
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        household={selectedHouseholdTitle}
+        editHouseholdName={handleSaveTitle}
       />
       <View style={styles.optionsContainer}>
         <View style={styles.buttons}>
