@@ -12,6 +12,7 @@ import { Button, IconButton, Portal, Surface } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
+import MembersList from "../components/MembersList";
 import { emojis, mockedMembers } from "../data/data";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setCurrentHousehold } from "../store/household/householdSlice";
@@ -19,6 +20,7 @@ import { getDoc, doc, collection } from "firebase/firestore";
 import { auth } from "../config/firebase";
 import { getFirestore } from "firebase/firestore";
 import { updateUsername } from "../store/user/userActions";
+
 
 const firestore = getFirestore();
 
@@ -62,7 +64,7 @@ const HouseholdButtons = ({
         </TouchableOpacity>
       </Surface>
       <View>
-        <MembersList members={} />
+        <MembersList members={mockedMembers} />
       </View>
     </View>
   );

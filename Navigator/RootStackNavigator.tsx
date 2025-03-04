@@ -51,17 +51,16 @@ export default function RootStackNavigator() {
     >
       {!user ? (
         <>
-                    <RootStack.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{ title: "My Profile" }}
-          />
           <RootStack.Screen
             name="Login"
             component={LoginScreen}
             options={{ headerLeft: () => null }}
           />
-
+          <RootStack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ title: "My Profile" }}
+          />
           <RootStack.Screen
             name="RegisterUser"
             component={RegisterUserScreen}
