@@ -1,13 +1,13 @@
-import { mockedTasks, Task } from "./../../data/data";
 import { createSlice } from "@reduxjs/toolkit";
-import { addTask } from "./taskActions";
+import { Task } from "./../../data/data";
+import { addTask, fetchTasks } from "./taskActions";
 
 type TasksState = {
   list: Task[];
 };
 
 const initialState: TasksState = {
-  list: mockedTasks,
+  list: [],
 };
 
 const taskSlice = createSlice({
@@ -17,6 +17,9 @@ const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(addTask.fulfilled, (state, action) => {
       state.list.push(action.payload);
+    });
+    builder.addCase(fetchTasks.fulfilled, (state, action) => {
+      state.list = action.payload;
     });
   },
 });

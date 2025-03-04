@@ -1,16 +1,14 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { CreateTaskPopUpScreen } from "../components/CreateChoreComponent";
-import {
-  emojis,
-  mockedCompletedTasks,
-  mockedMembers,
-  mockedTasks,
-  mockedUser,
-} from "../data/data";
-import { useAppSelector } from "../store/hooks";
+import TaskDetailsModal from "../components/TaskInfoModal";
+import EditTaskModal from "../components/stats/EditTaskModal";
+import { emojis, mockedMembers, mockedTasks, mockedUser } from "../data/data";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { fetchTasks } from "../store/task/taskActions";
 
 const activeHousehold = "1";
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
@@ -29,23 +27,105 @@ export default function HouseholdScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
-  const tasks = useAppSelector(state => state.tasks.list);
+  const tasks = useAppSelector((state) => state.tasks.list);
+  const dispatch = useAppDispatch();
+  const [taskList, setTaskList] = useState(tasks);
+
+  const selectedHousehold = useAppSelector((state) => state.households.current);
+
+  const [isDetailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState({
+    title: "",
+    description: "",
+    reoccurence: 0,
+    score: 0,
+  });
+
+  const showDetailsModal = async (taskId: string) => {
+    const db = getFirestore();
+    const fetch = doc(db, "Tasks", taskId);
+    const fetchedData = await getDoc(fetch);
+    const taskData = fetchedData.data();
+
+    setSelectedTask({
+      title: taskData?.title,
+      description: taskData?.description,
+      reoccurence: taskData?.reoccurence,
+      score: taskData?.score,
+    });
+
+    setDetailsModalVisible(true);
+  };
+
+  const hideDetailsModal = () => {
+    setDetailsModalVisible(false);
+  };
+
+  useEffect(() => {
+    if (selectedHousehold) {
+      dispatch(fetchTasks(selectedHousehold.id));
+    }
+  }, [dispatch, selectedHousehold]);
+
+  useEffect(() => {
+    setTaskList(tasks);
+  }, [tasks]);
+
+  const handleSave = async (
+    id: string,
+    newTitle: string,
+    newDescription: string,
+    newReoccurence: number,
+    newScore: number
+  ) => {
+    try {
+      const db = getFirestore();
+      const taskDocRef = doc(db, "Tasks", id);
+      await updateDoc(taskDocRef, {
+        title: newTitle,
+        description: newDescription,
+        reoccurence: newReoccurence,
+        score: newScore,
+      });
+      setTaskList((prevList) =>
+        prevList.map((task) =>
+          task.id === id
+            ? {
+                ...task,
+                title: newTitle,
+                description: newDescription,
+                reoccurence: newReoccurence,
+                score: newScore,
+              }
+            : task
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View style={s.screenContainer}>
       <View>
-        {tasks
-          .filter((task) => task.householdId === activeHousehold)
-          .map((task, index) => {
-            return (
+        {taskList.length === 0 ? (
+          <Text></Text>
+        ) : (
+          taskList
+            .filter((task) => task.householdId === selectedHousehold?.id)
+            .map((task, index) => (
               <TaskRow
                 key={index}
                 title={task.title}
+                description={task.description}
+                reoccurence={task.reoccurence}
+                score={task.score}
                 taskId={task.id}
-                onTitlePress={() => console.log(`${task.title} pressed`)}
+                onTitlePress={() => showDetailsModal(task.id)}
+                onSave={handleSave}
               />
-            );
-          })}
+            ))
+        )}
       </View>
       <View style={s.addTaskButtonContainer}>
         <View>
@@ -53,53 +133,61 @@ export default function HouseholdScreen() {
         </View>
       </View>
       {isModalVisible && <CreateTaskPopUpScreen onClose={hideModal} />}
+      {selectedTask && (
+        <TaskDetailsModal
+          isVisible={isDetailsModalVisible}
+          onClose={hideDetailsModal}
+          task={selectedTask}
+        />
+      )}
     </View>
   );
 }
 
 const TaskRow = ({
   title,
+  description,
+  reoccurence,
+  score,
   taskId,
   onTitlePress,
+  onSave,
 }: {
   title: string;
+  description: string;
+  reoccurence: number;
+  score: number;
   taskId: string;
   onTitlePress: () => void;
+  onSave: (
+    id: string,
+    newTitle: string,
+    newDescription: string,
+    newReoccurence: number,
+    newScore: number
+  ) => void;
 }) => {
-  const completedMembers = mockedCompletedTasks
-    .filter((task) => task.taskId === taskId)
-    .map((task) => task.memberId);
-  const task = activeTasks.find((t) => t.id === taskId);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <View style={s.taskContainer}>
       <TouchableOpacity onPress={onTitlePress}>
         <Text style={{ fontWeight: "bold", fontSize: 18 }}>{title}</Text>
       </TouchableOpacity>
-      <View style={{ flexDirection: "row" }}>
-        {completedMembers.length > 0 ? (
-          completedMembers.map((memberId, index) => {
-            const member = activeMembers.find((m) => m.id === memberId);
-            const emoji =
-              activeEmojis.find((e) => e.id === member?.emojiId) ||
-              activeEmojis[8];
-            return (
-              <MaterialCommunityIcons
-                key={index}
-                name={
-                  emoji.name as keyof typeof MaterialCommunityIcons.glyphMap
-                }
-                size={25}
-                color={emoji.color}
-              />
-            );
-          })
-        ) : (
-          <Text style={{ fontSize: 18, color: "red" }}>
-            {task?.reoccurence}
-          </Text>
-        )}
-      </View>
+      <TouchableOpacity onPress={() => setIsEditing(true)}>
+        <MaterialCommunityIcons
+          name="pencil"
+          size={20}
+          color="#5856D6"
+          style={{ marginLeft: 10 }}
+        />
+      </TouchableOpacity>
+      <EditTaskModal
+        isVisible={isEditing}
+        onClose={() => setIsEditing(false)}
+        task={{ id: taskId, title, description, reoccurence, score }}
+        onSave={onSave}
+      />
     </View>
   );
 };
