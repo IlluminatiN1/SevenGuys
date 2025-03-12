@@ -1,12 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import {
-  collection,
-  doc,
-  getDoc,
-  getFirestore,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
+
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -113,9 +108,9 @@ export default function ProfileScreen() {
   const [selectedHouseholdTitle, setSelectedHouseholdTitle] = useState<any>("");
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [newUsername, setNewUsername] = useState<string>("");
-  const [households, setHouseholds] = useState<any[]>([]);
+  const [householdMembers, setHouseholdMembers] = useState<any[]>([]);
+
 
   const dispatch = useAppDispatch();
 
@@ -127,7 +122,7 @@ export default function ProfileScreen() {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          setUsername(userDoc.data()?.username || "Unknown User");
+          setUsername(userDoc.data()?.name || "Unknown User");
         }
       }
       setLoading(false);
@@ -136,18 +131,25 @@ export default function ProfileScreen() {
   }, []);
 
   useEffect(() => {
-    const listenToHouseholdUpdates = onSnapshot(
-      collection(firestore, "households"),
-      (querySnapshot) => {
-        const updatedHouseholdList = querySnapshot.docs.map((document) => ({
-          id: document.id,
-          ...document.data(),
-        }));
-        setHouseholds(updatedHouseholdList);
-      }
-    );
+    const fetchUserHouseholds = async () => {
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        const memberDocRef = doc(firestore, "members", userId);
+        const memberDoc = await getDoc(memberDocRef);
+        const householdId = memberDoc.data()?.householdId;
+        const householdDocRef = doc(firestore, "households", householdId);
+        const householdDoc = await getDoc(householdDocRef);
 
-    return () => listenToHouseholdUpdates();
+        if (householdDoc.exists()) {
+          const householdData = householdDoc.data();
+          setHouseholdMembers([
+            { ...householdData, emojiId: memberDoc.data()?.emojiId || "1" },
+          ]);
+        }
+      }
+    };
+    fetchUserHouseholds();
+
   }, []);
 
   const handleUsernameChange = () => {
@@ -193,18 +195,22 @@ export default function ProfileScreen() {
       </Button>
 
       <View style={styles.buttonsContainer}>
-        {households.map((household) => (
-          <HouseholdButtons
-            key={household.id}
-            title={household.name}
-            emojiId={household.emojiId || "1"}
-            onTitlePress={() => {
-              dispatch(setCurrentHousehold(household));
-              navigation.navigate("Household" as never);
-            }}
-            onEditPress={() => handleEditPress(household)}
-          />
-        ))}
+
+        {householdMembers.map((household, index) => {
+          return (
+            <HouseholdButtons
+              key={index}
+              title={household.name}
+              emojiId={household.emojiId}
+              onTitlePress={() => {
+                dispatch(setCurrentHousehold(household));
+                navigation.navigate("Household" as never);
+              }}
+              onEditPress={() => handleEditPress(household)}
+            />
+          );
+        })}
+
       </View>
       <EditHouseholdModal
         isVisible={modalVisible}
