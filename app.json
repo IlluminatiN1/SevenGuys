@@ -1,5 +1,6 @@
 {
   "expo": {
+    "newArchEnabled": true,
     "name": "SevenGuys",
     "slug": "SevenGuys",
     "version": "1.0.0",
