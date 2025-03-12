@@ -37,9 +37,9 @@
 
 #### Statistik:
 
-- [ ] En användare ska kunna se fördelningen av gjorda sysslor mellan användarna i sitt hushåll. \*
-- [ ] Varje statistikvy ska visa den totala fördelningen (inräknat vikterna för sysslorna) samt fördelning av varje enskild syssla. \*
-- [ ] Det ska finnas en statistikvy över ”nuvarande vecka”. \*
+- [x] En användare ska kunna se fördelningen av gjorda sysslor mellan användarna i sitt hushåll. \*
+- [x] Varje statistikvy ska visa den totala fördelningen (inräknat vikterna för sysslorna) samt fördelning av varje enskild syssla. \*
+- [x] Det ska finnas en statistikvy över ”nuvarande vecka”. \*
 
 ---
 
