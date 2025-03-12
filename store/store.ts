@@ -1,9 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { householdsReducer } from "./household/householdSlice";
 import { memberReducer } from "./member/memberSlice";
-import tabTitleReducer from "./tabTitle/tabTitleReducer";
-import { userReducer } from "./user/userSlice";
 import { taskReducer } from "./task/taskSlice";
+import { userReducer } from "./user/userSlice";
 
 
 export const store = configureStore({

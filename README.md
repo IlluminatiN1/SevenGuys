@@ -18,7 +18,7 @@
 
 #### Profil:
 
-- [ ] En användare ska kunna ange sitt namn. \*
+- [x] En användare ska kunna ange sitt namn. \*
 - [ ] En användare ska kunna välja en avatar (emoji-djur + färg) från en fördefinierad lista. \*
 - [ ] Valda avatarer ska inte kunna väljas av andra användare i hushållet. \*
 - [ ] Avataren ska användas i appen för att visa vad användaren har gjort. \*

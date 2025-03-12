@@ -1,10 +1,14 @@
+import { doc, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton, Surface } from "react-native-paper";
+import { db } from "../config/firebase";
 
 export default function TaskDetailsModal({
   isVisible,
   onClose,
   task,
+  onArchivedStatusChange,
 }: {
   isVisible: boolean;
   onClose: () => void;
@@ -13,8 +17,29 @@ export default function TaskDetailsModal({
     description: string;
     reoccurence: number;
     score: number;
+    id: string;
+    isArchived: boolean;
   };
+  onArchivedStatusChange: (taskId: string, newStatus: boolean) => void;
 }) {
+  const [isArchived, setIsArchived] = useState(task.isArchived);
+
+  useEffect(() => {
+    setIsArchived(task.isArchived);
+  }, [task]);
+
+  const toggleTaskArchivedStatus = async () => {
+    const newStatus = !isArchived;
+    const taskRef = doc(db, "Tasks", task.id);
+    await updateDoc(taskRef, { isArchived: newStatus });
+
+    setIsArchived(newStatus);
+
+    onArchivedStatusChange(task.id, newStatus);
+
+    onClose();
+  };
+
   return (
     <Modal visible={isVisible} animationType="slide" transparent>
       <View style={s.modalOverlay}>
@@ -27,7 +52,6 @@ export default function TaskDetailsModal({
               style={s.closeIconButton}
             />
           </View>
-
           <Text style={s.label}>Beskrivning:</Text>
           <Text style={s.inlineValue}>{task.description}</Text>
 
@@ -40,9 +64,16 @@ export default function TaskDetailsModal({
             <Text style={s.label}>Poängvärde:</Text>
             <Text style={s.inlineValue}>{task.score}</Text>
           </View>
-
-          <TouchableOpacity style={s.saveButton}>
-            <Text style={s.saveButtonText}>Utförd</Text>
+          <TouchableOpacity
+            style={[
+              s.saveButton,
+              { backgroundColor: isArchived ? "red" : "#3cb03a" },
+            ]}
+            onPress={toggleTaskArchivedStatus}
+          >
+            <Text style={s.saveButtonText}>
+              {isArchived ? "Ej utförd" : "Utförd"}
+            </Text>
           </TouchableOpacity>
         </Surface>
       </View>
@@ -94,7 +125,6 @@ const s = StyleSheet.create({
     color: "#555",
   },
   saveButton: {
-    backgroundColor: "#3cb03a",
     paddingVertical: 10,
     alignItems: "center",
     borderRadius: 10,

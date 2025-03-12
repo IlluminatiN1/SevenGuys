@@ -34,12 +34,34 @@ export default function HouseholdScreen() {
   const selectedHousehold = useAppSelector((state) => state.households.current);
 
   const [isDetailsModalVisible, setDetailsModalVisible] = useState(false);
-  const [selectedTask, setSelectedTask] = useState({
+  const [selectedTask, setSelectedTask] = useState<{
+    title: string;
+    description: string;
+    reoccurence: number;
+    score: number;
+    id: string;
+    isArchived: boolean;
+  }>({
     title: "",
     description: "",
     reoccurence: 0,
     score: 0,
+    id: "",
+    isArchived: false,
   });
+
+  const handleArchivedStatusChange = (taskId: string, newStatus: boolean) => {
+    setTaskList((prevList) =>
+      prevList.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              isArchived: newStatus,
+            }
+          : task
+      )
+    );
+  };
 
   const showDetailsModal = async (taskId: string) => {
     const db = getFirestore();
@@ -52,6 +74,8 @@ export default function HouseholdScreen() {
       description: taskData?.description,
       reoccurence: taskData?.reoccurence,
       score: taskData?.score,
+      id: taskId,
+      isArchived: taskData?.isArchived ?? false,
     });
 
     setDetailsModalVisible(true);
@@ -117,6 +141,7 @@ export default function HouseholdScreen() {
               <TaskRow
                 key={index}
                 title={task.title}
+                TaskArchivedStatus={task.isArchived}
                 description={task.description}
                 reoccurence={task.reoccurence}
                 score={task.score}
@@ -138,6 +163,7 @@ export default function HouseholdScreen() {
           isVisible={isDetailsModalVisible}
           onClose={hideDetailsModal}
           task={selectedTask}
+          onArchivedStatusChange={handleArchivedStatusChange}
         />
       )}
     </View>
@@ -146,6 +172,7 @@ export default function HouseholdScreen() {
 
 const TaskRow = ({
   title,
+  TaskArchivedStatus,
   description,
   reoccurence,
   score,
@@ -154,6 +181,7 @@ const TaskRow = ({
   onSave,
 }: {
   title: string;
+  TaskArchivedStatus: Boolean;
   description: string;
   reoccurence: number;
   score: number;
@@ -173,6 +201,9 @@ const TaskRow = ({
     <View style={s.taskContainer}>
       <TouchableOpacity onPress={onTitlePress}>
         <Text style={{ fontWeight: "bold", fontSize: 18 }}>{title}</Text>
+        <Text style={{ color: TaskArchivedStatus ? "green" : "red" }}>
+          {TaskArchivedStatus ? "Utförd" : "Ej Utförd"}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setIsEditing(true)}>
         <MaterialCommunityIcons
@@ -211,7 +242,6 @@ const AddTaskButton = ({ onPress: handlePress }: { onPress: () => void }) => {
           mode="outlined"
           style={{ borderColor: "white", borderWidth: 2 }}
         />
-
         <Text style={s.createHouseholdText}>Lägg till syssla</Text>
       </View>
     );
