@@ -14,11 +14,11 @@
 
 - [x] En användare ska kunna registrera och logga in sig. \*
 - [x] En användare ska kunna skapa ett nytt hushåll. \*
-- [ ] En användare ska kunna gå med i ett hushåll genom att ange hushållets kod. \*
+- [X] En användare ska kunna gå med i ett hushåll genom att ange hushållets kod. \*
 
 #### Profil:
 
-- [ ] En användare ska kunna ange sitt namn. \*
+- [x] En användare ska kunna ange sitt namn. \*
 - [ ] En användare ska kunna välja en avatar (emoji-djur + färg) från en fördefinierad lista. \*
 - [ ] Valda avatarer ska inte kunna väljas av andra användare i hushållet. \*
 - [ ] Avataren ska användas i appen för att visa vad användaren har gjort. \*
@@ -37,9 +37,9 @@
 
 #### Statistik:
 
-- [ ] En användare ska kunna se fördelningen av gjorda sysslor mellan användarna i sitt hushåll. \*
-- [ ] Varje statistikvy ska visa den totala fördelningen (inräknat vikterna för sysslorna) samt fördelning av varje enskild syssla. \*
-- [ ] Det ska finnas en statistikvy över ”nuvarande vecka”. \*
+- [x] En användare ska kunna se fördelningen av gjorda sysslor mellan användarna i sitt hushåll. \*
+- [x] Varje statistikvy ska visa den totala fördelningen (inräknat vikterna för sysslorna) samt fördelning av varje enskild syssla. \*
+- [x] Det ska finnas en statistikvy över ”nuvarande vecka”. \*
 
 ---
 

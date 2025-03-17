@@ -1,39 +1,41 @@
+import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconButton, Portal, Provider } from "react-native-paper";
-
-interface EditHouseholdTitleProps {
-  visible: boolean;
-  onDismiss: () => void;
-  title: string;
-  onSave: (newTitle: string) => void;
-}
+import { db } from "../config/firebase";
 
 export default function EditHouseholdModal({
-  visible,
-  onDismiss,
-  title,
-  onSave,
-}: EditHouseholdTitleProps) {
-  const [newTitle, setNewTitle] = useState<string>(title);
+  isVisible,
+  onClose,
+  household,
+  editHouseholdName,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+  household: {
+    id: string;
+    name: string;
+  };
+  editHouseholdName: (householdId: string, newName: string) => void;
+}) {
+  const [name, setNewTitle] = useState(household.name);
 
   useEffect(() => {
-    if (visible) {
-      setNewTitle(title);
-    }
-  }, [title]);
+    setNewTitle(household.name);
+  }, [household]);
 
-  const handleSave = () => {
-    if (newTitle !== "") {
-      onSave(newTitle);
-      onDismiss();
-    }
+  const updateNewTitle = async () => {
+    const taskRef = doc(db, "households", household.id);
+    await updateDoc(taskRef, { name });
+
+    editHouseholdName(household.id, name);
+    onClose();
   };
 
   return (
     <Provider>
       <Portal>
-        <Modal visible={visible} transparent onRequestClose={onDismiss}>
+        <Modal visible={isVisible} transparent onRequestClose={onClose}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.title}>Redigera titel</Text>
@@ -41,15 +43,15 @@ export default function EditHouseholdModal({
                 icon={"close"}
                 size={20}
                 iconColor="black"
-                onPress={onDismiss}
+                onPress={onClose}
                 style={styles.closeButton}
               />
               <TextInput
                 style={styles.input}
-                value={newTitle}
+                value={name}
                 onChangeText={setNewTitle}
               />
-              <Button title="Spara" onPress={handleSave} />
+              <Button title="Spara" onPress={updateNewTitle} />
             </View>
           </View>
         </Modal>
