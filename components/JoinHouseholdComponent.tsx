@@ -3,9 +3,13 @@ import { useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
 import { emojis, mockedMembers } from "../data/data";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateMemberEmoji } from "../store/member/memberActions";
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, where, collection, query, getDocs } from "firebase/firestore";
+import { RootState, AppDispatch } from "../store/store";
+import { auth } from "../config/firebase";
 
+const firestore = getFirestore();
 const activeEmojis = emojis.length > 0 ? emojis : [];
 
 const JoinHouseholdPopup = ({
@@ -16,49 +20,103 @@ const JoinHouseholdPopup = ({
   hideModal: () => void;
 }) => {
   const [selectedEmoji, setSelectedEmoji] = useState<string>();
+  const [householdCode, setHouseholdCode] = useState<string>("");
+  const [memberName, setMemberName] = useState<string>(""); 
   const dispatch = useAppDispatch();
-  //const members = useAppSelector((state: RootState) => state.members.members);
-  //const households = useAppSelector((state: RootState) => state.households.list);
   const members = mockedMembers;
 
-  const handleGetHousehold = () => {
-    // Hämta datan om ledig avatar
-    // dispatch(getHouseholdByCode);
-  }
-
-  const handleJoinHousehold = () => {
-    const member = members.find((member) => member.userId === "1"); // Mockad användar-ID som sträng
-    console.log("Fetched member: ", member); // För att debugga ifall koden hämtar mockad member.
-    if (!member) {
-      Alert.alert("Error", "Member not found");
-      return;
-    }
-
-    // dispatch(createMember/joinHousehold);
-
-    if (!selectedEmoji) {
-      Alert.alert("Validation Error", "Please select an emoji");
-      return;
-    }
-
-    dispatch(updateMemberEmoji({ memberId: member.id, emojiId: selectedEmoji }))
-      .unwrap()
-      .then(() => {
-        Alert.alert(
-          "Success",
-          "Joined household and emoji updated successfully"
-        );
-        console.log("Joined household and emoji updated successfully");
-        console.log(
-          "Selected emoji: ",
-          selectedEmoji + "for member: ",
-          member.id
-        );
-        hideModal();
-      })
-      .catch((error) => {
-        Alert.alert("Error", error.message || "An error occurred");
+  const handleGetHousehold = async () => {
+    try {
+      // Hämta hushållet från Firebase med hjälp av koden
+      console.log("Household Code:", householdCode);
+      const q = query(collection(firestore, "households"), where("code", "==", householdCode));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.empty) {
+        Alert.alert("Error", "Household not found");
+        return;
+      }
+  
+      querySnapshot.forEach((doc) => {
+        const householdData = doc.data();
+        console.log("Fetched household data: ", householdData);
       });
+    } catch (error) {
+      console.error("Error fetching household:", error);
+      Alert.alert("Error", "An error occurred while fetching the household");
+    }
+  };
+
+  const handleJoinHousehold = async () => {
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
+      Alert.alert("Error", "User not authenticated");
+      return;
+    }
+
+    const q = query(collection(firestore, "households"), where("code", "==", householdCode));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      Alert.alert("Error", "Household not found");
+      return;
+    }
+
+    let householdData;
+    let householdDocRef;
+
+    querySnapshot.forEach((doc) => {
+      householdData = doc.data();
+      householdDocRef = doc.ref;
+    });
+
+    if (!householdData) {
+      Alert.alert("Error", "Household data is empty");
+      return;
+    }
+
+    const isEmojiTaken = householdData.members.some(
+      (member: any) => member.emojiId === selectedEmoji
+    );
+
+    if (isEmojiTaken) {
+      Alert.alert("Error", "Emoji is already taken in this household");
+      return;
+    }
+
+    const newMember = {
+      id: userId,
+      name: memberName,
+      emojiId: selectedEmoji,
+      householdId: householdDocRef.id,
+    };
+
+    await updateDoc(householdDocRef, {
+      members: arrayUnion(newMember),
+    });
+
+    if (userId && selectedEmoji) {
+      dispatch(updateMemberEmoji({ memberId: userId, emojiId: selectedEmoji }))
+        .unwrap()
+        .then(() => {
+          Alert.alert(
+            "Success",
+            "Joined household and emoji updated successfully"
+          );
+          console.log("Joined household and emoji updated successfully");
+          console.log(
+            "Selected emoji: ",
+            selectedEmoji + " for member: ",
+            userId
+          );
+          hideModal();
+        })
+        .catch((error) => {
+          Alert.alert("Error", error.message || "An error occurred");
+        });
+    } else {
+      Alert.alert("Error", "User ID or Emoji is missing");
+    }
   };
 
   return (
@@ -85,6 +143,8 @@ const JoinHouseholdPopup = ({
           mode="outlined"
           activeOutlineColor="black"
           style={s.inputField}
+          value={householdCode} // Bind state-variabeln till TextInput
+          onChangeText={setHouseholdCode} // Uppdatera state-variabeln när användaren skriver in koden
         />
         <Button mode="contained" onPress={handleGetHousehold}>
           Hämta hushåll
@@ -101,6 +161,8 @@ const JoinHouseholdPopup = ({
           mode="outlined"
           activeOutlineColor="black"
           style={s.inputField}
+          value={memberName} // Bind state-variabeln till TextInput
+          onChangeText={setMemberName} // Uppdatera state-variabeln när användaren skriver in namnet
         />
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Välj avatar</Text>
         <View style={s.emojiContainer}>

@@ -20,6 +20,7 @@ import { useAppDispatch } from "../store/hooks";
 import { setCurrentHousehold } from "../store/household/householdSlice";
 import { updateUsername } from "../store/user/userActions";
 
+
 const firestore = getFirestore();
 
 const HouseholdButtons = ({
@@ -37,6 +38,7 @@ const HouseholdButtons = ({
   if (!emoji) return null;
 
   return (
+    
     <View style={styles.householdButtonContainer}>
       <TouchableOpacity onPress={onTitlePress}>
         <Text style={styles.buttonText}>{title}</Text>
@@ -60,6 +62,9 @@ const HouseholdButtons = ({
           </View>
         </TouchableOpacity>
       </Surface>
+      <View>
+        <MembersList members={mockedMembers} />
+      </View>
     </View>
   );
 };
@@ -227,6 +232,7 @@ export default function ProfileScreen() {
         </View>
       </View>
     </View>
+    
   );
 }
 

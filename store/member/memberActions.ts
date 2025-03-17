@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../config/firebase";
-import { collection, setDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, setDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { Member, MemberCreate, mockedMembers } from "../../data/data";
 
 export const createMember = createAsyncThunk(
@@ -37,3 +37,29 @@ export const updateMemberEmoji = createAsyncThunk(
   }
 );
 
+export const fetchMembersByUserId = createAsyncThunk<
+  Member[], // Return type
+  string, // Argument type
+  { rejectValue: string | null } // ThunkAPI type
+>(
+  "members/fetchMembersByUserId",
+  async (userId, thunkAPI) => {
+    try {
+      const q = query(collection(db, "members"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      const members: Member[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+        emojiId: doc.data().emojiId,
+        isOwner: doc.data().isOwner,
+        householdId: doc.data().householdId,
+        userId: doc.data().userId,
+        isRequest: doc.data().isRequest
+      }));
+      return members;
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      return thunkAPI.rejectWithValue("Could not fetch members");
+    }
+  }
+);

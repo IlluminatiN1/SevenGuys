@@ -14,7 +14,7 @@
 
 - [x] En användare ska kunna registrera och logga in sig. \*
 - [x] En användare ska kunna skapa ett nytt hushåll. \*
-- [ ] En användare ska kunna gå med i ett hushåll genom att ange hushållets kod. \*
+- [X] En användare ska kunna gå med i ett hushåll genom att ange hushållets kod. \*
 
 #### Profil:
 

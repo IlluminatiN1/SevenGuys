@@ -1,15 +1,14 @@
 // store/household/householdActions.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../config/firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { generateRandomCode } from "../../utils/household/HouseholdCodeGenerator";
 import { Household, Member } from "../../data/data";
+import { fetchMembersByUserId } from "../member/memberActions";
 
 type HouseholdPayload = { name: string; userId: string };
-type HouseholdResponse = {
-  household: Household;
-  member: Member;
-};
+type HouseholdResponse = { household: Household; member: Member };
+type HouseholdListReponse = { households: Household[] };
 
 export const createHousehold = createAsyncThunk<
   HouseholdResponse,
@@ -48,4 +47,58 @@ export const createHousehold = createAsyncThunk<
 });
 
 // getHouseholdsByUserId
+export const getHouseholdsByUserId = createAsyncThunk<
+  HouseholdListReponse,
+  HouseholdPayload
+>("household/getHouseholdsbyId", async ({ userId }, thunkAPI) => {
+  try {
+    // Hämta medlemmar med hjälp av fetchMembersByUserId
+    const membersResult = await thunkAPI.dispatch(fetchMembersByUserId(userId));
+
+    // Kontrollera om anropet lyckades
+    if (fetchMembersByUserId.fulfilled.match(membersResult)) {
+      const members = membersResult.payload as Member[];
+
+      // Om inga medlemmar hittades, returnera en tom lista med hushåll
+      if (members.length === 0) {
+        return { households: [] };
+      }
+
+      // Hämta householdId från varje medlem och filtrera bort undefined och null värden
+      const householdIds = members
+        .map((member) => member.householdId)
+        .filter((id) => id !== undefined && id !== null); // Filtrera bort undefined och null värden
+
+      // Om inga giltiga householdId hittades, returnera en tom lista med hushåll
+      if (householdIds.length === 0) {
+        return { households: [] };
+      }
+
+      // Skapa en query för att hämta hushåll baserat på householdId
+      const qHouseholds = query(
+        collection(db, "households"),
+        where("id", "in", householdIds)
+      );
+
+      // Exekvera queryn och hämta resultaten
+      const querySnapshot = await getDocs(qHouseholds);
+
+      // Mappa resultaten till en lista med hushåll
+      const households: Household[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Household[];
+
+      console.log("Households:", households);
+
+      return { households };
+    } else {
+      throw new Error("Failed to fetch members");
+    }
+  } catch (error) {
+    // Logga eventuella fel och returnera ett avvisat värde
+    console.error("Error getting households:", error);
+    return thunkAPI.rejectWithValue("Could not get households");
+  }
+});
 // getHouseholdByCode

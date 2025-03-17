@@ -1,56 +1,46 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { updateMemberEmoji } from "./memberActions";
+import { fetchMembersByUserId } from "./memberActions";
 import { Member } from "../../data/data";
-import { createHousehold } from "../household/houseHoldActions";
 
-interface MemberState {
+type MembersState = {
   members: Member[];
+  currentMember: Member | null;
+  loading: boolean;
   error: string | null;
-}
+};
 
-const initialState: MemberState = {
+const initialState: MembersState = {
   members: [],
+  currentMember: null,
+  loading: false,
   error: null,
 };
 
-const memberSlice = createSlice({
-  name: "member",
+const membersSlice = createSlice({
+  name: 'members',
   initialState,
   reducers: {
-    setMembers(state, action: PayloadAction<Member[]>) {
-      state.members = action.payload;
+    clearCurrentMember(state) {
+      state.currentMember = null; // Reset currentMember vid behov
     },
+
   },
   extraReducers: (builder) => {
-    builder.addCase(updateMemberEmoji.fulfilled, (state, action) => {
-      const { memberId, emojiId } = action.payload;
-      const member = state.members.find((member) => member.id === memberId);
-      if (member) {
-        member.emojiId = emojiId;
-      }
-    });
-    builder.addCase(updateMemberEmoji.rejected, (state, action) => {
-      state.error = action.payload as string;
-    });
-    builder.addCase(createHousehold.fulfilled, (state, action) => {
-      state.members.push(action.payload.member);
-    })
+    builder
+      .addCase(fetchMembersByUserId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMembersByUserId.fulfilled, (state, action: PayloadAction<Member[]>) => {
+        state.loading = false;
+        state.members = action.payload;
+      })
+      .addCase(fetchMembersByUserId.rejected, (state, action: PayloadAction<string | null | undefined>) => {
+        state.loading = false;
+        state.error = action.payload ?? null; // Ensure error is null if undefined
+      });
   },
 });
 
-
-export const { setMembers } = memberSlice.actions;
-export const memberReducer = memberSlice.reducer;
-
-
-// UR EN KOMPONENTS PERSPEKTIV (VIEW)
-// LÄSA
-// const { members } = useContext(MemberContext);
-// const members = useAppSelector(state => state.members.list)
-
-// SKRIVA
-// const { addMember } = useContext(MemberContext);
-// addMember(....);
-
-// const dispatch = useAppDispatch();
-// dispatch(addMembers(...))
+export const { clearCurrentMember } = membersSlice.actions;
+export const memberReducer = membersSlice.reducer;
