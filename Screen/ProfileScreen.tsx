@@ -20,7 +20,6 @@ import { useAppDispatch } from "../store/hooks";
 import { setCurrentHousehold } from "../store/household/householdSlice";
 import { updateUsername } from "../store/user/userActions";
 
-
 const firestore = getFirestore();
 
 const HouseholdButtons = ({
@@ -38,7 +37,6 @@ const HouseholdButtons = ({
   if (!emoji) return null;
 
   return (
-    
     <View style={styles.householdButtonContainer}>
       <TouchableOpacity onPress={onTitlePress}>
         <Text style={styles.buttonText}>{title}</Text>
@@ -116,7 +114,6 @@ export default function ProfileScreen() {
   const [newUsername, setNewUsername] = useState<string>("");
   const [householdMembers, setHouseholdMembers] = useState<any[]>([]);
 
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -127,7 +124,7 @@ export default function ProfileScreen() {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          setUsername(userDoc.data()?.name || "Unknown User");
+          setUsername(userDoc.data()?.username || "Unknown User");
         }
       }
       setLoading(false);
@@ -154,7 +151,6 @@ export default function ProfileScreen() {
       }
     };
     fetchUserHouseholds();
-
   }, []);
 
   const handleUsernameChange = () => {
@@ -200,7 +196,6 @@ export default function ProfileScreen() {
       </Button>
 
       <View style={styles.buttonsContainer}>
-
         {householdMembers.map((household, index) => {
           return (
             <HouseholdButtons
@@ -215,7 +210,6 @@ export default function ProfileScreen() {
             />
           );
         })}
-
       </View>
       <EditHouseholdModal
         isVisible={modalVisible}
@@ -232,7 +226,6 @@ export default function ProfileScreen() {
         </View>
       </View>
     </View>
-    
   );
 }
 
