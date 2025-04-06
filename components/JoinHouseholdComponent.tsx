@@ -21,7 +21,7 @@ const JoinHouseholdPopup = ({
 }) => {
   const [selectedEmoji, setSelectedEmoji] = useState<string>();
   const [householdCode, setHouseholdCode] = useState<string>("");
-  const [memberName, setMemberName] = useState<string>("");
+  const [memberName, setMemberName] = useState<string>(""); 
   const dispatch = useAppDispatch();
   const members = mockedMembers;
 
@@ -31,12 +31,12 @@ const JoinHouseholdPopup = ({
       console.log("Household Code:", householdCode);
       const q = query(collection(firestore, "households"), where("code", "==", householdCode));
       const querySnapshot = await getDocs(q);
-
+  
       if (querySnapshot.empty) {
         Alert.alert("Error", "Household not found");
         return;
       }
-
+  
       querySnapshot.forEach((doc) => {
         const householdData = doc.data();
         console.log("Fetched household data: ", householdData);
