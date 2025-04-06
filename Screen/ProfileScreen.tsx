@@ -15,10 +15,12 @@ import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 import { auth } from "../config/firebase";
-import { emojis } from "../data/data";
+import { emojis, mockedMembers } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
 import { setCurrentHousehold } from "../store/household/householdSlice";
 import { updateUsername } from "../store/user/userActions";
+import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
+import MembersList from "../components/MembersList";
 
 const firestore = getFirestore();
 
@@ -27,11 +29,13 @@ const HouseholdButtons = ({
   emojiId,
   onTitlePress,
   onEditPress,
+  householdId,
 }: {
   title: string;
   emojiId: string;
   onTitlePress: () => void;
   onEditPress: () => void;
+  householdId: string;
 }) => {
   const emoji = emojis.find((e) => e.id === emojiId);
   if (!emoji) return null;
@@ -60,9 +64,6 @@ const HouseholdButtons = ({
           </View>
         </TouchableOpacity>
       </Surface>
-      <View>
-        <MembersList members={mockedMembers} />
-      </View>
     </View>
   );
 };
@@ -136,22 +137,20 @@ export default function ProfileScreen() {
     const fetchUserHouseholds = async () => {
       const userId = auth.currentUser?.uid;
       if (userId) {
-        const memberDocRef = doc(firestore, "members", userId);
-        const memberDoc = await getDoc(memberDocRef);
-        const householdId = memberDoc.data()?.householdId;
-        const householdDocRef = doc(firestore, "households", householdId);
-        const householdDoc = await getDoc(householdDocRef);
-
-        if (householdDoc.exists()) {
-          const householdData = householdDoc.data();
-          setHouseholdMembers([
-            { ...householdData, emojiId: memberDoc.data()?.emojiId || "1" },
-          ]);
+        try {
+          const result = await dispatch(
+            getHouseholdsByUserId({ userId })
+          ).unwrap();
+          if (result.households) {
+            setHouseholdMembers(result.households);
+          }
+        } catch (error) {
+          console.error("Error fetching households:", error);
         }
       }
     };
     fetchUserHouseholds();
-  }, []);
+  }, [dispatch]);
 
   const handleUsernameChange = () => {
     if (newUsername.trim()) {
@@ -196,20 +195,19 @@ export default function ProfileScreen() {
       </Button>
 
       <View style={styles.buttonsContainer}>
-        {householdMembers.map((household, index) => {
-          return (
-            <HouseholdButtons
-              key={index}
-              title={household.name}
-              emojiId={household.emojiId}
-              onTitlePress={() => {
-                dispatch(setCurrentHousehold(household));
-                navigation.navigate("Household" as never);
-              }}
-              onEditPress={() => handleEditPress(household)}
-            />
-          );
-        })}
+        {householdMembers.map((household, index) => (
+          <HouseholdButtons
+            key={household.id || index}
+            title={household.name}
+            emojiId={household.emojiId || "1"}
+            householdId={household.id}
+            onTitlePress={() => {
+              dispatch(setCurrentHousehold(household));
+              navigation.navigate("Household" as never);
+            }}
+            onEditPress={() => handleEditPress(household)}
+          />
+        ))}
       </View>
       <EditHouseholdModal
         isVisible={modalVisible}

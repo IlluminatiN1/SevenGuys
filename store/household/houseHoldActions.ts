@@ -1,12 +1,20 @@
 // store/household/householdActions.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../config/firebase";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { generateRandomCode } from "../../utils/household/HouseholdCodeGenerator";
 import { Household, Member } from "../../data/data";
 import { fetchMembersByUserId } from "../member/memberActions";
 
 type HouseholdPayload = { name: string; userId: string };
+type GetHouseholdsPayload = { userId: string };
 type HouseholdResponse = { household: Household; member: Member };
 type HouseholdListReponse = { households: Household[] };
 
@@ -49,7 +57,7 @@ export const createHousehold = createAsyncThunk<
 // getHouseholdsByUserId
 export const getHouseholdsByUserId = createAsyncThunk<
   HouseholdListReponse,
-  HouseholdPayload
+  GetHouseholdsPayload
 >("household/getHouseholdsbyId", async ({ userId }, thunkAPI) => {
   try {
     // Hämta medlemmar med hjälp av fetchMembersByUserId
