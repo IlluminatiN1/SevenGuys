@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
   User,
 } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
@@ -64,6 +65,17 @@ export const updateUsername = createAsyncThunk<void, string>(
       });
     } catch (error) {
       return thunkApi.rejectWithValue("Could not update username");
+    }
+  }
+);
+
+export const signOutUser = createAsyncThunk<void>(
+  "user/sign-out",
+  async (_, thunkApi) => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      return thunkApi.rejectWithValue("Could not sign out user");
     }
   }
 );
