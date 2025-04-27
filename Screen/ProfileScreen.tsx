@@ -18,7 +18,7 @@ import { auth } from "../config/firebase";
 import { emojis, mockedMembers } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
 import { setCurrentHousehold } from "../store/household/householdSlice";
-import { signOutUser, updateUsername } from "../store/user/userActions";
+import { updateUsername } from "../store/user/userActions";
 import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
 import MembersList from "../components/MembersList";
 
@@ -114,7 +114,7 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [newUsername, setNewUsername] = useState<string>("");
   const [householdMembers, setHouseholdMembers] = useState<any[]>([]);
-  
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -173,14 +173,6 @@ export default function ProfileScreen() {
     setModalVisible(false);
   };
 
-  const signingOut = async () => {
-      await dispatch(signOutUser()).unwrap();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
-  };
-
   return (
     <View style={styles.screenContainer}>
       <View style={styles.userContainer}>
@@ -230,15 +222,6 @@ export default function ProfileScreen() {
         <View style={styles.buttons}>
           <JoinHouseholdButton />
         </View>
-      </View>
-      <View style={styles.signOutContainer}>
-        <Button
-          mode="outlined"
-          onPress={signingOut}
-          style={styles.signOutButton}
-        >
-          Logga ut
-        </Button>
       </View>
     </View>
   );
@@ -318,12 +301,4 @@ const styles = StyleSheet.create({
   iconButton: {
     marginHorizontal: -1,
   },
-  signOutContainer: {
-    marginTop: 20,
-    width: "100%",
-    paddingHorizontal: 16,
-  },
-  signOutButton: {
-    borderColor: "purple",
-  }
 });
