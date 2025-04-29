@@ -1,13 +1,20 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  arrayUnion,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
-import { emojis, mockedMembers } from "../data/data";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { updateMemberEmoji } from "../store/member/memberActions";
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion, where, collection, query, getDocs } from "firebase/firestore";
-import { RootState, AppDispatch } from "../store/store";
 import { auth } from "../config/firebase";
+import { emojis, mockedMembers } from "../data/data";
+import { useAppDispatch } from "../store/hooks";
+import { updateMemberEmoji } from "../store/member/memberActions";
 
 const firestore = getFirestore();
 const activeEmojis = emojis.length > 0 ? emojis : [];
@@ -29,7 +36,10 @@ const JoinHouseholdPopup = ({
     try {
       // Hämta hushållet från Firebase med hjälp av koden
       console.log("Household Code:", householdCode);
-      const q = query(collection(firestore, "households"), where("code", "==", householdCode));
+      const q = query(
+        collection(firestore, "households"),
+        where("code", "==", householdCode)
+      );
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -54,7 +64,10 @@ const JoinHouseholdPopup = ({
       return;
     }
 
-    const q = query(collection(firestore, "households"), where("code", "==", householdCode));
+    const q = query(
+      collection(firestore, "households"),
+      where("code", "==", householdCode)
+    );
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
@@ -70,7 +83,7 @@ const JoinHouseholdPopup = ({
       householdDocRef = doc.ref;
     });
 
-    if (!householdData) {
+    if (!householdData || !householdDocRef) {
       Alert.alert("Error", "Household data is empty");
       return;
     }
@@ -89,11 +102,21 @@ const JoinHouseholdPopup = ({
       name: memberName,
       emojiId: selectedEmoji,
       householdId: householdDocRef.id,
+      userId: userId,
+      isOwner: false,
+      isRequest: false,
     };
 
-    await updateDoc(householdDocRef, {
-      members: arrayUnion(newMember),
-    });
+    try {
+      await updateDoc(householdDocRef, {
+        members: arrayUnion(newMember),
+      });
+      console.log("Successfully added member to household!");
+    } catch (e) {
+      console.error("Failed to update household:", e);
+      Alert.alert("Error", "Failed to join household");
+      return;
+    }
 
     if (userId && selectedEmoji) {
       dispatch(updateMemberEmoji({ memberId: userId, emojiId: selectedEmoji }))
@@ -153,9 +176,7 @@ const JoinHouseholdPopup = ({
 
       {/* Medlem */}
       <View style={s.contentContainer}>
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>
-          Ange ditt namn
-        </Text>
+        <Text style={{ fontWeight: "bold", fontSize: 20 }}>Ange ditt namn</Text>
         <TextInput
           label="Namn"
           mode="outlined"
