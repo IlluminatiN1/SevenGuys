@@ -10,7 +10,7 @@ export const addTask = createAppAsyncThunk<Task, TaskCreate>(
     try {
       const state = thunkAPI.getState();
 
-      const docRef = doc(collection(db, "Tasks"));
+      const docRef = doc(collection(db, "task"));
       const task: Task = {
         id: docRef.id,
         householdId: state.households.current!.id,
@@ -31,7 +31,7 @@ export const fetchTasks = createAppAsyncThunk<Task[], string>(
   async (householdId, thunkAPI) => {
     try {
       const tasksQuery = query(
-        collection(db, "Tasks"),
+        collection(db, "task"),
         where("householdId", "==", householdId)
       );
       const querySnapshot = await getDocs(tasksQuery);
