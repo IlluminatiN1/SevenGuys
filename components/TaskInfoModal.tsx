@@ -30,7 +30,7 @@ export default function TaskDetailsModal({
 
   const toggleTaskArchivedStatus = async () => {
     const newStatus = !isArchived;
-    const taskRef = doc(db, "Tasks", task.id);
+    const taskRef = doc(db, "task", task.id);
     await updateDoc(taskRef, { isArchived: newStatus });
 
     setIsArchived(newStatus);
@@ -72,7 +72,7 @@ export default function TaskDetailsModal({
             onPress={toggleTaskArchivedStatus}
           >
             <Text style={s.saveButtonText}>
-              {isArchived ? "Ej utförd" : "Utförd"}
+              {task.isArchived ? "Ej utförd" : "Utförd"}
             </Text>
           </TouchableOpacity>
         </Surface>

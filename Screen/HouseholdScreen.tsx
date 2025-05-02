@@ -65,7 +65,7 @@ export default function HouseholdScreen() {
 
   const showDetailsModal = async (taskId: string) => {
     const db = getFirestore();
-    const fetch = doc(db, "Tasks", taskId);
+    const fetch = doc(db, "task", taskId);
     const fetchedData = await getDoc(fetch);
     const taskData = fetchedData.data();
 
@@ -104,7 +104,7 @@ export default function HouseholdScreen() {
   ) => {
     try {
       const db = getFirestore();
-      const taskDocRef = doc(db, "Tasks", id);
+      const taskDocRef = doc(db, "task", id);
       await updateDoc(taskDocRef, {
         title: newTitle,
         description: newDescription,
