@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useIsFocused } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 
@@ -113,6 +113,7 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [newUsername, setNewUsername] = useState<string>("");
   const [householdMembers, setHouseholdMembers] = useState<any[]>([]);
+  const isFocused = useIsFocused();
 
   const dispatch = useAppDispatch();
 
@@ -148,8 +149,10 @@ export default function ProfileScreen() {
         }
       }
     };
-    fetchUserHouseholds();
-  }, [dispatch]);
+    if (isFocused) {
+      fetchUserHouseholds();
+    }
+  }, [dispatch, isFocused]);
 
   const handleUsernameChange = () => {
     if (newUsername.trim()) {
