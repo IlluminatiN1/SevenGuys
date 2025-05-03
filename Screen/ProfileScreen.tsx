@@ -15,12 +15,11 @@ import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 import { auth } from "../config/firebase";
-import { emojis, mockedMembers } from "../data/data";
+import { emojis } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
+import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
 import { setCurrentHousehold } from "../store/household/householdSlice";
 import { signOutUser, updateUsername } from "../store/user/userActions";
-import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
-import MembersList from "../components/MembersList";
 
 const firestore = getFirestore();
 
@@ -114,14 +113,14 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [newUsername, setNewUsername] = useState<string>("");
   const [householdMembers, setHouseholdMembers] = useState<any[]>([]);
-  
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchUsername = async () => {
       const userId = auth.currentUser?.uid;
       if (userId) {
-        const userDocRef = doc(collection(firestore, "members"), userId);
+        const userDocRef = doc(collection(firestore, "user"), userId);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
@@ -174,11 +173,11 @@ export default function ProfileScreen() {
   };
 
   const signingOut = async () => {
-      await dispatch(signOutUser()).unwrap();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
+    await dispatch(signOutUser()).unwrap();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
+    });
   };
 
   return (
@@ -325,5 +324,5 @@ const styles = StyleSheet.create({
   },
   signOutButton: {
     borderColor: "purple",
-  }
+  },
 });
