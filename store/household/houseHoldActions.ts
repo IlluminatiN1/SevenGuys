@@ -1,6 +1,5 @@
 // store/household/householdActions.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { db } from "../../config/firebase";
 import {
   collection,
   doc,
@@ -9,11 +8,12 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { generateRandomCode } from "../../utils/household/HouseholdCodeGenerator";
+import { db } from "../../config/firebase";
 import { Household, Member } from "../../data/data";
+import { generateRandomCode } from "../../utils/household/HouseholdCodeGenerator";
 import { fetchMembersByUserId } from "../member/memberActions";
 
-type HouseholdPayload = { name: string; userId: string };
+type HouseholdPayload = { name: string; userId: string; emojiId: string };
 type GetHouseholdsPayload = { userId: string };
 type HouseholdResponse = { household: Household; member: Member };
 type HouseholdListReponse = { households: Household[] };
@@ -21,7 +21,7 @@ type HouseholdListReponse = { households: Household[] };
 export const createHousehold = createAsyncThunk<
   HouseholdResponse,
   HouseholdPayload
->("household/create", async ({ name, userId }, thunkAPI) => {
+>("household/create", async ({ name, userId, emojiId }, thunkAPI) => {
   try {
     console.log("Creating household");
     const code = generateRandomCode(4);
@@ -43,7 +43,7 @@ export const createHousehold = createAsyncThunk<
       userId,
       isOwner: true,
       isRequest: false,
-      emojiId: "1",
+      emojiId,
     };
     await setDoc(memberRef, member);
 
