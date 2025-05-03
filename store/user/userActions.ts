@@ -5,10 +5,11 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { auth, db } from "../../config/firebase";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../../config/firebase";
 
 type AuthData = {
+  id: string;
   email: string;
   password: string;
   username?: string;
@@ -26,9 +27,11 @@ export const signUpUser = createAsyncThunk<User, AuthData>(
       const userId = result.user.uid;
 
       if (userId && username) {
-        await setDoc(doc(db, "members", userId), {
+        await setDoc(doc(db, "user", userId), {
+          id: userId,
           email,
           username,
+          password,
           createdAt: new Date(),
         });
       }
@@ -59,7 +62,7 @@ export const updateUsername = createAsyncThunk<void, string>(
     if (!userId) return thunkApi.rejectWithValue("User is not logged in");
 
     try {
-      const userDocRef = doc(db, "members", userId);
+      const userDocRef = doc(db, "user", userId);
       await updateDoc(userDocRef, {
         username: newUsername,
       });
