@@ -1,4 +1,8 @@
-import { NavigationProp, useNavigation, useIsFocused } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 
@@ -171,7 +175,14 @@ export default function ProfileScreen() {
     setModalVisible(true);
   };
 
-  const handleSaveTitle = async (householdId: string, newName: string) => {
+  const handleSaveTitle = (householdId: string, newHouseholdTitle: string) => {
+    setHouseholdMembers((prev) =>
+      prev.map((household) =>
+        household.id === householdId
+          ? { ...household, name: newHouseholdTitle }
+          : household
+      )
+    );
     setModalVisible(false);
   };
 
