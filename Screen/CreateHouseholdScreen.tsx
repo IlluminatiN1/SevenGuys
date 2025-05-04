@@ -1,41 +1,38 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { getAuth } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
-import { emojis } from "../data/data";
+import { Emoji } from "../data/data";
+import { fetchEmoji } from "../utils/emoji";
 import { useAppDispatch } from "../store/hooks";
 import { createHousehold } from "../store/household/houseHoldActions";
 // Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 type Props = NativeStackScreenProps<RootStackParamList, "CreateHousehold">;
 
-const activeEmojis = emojis.length > 0 ? emojis : [];
-
 interface Task {
   name: string;
   checked: boolean;
 }
 
-// Håprdkodad lista av sysslor som användaren kan välja mellan
-// Vi kan ändra det sen när vi har en backend(?)
 export default function CreateHouseholdScreen(props: Props) {
   const [householdName, setHouseholdName] = useState<string>("");
   const [selectedEmoji, setSelectedEmoji] = useState<string>();
-
-  // const [chores, setChores] = useState<Chore[]>([
-  //   { name: "Laga mat 🍳", checked: false },
-  //   { name: "Damma 🧹", checked: false },
-  //   { name: "Diska 🍽️", checked: false },
-  //   { name: "Ta hand om My 🐱", checked: false },
-  //   { name: "Torka golvet 🧼", checked: false },
-  //   { name: "Vattna blommor 🌸", checked: false },
-  // ]);
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
 
   const dispatch = useAppDispatch();
   const auth = getAuth();
+
+  useEffect(() => {
+    const loadEmojis = async () => {
+      const emoji = await fetchEmoji();
+      setEmojis(emoji);
+    };
+    loadEmojis();
+  }, []);
 
   // Toggle-funktion för att ändra checked-statusen på en syssla
 
@@ -98,7 +95,7 @@ export default function CreateHouseholdScreen(props: Props) {
       />
       <Text style={{ fontWeight: "bold", fontSize: 20 }}>Välj avatar</Text>
       <View style={s.emojiContainer}>
-        {activeEmojis.map((emoji, index) => (
+        {emojis.map((emoji, index) => (
           <MaterialCommunityIcons
             key={index}
             name={emoji.name as keyof typeof MaterialCommunityIcons.glyphMap}
