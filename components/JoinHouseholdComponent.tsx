@@ -8,16 +8,16 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
 import { auth } from "../config/firebase";
-import { emojis, mockedMembers } from "../data/data";
+import { Emoji } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
 import { updateMemberEmoji } from "../store/member/memberActions";
+import { fetchEmoji } from "../utils/emoji";
 
 const firestore = getFirestore();
-const activeEmojis = emojis.length > 0 ? emojis : [];
 
 const JoinHouseholdPopup = ({
   visible,
@@ -29,8 +29,16 @@ const JoinHouseholdPopup = ({
   const [selectedEmoji, setSelectedEmoji] = useState<string>();
   const [householdCode, setHouseholdCode] = useState<string>("");
   const [memberName, setMemberName] = useState<string>("");
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
   const dispatch = useAppDispatch();
-  const members = mockedMembers;
+
+  useEffect(() => {
+    const loadEmojis = async () => {
+      const emoji = await fetchEmoji();
+      setEmojis(emoji);
+    };
+    loadEmojis();
+  }, []);
 
   const handleGetHousehold = async () => {
     try {
@@ -75,11 +83,11 @@ const JoinHouseholdPopup = ({
       return;
     }
 
-    let householdData;
-    let householdDocRef;
+    let householdData: { members: any[] } = { members: [] };
+    let householdDocRef: any;
 
     querySnapshot.forEach((doc) => {
-      householdData = doc.data();
+      householdData = doc.data() as { members: any[] };
       householdDocRef = doc.ref;
     });
 
@@ -187,7 +195,7 @@ const JoinHouseholdPopup = ({
         />
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Välj avatar</Text>
         <View style={s.emojiContainer}>
-          {activeEmojis.map((emoji, index) => (
+          {emojis.map((emoji, index) => (
             <MaterialCommunityIcons
               key={index}
               name={emoji.name as keyof typeof MaterialCommunityIcons.glyphMap}

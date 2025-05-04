@@ -19,11 +19,13 @@ import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import EditHouseholdModal from "../components/EditHouseholdTitleComponent";
 import JoinHouseholdPopup from "../components/JoinHouseholdComponent";
 import { auth } from "../config/firebase";
-import { emojis } from "../data/data";
+import { Emoji } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
 import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
 import { setCurrentHousehold } from "../store/household/householdSlice";
 import { signOutUser, updateUsername } from "../store/user/userActions";
+import { fetchMembersByUserId } from "../store/member/memberActions";
+import { fetchEmoji } from "../utils/emoji";
 
 const firestore = getFirestore();
 
@@ -32,15 +34,16 @@ const HouseholdButtons = ({
   emojiId,
   onTitlePress,
   onEditPress,
-  householdId,
+  emojis,
 }: {
   title: string;
   emojiId: string;
   onTitlePress: () => void;
   onEditPress: () => void;
   householdId: string;
+  emojis: Emoji[];
 }) => {
-  const emoji = emojis.find((e) => e.id === emojiId);
+  const emoji = emojis.find((e: Emoji) => e.id === emojiId);
   if (!emoji) return null;
 
   return (
@@ -117,7 +120,9 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [newUsername, setNewUsername] = useState<string>("");
   const [householdMembers, setHouseholdMembers] = useState<any[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
   const isFocused = useIsFocused();
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
 
   const dispatch = useAppDispatch();
 
@@ -141,22 +146,30 @@ export default function ProfileScreen() {
     const fetchUserHouseholds = async () => {
       const userId = auth.currentUser?.uid;
       if (userId) {
-        try {
           const result = await dispatch(
             getHouseholdsByUserId({ userId })
           ).unwrap();
           if (result.households) {
             setHouseholdMembers(result.households);
           }
-        } catch (error) {
-          console.error("Error fetching households:", error);
-        }
+          const membersResult = await dispatch(
+            fetchMembersByUserId(userId)
+          ).unwrap();
+          setMembers(membersResult || []);
       }
     };
     if (isFocused) {
       fetchUserHouseholds();
     }
   }, [dispatch, isFocused]);
+
+  useEffect(() => {
+    const loadEmojis = async () => {
+      const emoji = await fetchEmoji();
+      setEmojis(emoji);
+    };
+    loadEmojis();
+  }, []);
 
   const handleUsernameChange = () => {
     if (newUsername.trim()) {
@@ -216,19 +229,26 @@ export default function ProfileScreen() {
       </Button>
 
       <View style={styles.buttonsContainer}>
-        {householdMembers.map((household, index) => (
-          <HouseholdButtons
-            key={household.id || index}
-            title={household.name}
-            emojiId={household.emojiId || "1"}
-            householdId={household.id}
-            onTitlePress={() => {
-              dispatch(setCurrentHousehold(household));
-              navigation.navigate("Household" as never);
-            }}
-            onEditPress={() => handleEditPress(household)}
-          />
-        ))}
+        {householdMembers.map((household, index) => {
+          const userId = auth.currentUser?.uid;
+          const member = members.find(
+            (m) => m.householdId === household.id && m.userId === userId
+          );
+          return (
+            <HouseholdButtons
+              key={household.id || index}
+              title={household.name}
+              emojiId={member?.emojiId || "1"}
+              householdId={household.id}
+              onTitlePress={() => {
+                dispatch(setCurrentHousehold(household));
+                navigation.navigate("Household" as never);
+              }}
+              onEditPress={() => handleEditPress(household)}
+              emojis={emojis}
+            />
+          );
+        })}
       </View>
       <EditHouseholdModal
         isVisible={modalVisible}

@@ -7,7 +7,7 @@ export interface Member {
   userId: string;
   isRequest: boolean;
 }
-export type MemberCreate = Omit<Member, "id">
+export type MemberCreate = Omit<Member, "id">;
 
 export interface Emoji {
   id: string;
@@ -44,49 +44,6 @@ export interface CompletedTask {
   taskId: string;
   date: Date;
 }
-
-export const emojis: Emoji[] = [
-  {
-    id: "1",
-    name: "duck",
-    color: "orange",
-  },
-  {
-    id: "2",
-    name: "dolphin",
-    color: "blue",
-  },
-  {
-    id: "3",
-    name: "pig",
-    color: "pink",
-  },
-  {
-    id: "4",
-    name: "bird",
-    color: "gold",
-  },
-  {
-    id: "5",
-    name: "snake",
-    color: "green",
-  },
-  {
-    id: "6",
-    name: "elephant",
-    color: "purple",
-  },
-  {
-    id: "7",
-    name: "unicorn",
-    color: "black",
-  },
-  {
-    id: "8",
-    name: "owl",
-    color: "brown",
-  },
-];
 
 export const mockedUser: User = {
   id: "1",

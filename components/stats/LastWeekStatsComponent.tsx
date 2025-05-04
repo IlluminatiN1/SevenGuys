@@ -12,13 +12,23 @@ import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { auth } from "../../config/firebase";
-import { CompletedTask, emojis, Member, Task } from "../../data/data";
+import { CompletedTask, Emoji, Member, Task } from "../../data/data";
+import { fetchEmoji } from "../../utils/emoji";
 
 const screenWidth = Dimensions.get("window").width;
 const firestore = getFirestore();
 
 export default function LastWeekTotalStatsComponent() {
   const [memberScores, setMemberScores] = useState<any[]>([]);
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
+
+  useEffect(() => {
+    const loadEmojis = async () => {
+      const emoji = await fetchEmoji();
+      setEmojis(emoji);
+    };
+    loadEmojis();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,7 +124,7 @@ export default function LastWeekTotalStatsComponent() {
     };
 
     fetchData();
-  }, []);
+  }, [emojis]);
 
   const totalScore = memberScores.reduce(
     (sum, member) => sum + member.score,
