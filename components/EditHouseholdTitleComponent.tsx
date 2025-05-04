@@ -1,4 +1,11 @@
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconButton, Portal, Provider } from "react-native-paper";
@@ -27,6 +34,18 @@ export default function EditHouseholdModal({
   const updateNewTitle = async () => {
     const taskRef = doc(db, "households", household.id);
     await updateDoc(taskRef, { name });
+
+    const membersRef = collection(db, "members");
+    const q = query(membersRef, where("householdId", "==", household.id));
+    const snapshot = await getDocs(q);
+
+    const updateNameInHousehold = snapshot.docs.map((qResult) => {
+      const memberRef = doc(db, "members", qResult.id);
+      return updateDoc(memberRef, { name: name });
+    });
+
+    // Så att alla members.name uppdateras klart
+    await Promise.all(updateNameInHousehold);
 
     editHouseholdName(household.id, name);
     onClose();
