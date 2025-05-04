@@ -6,9 +6,10 @@ import { IconButton } from "react-native-paper";
 import { CreateTaskPopUpScreen } from "../components/CreateChoreComponent";
 import TaskDetailsModal from "../components/TaskInfoModal";
 import EditTaskModal from "../components/stats/EditTaskModal";
-import { emojis, mockedMembers, mockedTasks, mockedUser } from "../data/data";
+import { Emoji, mockedMembers, mockedTasks, mockedUser } from "../data/data";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchTasks } from "../store/task/taskActions";
+import { fetchEmoji } from "../utils/emoji";
 
 const activeHousehold = "1";
 const activeTasks = mockedTasks.length > 0 ? mockedTasks : [];
@@ -21,9 +22,8 @@ const householdMembers = activeMembers.filter(
   (member) => member.householdId === activeHousehold
 );
 
-const activeEmojis = emojis.length > 0 ? emojis : [];
-
 export default function HouseholdScreen() {
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -94,6 +94,14 @@ export default function HouseholdScreen() {
   useEffect(() => {
     setTaskList(tasks);
   }, [tasks]);
+
+  useEffect(() => {
+    const loadEmojis = async () => {
+      const emoji = await fetchEmoji();
+      setEmojis(emoji);
+    };
+    loadEmojis();
+  }, []);
 
   const handleSave = async (
     id: string,

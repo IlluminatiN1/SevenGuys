@@ -1,15 +1,16 @@
 import {
-    collection,
-    getDocs,
-    getFirestore,
-    query,
-    where,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { auth } from "../../config/firebase";
-import { CompletedTask, emojis, Member, Task } from "../../data/data";
+import { CompletedTask, Emoji, Member, Task } from "../../data/data";
+import { fetchEmoji } from "../../utils/emoji";
 
 const screenWidth = Dimensions.get("window").width;
 const firestore = getFirestore();
@@ -18,6 +19,15 @@ export default function LastWeekIndividualTaskStatComponent() {
   const [taskData, setTaskData] = useState<
     { taskName: string; energy: any[] }[]
   >([]);
+  const [emojis, setEmojis] = useState<Emoji[]>([]);
+
+  useEffect(() => {
+    const loadEmojis = async () => {
+      const emoji = await fetchEmoji();
+      setEmojis(emoji);
+    };
+    loadEmojis();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,7 +112,7 @@ export default function LastWeekIndividualTaskStatComponent() {
     };
 
     fetchData();
-  }, []);
+  }, [emojis]);
 
   return (
     <FlatList
