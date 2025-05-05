@@ -15,7 +15,7 @@ import { fetchEmoji } from "../../utils/emoji";
 const screenWidth = Dimensions.get("window").width;
 const firestore = getFirestore();
 
-export default function LastWeekIndividualTaskStatComponent() {
+export default function ThisWeekIndividualTaskStatComponent() {
   const [taskData, setTaskData] = useState<
     { taskName: string; energy: any[] }[]
   >([]);

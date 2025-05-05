@@ -8,12 +8,12 @@ export default function TabBarHeader(props: MaterialTopTabBarProps) {
   const nextScreen = routes[index + 1];
   const prevScreen = routes[index - 1];
 
-  const screenTitles: {[key: string]: string} = {
+  const screenTitles: { [key: string]: string } = {
     Today: "Idag",
-    LastWeek: "Förra veckan",
+    ThisWeek: "Denna veckan",
     LastMonth: "Förra månaden",
   };
-  
+
   return (
     <View style={style.headerContainer}>
       <View style={style.headerTitleContainer}>
@@ -28,25 +28,31 @@ export default function TabBarHeader(props: MaterialTopTabBarProps) {
         <IconButton
           icon="chevron-left"
           size={20}
-          onPress={() => prevScreen && props.navigation.navigate(prevScreen.name)}
+          onPress={() =>
+            prevScreen && props.navigation.navigate(prevScreen.name)
+          }
           disabled={!prevScreen}
         />
-        <Text style={style.subHeaderTitle}>{screenTitles [currentScreen.name]}</Text>
+        <Text style={style.subHeaderTitle}>
+          {screenTitles[currentScreen.name]}
+        </Text>
         <IconButton
           icon="chevron-right"
           size={20}
-          onPress={() => nextScreen && props.navigation.navigate(nextScreen.name)}
+          onPress={() =>
+            nextScreen && props.navigation.navigate(nextScreen.name)
+          }
           disabled={!nextScreen}
         />
       </View>
     </View>
-  )
+  );
 }
 
 export const style = StyleSheet.create({
   headerContainer: {
     paddingTop: 60,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderBottomWidth: 1,
   },
   headerTitleContainer: {
