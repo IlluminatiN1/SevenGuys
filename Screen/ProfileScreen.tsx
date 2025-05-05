@@ -23,8 +23,8 @@ import { Emoji } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
 import { getHouseholdsByUserId } from "../store/household/houseHoldActions";
 import { setCurrentHousehold } from "../store/household/householdSlice";
-import { signOutUser, updateUsername } from "../store/user/userActions";
 import { fetchMembersByUserId } from "../store/member/memberActions";
+import { signOutUser, updateUsername } from "../store/user/userActions";
 import { fetchEmoji } from "../utils/emoji";
 
 const firestore = getFirestore();
@@ -92,7 +92,7 @@ const CreateHouseholdButton = () => {
   );
 };
 
-const JoinHouseholdButton = () => {
+const JoinHouseholdButton = ({ onJoined }: { onJoined: () => void }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const hideModal = () => setModalVisible(false);
 
@@ -105,7 +105,11 @@ const JoinHouseholdButton = () => {
         Gå med i hushåll
       </Button>
       <Portal>
-        <JoinHouseholdPopup visible={isModalVisible} hideModal={hideModal} />
+        <JoinHouseholdPopup
+          visible={isModalVisible}
+          hideModal={hideModal}
+          onJoined={onJoined}
+        />
       </Portal>
     </View>
   );
@@ -126,6 +130,20 @@ export default function ProfileScreen() {
 
   const dispatch = useAppDispatch();
 
+  const fetchUserHouseholds = async () => {
+    const userId = auth.currentUser?.uid;
+    if (userId) {
+      const result = await dispatch(getHouseholdsByUserId({ userId })).unwrap();
+      if (result.households) {
+        setHouseholdMembers(result.households);
+      }
+      const membersResult = await dispatch(
+        fetchMembersByUserId(userId)
+      ).unwrap();
+      setMembers(membersResult || []);
+    }
+  };
+
   useEffect(() => {
     const fetchUsername = async () => {
       const userId = auth.currentUser?.uid;
@@ -143,25 +161,10 @@ export default function ProfileScreen() {
   }, []);
 
   useEffect(() => {
-    const fetchUserHouseholds = async () => {
-      const userId = auth.currentUser?.uid;
-      if (userId) {
-          const result = await dispatch(
-            getHouseholdsByUserId({ userId })
-          ).unwrap();
-          if (result.households) {
-            setHouseholdMembers(result.households);
-          }
-          const membersResult = await dispatch(
-            fetchMembersByUserId(userId)
-          ).unwrap();
-          setMembers(membersResult || []);
-      }
-    };
     if (isFocused) {
       fetchUserHouseholds();
     }
-  }, [dispatch, isFocused]);
+  }, [isFocused]);
 
   useEffect(() => {
     const loadEmojis = async () => {
@@ -261,7 +264,7 @@ export default function ProfileScreen() {
           <CreateHouseholdButton />
         </View>
         <View style={styles.buttons}>
-          <JoinHouseholdButton />
+          <JoinHouseholdButton onJoined={fetchUserHouseholds} />
         </View>
       </View>
       <View style={styles.signOutContainer}>

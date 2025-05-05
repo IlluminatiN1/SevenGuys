@@ -1,11 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
-  arrayUnion,
+  addDoc,
   collection,
   getDocs,
   getFirestore,
   query,
-  updateDoc,
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -22,9 +21,11 @@ const firestore = getFirestore();
 const JoinHouseholdPopup = ({
   visible,
   hideModal,
+  onJoined,
 }: {
   visible: boolean;
   hideModal: () => void;
+  onJoined: () => void;
 }) => {
   const [selectedEmoji, setSelectedEmoji] = useState<string>();
   const [householdCode, setHouseholdCode] = useState<string>("");
@@ -72,6 +73,11 @@ const JoinHouseholdPopup = ({
       return;
     }
 
+    if (!selectedEmoji) {
+      Alert.alert("Error", "Please select an emoji");
+      return;
+    }
+
     const q = query(
       collection(firestore, "households"),
       where("code", "==", householdCode)
@@ -83,24 +89,31 @@ const JoinHouseholdPopup = ({
       return;
     }
 
-    let householdData: { members: any[] } = { members: [] };
-    let householdDocRef: any;
+    const householdDoc = querySnapshot.docs[0];
+    const householdId = householdDoc.id;
 
-    querySnapshot.forEach((doc) => {
-      householdData = doc.data() as { members: any[] };
-      householdDocRef = doc.ref;
-    });
+    const membersRef = collection(firestore, "members");
 
-    if (!householdData || !householdDocRef) {
-      Alert.alert("Error", "Household data is empty");
+    const existingMemberQuery = query(
+      membersRef,
+      where("householdId", "==", householdId),
+      where("userId", "==", userId)
+    );
+    const existingMemberSnapshot = await getDocs(existingMemberQuery);
+
+    if (!existingMemberSnapshot.empty) {
+      Alert.alert("Error", "You have already joined this household");
       return;
     }
 
-    const isEmojiTaken = householdData.members.some(
-      (member: any) => member.emojiId === selectedEmoji
+    const emojiQuery = query(
+      membersRef,
+      where("householdId", "==", householdId),
+      where("emojiId", "==", selectedEmoji)
     );
+    const emojiSnapshot = await getDocs(emojiQuery);
 
-    if (isEmojiTaken) {
+    if (!emojiSnapshot.empty) {
       Alert.alert("Error", "Emoji is already taken in this household");
       return;
     }
@@ -109,44 +122,27 @@ const JoinHouseholdPopup = ({
       id: userId,
       name: memberName,
       emojiId: selectedEmoji,
-      householdId: householdDocRef.id,
+      householdId: householdId,
       userId: userId,
       isOwner: false,
       isRequest: false,
     };
 
     try {
-      await updateDoc(householdDocRef, {
-        members: arrayUnion(newMember),
-      });
-      console.log("Successfully added member to household!");
-    } catch (e) {
-      console.error("Failed to update household:", e);
-      Alert.alert("Error", "Failed to join household");
-      return;
-    }
+      await addDoc(membersRef, newMember);
 
-    if (userId && selectedEmoji) {
       dispatch(updateMemberEmoji({ memberId: userId, emojiId: selectedEmoji }))
         .unwrap()
         .then(() => {
-          Alert.alert(
-            "Success",
-            "Joined household and emoji updated successfully"
-          );
-          console.log("Joined household and emoji updated successfully");
-          console.log(
-            "Selected emoji: ",
-            selectedEmoji + " for member: ",
-            userId
-          );
+          Alert.alert("Joined household successfully");
           hideModal();
+          onJoined();
         })
         .catch((error) => {
           Alert.alert("Error", error.message || "An error occurred");
         });
-    } else {
-      Alert.alert("Error", "User ID or Emoji is missing");
+    } catch (e) {
+      Alert.alert("Error", "Failed to join household");
     }
   };
 
