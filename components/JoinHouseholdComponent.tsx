@@ -8,7 +8,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
 import { auth } from "../config/firebase";
@@ -176,6 +176,7 @@ const JoinHouseholdPopup = ({
           style={s.inputField}
           value={householdCode} // Bind state-variabeln till TextInput
           onChangeText={setHouseholdCode} // Uppdatera state-variabeln när användaren skriver in koden
+          autoCapitalize="none"
         />
         <Button mode="contained" onPress={handleGetHousehold}>
           Hämta hushåll
