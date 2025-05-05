@@ -18,7 +18,7 @@ import { fetchEmoji } from "../../utils/emoji";
 const screenWidth = Dimensions.get("window").width;
 const firestore = getFirestore();
 
-export default function LastWeekTotalStatsComponent() {
+export default function ThisWeekTotalStatsComponent() {
   const [memberScores, setMemberScores] = useState<any[]>([]);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
 
