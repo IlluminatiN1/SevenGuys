@@ -11,12 +11,10 @@ import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, IconButton, Modal, TextInput } from "react-native-paper";
 import { auth } from "../config/firebase";
-import { Emoji, Household } from "../data/data";
+import { Emoji } from "../data/data";
 import { useAppDispatch } from "../store/hooks";
 import { updateMemberEmoji } from "../store/member/memberActions";
 import { fetchEmoji } from "../utils/emoji";
-import { setCurrentHousehold } from "../store/household/householdSlice";
-import { setCurrentMember } from "../store/member/memberSlice";
 
 const firestore = getFirestore();
 
@@ -45,6 +43,8 @@ const JoinHouseholdPopup = ({
 
   const handleGetHousehold = async () => {
     try {
+      // Hämta hushållet från Firebase med hjälp av koden
+      console.log("Household Code:", householdCode);
       const q = query(
         collection(firestore, "households"),
         where("code", "==", householdCode)
@@ -58,8 +58,10 @@ const JoinHouseholdPopup = ({
 
       querySnapshot.forEach((doc) => {
         const householdData = doc.data();
+        console.log("Fetched household data: ", householdData);
       });
     } catch (error) {
+      console.error("Error fetching household:", error);
       Alert.alert("Error", "An error occurred while fetching the household");
     }
   };
@@ -89,13 +91,6 @@ const JoinHouseholdPopup = ({
 
     const householdDoc = querySnapshot.docs[0];
     const householdId = householdDoc.id;
-    const householdData = householdDoc.data();
-
-    const household: Household = {
-      id: householdId,
-      name: householdData.name,
-      code: householdData.code,
-    };
 
     const membersRef = collection(firestore, "members");
 
@@ -124,6 +119,7 @@ const JoinHouseholdPopup = ({
     }
 
     const newMember = {
+      id: userId,
       name: memberName,
       emojiId: selectedEmoji,
       householdId: householdId,
@@ -133,19 +129,9 @@ const JoinHouseholdPopup = ({
     };
 
     try {
-      const docRef = await addDoc(membersRef, newMember);
-      const memberId = docRef.id;
+      await addDoc(membersRef, newMember);
 
-      const completeMember = {
-        ...newMember,
-        id: memberId,
-      };
-
-      dispatch(setCurrentHousehold(household));
-      dispatch(setCurrentMember(completeMember));
-      dispatch(
-        updateMemberEmoji({ memberId: memberId, emojiId: selectedEmoji })
-      )
+      dispatch(updateMemberEmoji({ memberId: userId, emojiId: selectedEmoji }))
         .unwrap()
         .then(() => {
           Alert.alert("Joined household successfully");
@@ -184,8 +170,8 @@ const JoinHouseholdPopup = ({
           mode="outlined"
           activeOutlineColor="black"
           style={s.inputField}
-          value={householdCode}
-          onChangeText={setHouseholdCode}
+          value={householdCode} // Bind state-variabeln till TextInput
+          onChangeText={setHouseholdCode} // Uppdatera state-variabeln när användaren skriver in koden
           autoCapitalize="none"
         />
         <Button mode="contained" onPress={handleGetHousehold}>
@@ -201,8 +187,8 @@ const JoinHouseholdPopup = ({
           mode="outlined"
           activeOutlineColor="black"
           style={s.inputField}
-          value={memberName}
-          onChangeText={setMemberName}
+          value={memberName} // Bind state-variabeln till TextInput
+          onChangeText={setMemberName} // Uppdatera state-variabeln när användaren skriver in namnet
         />
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Välj avatar</Text>
         <View style={s.emojiContainer}>

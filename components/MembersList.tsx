@@ -2,15 +2,8 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { fetchMembersByUserId } from "../store/member/memberActions";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  ActivityIndicatorComponent,
-} from "react-native";
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, ActivityIndicatorComponent } from "react-native";
 import { Member } from "../data/data";
-import { auth } from "../config/firebase";
 
 interface MembersListProps {
   members?: Member[];
@@ -24,10 +17,8 @@ const MembersList: React.FC<MembersListProps> = ({ members: propMembers }) => {
 
   useEffect(() => {
     if (!propMembers) {
-      const userId = auth.currentUser?.uid;
-      if (userId) {
-        dispatch(fetchMembersByUserId(userId));
-      }
+      const userId = "VCV4qZlx1jXF2Iti6msidl8X8o63"; // Ett hårdkodat userId
+      dispatch(fetchMembersByUserId(userId));
     }
   }, [dispatch, propMembers]);
 
@@ -57,9 +48,7 @@ const MembersList: React.FC<MembersListProps> = ({ members: propMembers }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text>
-              {item.name} - Emoji ID: {item.emojiId}
-            </Text>
+            <Text>{item.name} - Emoji ID: {item.emojiId}</Text>
           </View>
         )}
       />
