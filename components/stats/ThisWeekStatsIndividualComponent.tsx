@@ -11,7 +11,6 @@ import { PieChart } from "react-native-chart-kit";
 import { auth } from "../../config/firebase";
 import { CompletedTask, Emoji, Member, Task } from "../../data/data";
 import { fetchEmoji } from "../../utils/emoji";
-import { useAppSelector } from "../../store/hooks";
 
 const screenWidth = Dimensions.get("window").width;
 const firestore = getFirestore();
@@ -21,10 +20,6 @@ export default function ThisWeekIndividualTaskStatComponent() {
     { taskName: string; energy: any[] }[]
   >([]);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
-
-  const completedTasksFromStore = useAppSelector(
-    (state) => state.completedTasks.list
-  );
 
   useEffect(() => {
     const loadEmojis = async () => {
@@ -36,149 +31,90 @@ export default function ThisWeekIndividualTaskStatComponent() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (emojis.length === 0) {
-          return;
-        }
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
 
-        const userId = auth.currentUser?.uid;
-        if (!userId) {
-          return;
-        }
+      const memberQuery = query(
+        collection(firestore, "members"),
+        where("userId", "==", userId)
+      );
+      const memberSnapshot = await getDocs(memberQuery);
 
-        const memberQuery = query(
-          collection(firestore, "members"),
-          where("userId", "==", userId)
-        );
-        const memberSnapshot = await getDocs(memberQuery);
-        if (memberSnapshot.empty) {
-          return;
-        }
+      const memberData = memberSnapshot.docs[0]?.data() as Member;
+      const householdId = memberData.householdId;
+      if (!memberData?.householdId) return;
 
-        const memberDoc = memberSnapshot.docs[0];
-        const memberData = memberDoc.data() as Member;
-        const householdId = memberData.householdId;
-        if (!memberData?.householdId) {
-          return;
-        }
+      const [membersSnapshot, tasksSnapshot, completedTasksSnapshot] =
+        await Promise.all([
+          getDocs(
+            query(
+              collection(firestore, "members"),
+              where("householdId", "==", householdId)
+            )
+          ),
+          getDocs(
+            query(
+              collection(firestore, "task"),
+              where("householdId", "==", householdId)
+            )
+          ),
+          getDocs(collection(firestore, "completedtask")),
+        ]);
 
-        const membersQuery = query(
-          collection(firestore, "members"),
-          where("householdId", "==", householdId)
-        );
-        const membersSnapshot = await getDocs(membersQuery);
+      const members: Member[] = membersSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Member[];
 
-        const members: Member[] = membersSnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            emojiId: data.emojiId,
-            isOwner: data.isOwner,
-            householdId: data.householdId,
-            userId: data.userId,
-            isRequest: data.isRequest,
-          } as Member;
-        });
+      const tasks: Task[] = tasksSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Task[];
 
-        const memberReverseMap = new Map<string, string[]>();
-        members.forEach((member) => {
-          const identifiers = [member.id, member.userId];
-          identifiers.forEach((id) => {
-            if (id) memberReverseMap.set(id, identifiers);
-          });
-        });
-
-        const memberIds = members.map((member) => member.id);
-
-        const tasksQuery = query(
-          collection(firestore, "task"),
-          where("householdId", "==", householdId)
-        );
-        const tasksSnapshot = await getDocs(tasksQuery);
-
-        let completedTasksQuery;
-        if (memberIds.length <= 10) {
-          completedTasksQuery = query(
-            collection(firestore, "completedtask"),
-            where("memberId", "in", memberIds)
-          );
-        } else {
-          completedTasksQuery = collection(firestore, "completedtask");
-        }
-
-        const completedTasksSnapshot = await getDocs(completedTasksQuery);
-        const tasks: Task[] = tasksSnapshot.docs.map((doc) => ({
+      const completedTasks: CompletedTask[] = completedTasksSnapshot.docs.map(
+        (doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as Task[];
+        })
+      ) as CompletedTask[];
 
-        let completedTasks: CompletedTask[] = completedTasksSnapshot.docs.map(
-          (doc) => {
-            const data = doc.data();
-            return { id: doc.id, ...data };
-          }
-        ) as CompletedTask[];
+      const calculatedTasks = tasks
+        .map((task) => {
+          const memberEnergy = members
+            .map((member) => {
+              const memberCompletedTasks = completedTasks.filter(
+                (completedTask) =>
+                  completedTask.taskId === task.id &&
+                  completedTask.memberId === member.id
+              );
 
-        let filteredTasks: CompletedTask[] = completedTasks;
-        if (memberIds.length > 10) {
-          filteredTasks = completedTasks.filter((task) => {
-            const possibleIds = memberReverseMap.get(task.memberId);
-            return (
-              possibleIds && memberIds.some((id) => possibleIds.includes(id))
-            );
-          });
-        }
+              const totalScore =
+                memberCompletedTasks.length * (task.score || 0);
+              const emoji = emojis.find((e) => e.id === member.emojiId);
 
-        const calculatedTasks = tasks
-          .map((task) => {
-            const memberEnergy = members
-              .map((member) => {
-                const memberCompletedTasks = filteredTasks.filter(
-                  (completedTask) => {
-                    const possibleIds = memberReverseMap.get(member.id) || [
-                      member.id,
-                      member.userId,
-                    ];
-                    return (
-                      completedTask.taskId === task.id &&
-                      possibleIds.some((id) => id === completedTask.memberId)
-                    );
-                  }
-                );
+              return {
+                name: member.name,
+                score: totalScore,
+                color: emoji?.color,
+                emojiName: emoji?.icon,
+              };
+            })
+            .filter((member) => member.score > 0);
 
-                if (memberCompletedTasks.length === 0) {
-                  return null;
-                }
+          return memberEnergy.length > 0
+            ? { taskName: task.title, energy: memberEnergy }
+            : null;
+        })
+        .filter((task) => task !== null) as {
+        taskName: string;
+        energy: any[];
+      }[];
 
-                const totalScore =
-                  memberCompletedTasks.length * (task.score || 0);
-                const emoji = emojis.find((e) => e.id === member.emojiId);
-
-                return {
-                  name: member.name,
-                  score: totalScore,
-                  color: emoji?.color,
-                  emojiName: emoji?.icon,
-                };
-              })
-              .filter(Boolean);
-
-            return memberEnergy.length > 0
-              ? { taskName: task.title, energy: memberEnergy }
-              : null;
-          })
-          .filter((task) => task !== null) as {
-          taskName: string;
-          energy: any[];
-        }[];
-
-        setTaskData(calculatedTasks);
-      } catch (error) {}
+      setTaskData(calculatedTasks);
     };
 
     fetchData();
-  }, [emojis, completedTasksFromStore]);
+  }, [emojis]);
 
   return (
     <FlatList
