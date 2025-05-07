@@ -4,7 +4,7 @@ import {
   getDocs,
   getFirestore,
   query,
-  where
+  where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
@@ -12,6 +12,7 @@ import { PieChart } from "react-native-chart-kit";
 import { auth } from "../../config/firebase";
 import { CompletedTask, Emoji, Member, Task } from "../../data/data";
 import { fetchEmoji } from "../../utils/emoji";
+import { useAppSelector } from "../../store/hooks";
 
 const screenWidth = Dimensions.get("window").width;
 const firestore = getFirestore();
@@ -19,6 +20,10 @@ const firestore = getFirestore();
 export default function ThisWeekTotalStatsComponent() {
   const [memberScores, setMemberScores] = useState<any[]>([]);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
+
+  const completedTasksFromStore = useAppSelector(
+    (state) => state.completedTasks.list
+  );
 
   useEffect(() => {
     const loadEmojis = async () => {
@@ -30,6 +35,8 @@ export default function ThisWeekTotalStatsComponent() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (emojis.length === 0) return;
+
       const userId = auth.currentUser?.uid;
       if (!userId) return;
 
@@ -39,6 +46,8 @@ export default function ThisWeekTotalStatsComponent() {
       );
 
       const memberSnapshot = await getDocs(memberQuery);
+      if (memberSnapshot.empty) return;
+
       const memberDoc = memberSnapshot.docs[0];
       const memberData = memberDoc.data() as Member;
       const householdId = memberData?.householdId;
@@ -49,10 +58,19 @@ export default function ThisWeekTotalStatsComponent() {
       );
 
       const householdMembersSnapshot = await getDocs(householdMembers);
-      const members: Member[] = householdMembersSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Member[];
+
+      const members: Member[] = householdMembersSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name,
+          emojiId: data.emojiId,
+          isOwner: data.isOwner,
+          householdId: data.householdId,
+          userId: data.userId,
+          isRequest: data.isRequest,
+        } as Member;
+      });
 
       const taskCollectionRef = collection(firestore, "task");
       const taskQuery = query(
@@ -66,19 +84,47 @@ export default function ThisWeekTotalStatsComponent() {
         ...doc.data(),
       })) as Task[];
 
-      const completedTaskCollectionRef = collection(firestore, "completedtask");
-      const completedTaskQuery = query(
-        completedTaskCollectionRef,
-        where(
-          "memberId",
-          "in",
-          members.map((m) => m.id)
-        )
-      );
+      const allPossibleMemberIds = [] as string[];
+      for (const member of members) {
+        if (member.id) allPossibleMemberIds.push(member.id);
+      }
+
+      for (const member of members) {
+        if (member.userId) {
+          const extraMembersQuery = await getDocs(
+            query(
+              collection(firestore, "members"),
+              where("userId", "==", member.userId)
+            )
+          );
+
+          extraMembersQuery.forEach((doc) => {
+            const docId = doc.id;
+            if (docId !== member.id && !allPossibleMemberIds.includes(docId)) {
+              allPossibleMemberIds.push(docId);
+            }
+          });
+        }
+      }
+
+      const completedTaskQuery = collection(firestore, "completedtask");
       const completedTaskSnapshot = await getDocs(completedTaskQuery);
-      const completedTasks: CompletedTask[] = completedTaskSnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() })
-      ) as CompletedTask[];
+      let allCompletedTasks: CompletedTask[] = completedTaskSnapshot.docs.map(
+        (doc) => {
+          const data = doc.data();
+          return { id: doc.id, ...data } as CompletedTask;
+        }
+      );
+
+      const memberIdSet = new Set(allPossibleMemberIds);
+      const completedTasks = allCompletedTasks.filter((task) =>
+        memberIdSet.has(task.memberId)
+      );
+
+      const memberLookup = new Map();
+      members.forEach((member) => {
+        memberLookup.set(member.id, member);
+      });
 
       const scoreMap = new Map<
         string,
@@ -89,18 +135,19 @@ export default function ThisWeekTotalStatsComponent() {
         const task = tasks.find((t) => t.id === completedTask.taskId);
         if (task) {
           const memberId = completedTask.memberId;
-          const prevScore = scoreMap.get(memberId)?.score || 0;
-          const memberData = members.find((m) => m.id === memberId);
-          const emoji = memberData
-            ? emojis.find((e) => e.id === memberData.emojiId)
-            : undefined;
+          const memberData = memberLookup.get(memberId);
 
-          scoreMap.set(memberId, {
-            name: memberData?.name || "Unknown Member",
-            score: prevScore + (task.score || 0),
-            color: emoji?.color,
-            emojiName: emoji?.icon,
-          });
+          if (memberData) {
+            const prevScore = scoreMap.get(memberId)?.score || 0;
+            const emoji = emojis.find((e) => e.id === memberData.emojiId);
+
+            scoreMap.set(memberId, {
+              name: memberData.name,
+              score: prevScore + (task.score || 0),
+              color: emoji?.color,
+              emojiName: emoji?.icon,
+            });
+          }
         }
       });
 
@@ -113,12 +160,10 @@ export default function ThisWeekTotalStatsComponent() {
           color: emoji?.color,
           emojiName: emoji?.icon,
         };
+
         return {
           ...memberScore,
-          name: member.name,
-          score: memberScore.score,
           color: memberScore.color,
-          emojiName: memberScore.emojiName,
         };
       });
 
@@ -126,7 +171,7 @@ export default function ThisWeekTotalStatsComponent() {
     };
 
     fetchData();
-  }, [emojis]);
+  }, [emojis, completedTasksFromStore]);
 
   const totalScore = memberScores.reduce(
     (sum, member) => sum + member.score,
@@ -141,43 +186,58 @@ export default function ThisWeekTotalStatsComponent() {
 
   return (
     <View style={s.container}>
-      <View style={s.emojiContainer}>
-        {memberScores.map((member, index) => (
-          <View key={index} style={s.membersRow}>
-            <View style={[s.iconCircle, { borderColor: member.color }]}>
-              <MaterialCommunityIcons
-                name={
-                  member.emojiName as keyof typeof MaterialCommunityIcons.glyphMap
-                }
-                size={25}
-                color={member.color}
-                style={s.emojiIcon}
-              />
-            </View>
-            <Text style={s.memberName}>
-              {member.name ? member.name.slice(0, 3) : "NoName"}: {member.score}
-            </Text>
+      {emojis.length > 0 ? (
+        <>
+          <View style={s.emojiContainer}>
+            {memberScores.map((member, index) => (
+              <View key={index} style={s.membersRow}>
+                <View
+                  style={[
+                    s.iconCircle,
+                    { borderColor: member.color },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name={
+                      (member.emojiName as keyof typeof MaterialCommunityIcons.glyphMap)
+                    }
+                    size={25}
+                    color={member.color}
+                    style={s.emojiIcon}
+                  />
+                </View>
+                <Text style={s.memberName}>
+                  {member.name ? member.name.slice(0, 3) : "NoName"}
+                  : {member.score}
+                </Text>
+              </View>
+            ))}
           </View>
-        ))}
-      </View>
 
-      <View style={s.container}>
-        <PieChart
-          data={chartData}
-          width={screenWidth}
-          height={280}
-          chartConfig={{
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          }}
-          accessor={"population"}
-          backgroundColor={"transparent"}
-          paddingLeft={"15"}
-          hasLegend={false}
-          center={[95, 15]}
-        />
-      </View>
+          <View style={s.container}>
+            <PieChart
+              data={chartData.map((item) => ({
+                ...item,
+                color: item.color,
+              }))}
+              width={screenWidth}
+              height={280}
+              chartConfig={{
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              }}
+              accessor={"population"}
+              backgroundColor={"transparent"}
+              paddingLeft={"15"}
+              hasLegend={false}
+              center={[95, 15]}
+            />
+          </View>
 
-      <Text style={s.totalTitle}>Totalt poäng: {totalScore}</Text>
+          <Text style={s.totalTitle}>Totalt poäng: {totalScore}</Text>
+        </>
+      ) : (
+        <Text>Laddar statistik...</Text>
+      )}
     </View>
   );
 }
