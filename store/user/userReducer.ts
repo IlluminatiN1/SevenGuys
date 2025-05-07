@@ -1,1 +1,0 @@
-// Hanterar hur state ändras beroende på vilka actions som dispatchas. Reducern tar det nuvarande state och en action, och returnerar ett nytt state.

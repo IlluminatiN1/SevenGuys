@@ -62,7 +62,7 @@ const HouseholdButtons = ({
             />
             <IconButton
               key={emoji.id}
-              icon={emoji.name}
+              icon={emoji.icon}
               size={30}
               iconColor={emoji.color}
               style={styles.iconButton}
