@@ -17,15 +17,13 @@ const initialState: MembersState = {
 };
 
 const membersSlice = createSlice({
-  name: "members",
+  name: 'members',
   initialState,
   reducers: {
     clearCurrentMember(state) {
-      state.currentMember = null;
+      state.currentMember = null; // Reset currentMember vid behov
     },
-    setCurrentMember(state, action: PayloadAction<Member>) {
-      state.currentMember = action.payload;
-    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -33,26 +31,16 @@ const membersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        fetchMembersByUserId.fulfilled,
-        (state, action: PayloadAction<Member[]>) => {
-          state.loading = false;
-          state.members = action.payload;
-
-          if (action.payload.length > 0) {
-            state.currentMember = action.payload[0];
-          }
-        }
-      )
-      .addCase(
-        fetchMembersByUserId.rejected,
-        (state, action: PayloadAction<string | null | undefined>) => {
-          state.loading = false;
-          state.error = action.payload ?? null;
-        }
-      );
+      .addCase(fetchMembersByUserId.fulfilled, (state, action: PayloadAction<Member[]>) => {
+        state.loading = false;
+        state.members = action.payload;
+      })
+      .addCase(fetchMembersByUserId.rejected, (state, action: PayloadAction<string | null | undefined>) => {
+        state.loading = false;
+        state.error = action.payload ?? null; // Ensure error is null if undefined
+      });
   },
 });
 
-export const { clearCurrentMember, setCurrentMember } = membersSlice.actions;
+export const { clearCurrentMember } = membersSlice.actions;
 export const memberReducer = membersSlice.reducer;

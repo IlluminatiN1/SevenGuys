@@ -3,17 +3,18 @@ import { householdsReducer } from "./household/householdSlice";
 import { memberReducer } from "./member/memberSlice";
 import { taskReducer } from "./task/taskSlice";
 import { userReducer } from "./user/userSlice";
-import { completedTaskReducer } from "./completedTask/completedTaskSlice";
+
 
 export const store = configureStore({
-  reducer: {
-    households: householdsReducer,
-    users: userReducer,
-    members: memberReducer,
-    tasks: taskReducer,
-    completedTasks: completedTaskReducer,
-  },
+    reducer: {
+        households: householdsReducer,
+        users: userReducer,
+        members: memberReducer,
+        tasks: taskReducer,
+    }
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch

@@ -3,13 +3,6 @@ import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton, Surface } from "react-native-paper";
 import { db } from "../config/firebase";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  addCompletedTask,
-  removeCompletedTasksByTaskId,
-} from "../store/completedTask/completedTaskActions";
-import { auth } from "../config/firebase";
-import { setCurrentMember } from "../store/member/memberSlice";
 
 export default function TaskDetailsModal({
   isVisible,
@@ -30,12 +23,6 @@ export default function TaskDetailsModal({
   onArchivedStatusChange: (taskId: string, newStatus: boolean) => void;
 }) {
   const [isArchived, setIsArchived] = useState(task.isArchived);
-  const dispatch = useAppDispatch();
-  const members = useAppSelector((state) => state.members.members);
-  const currentMemberFromState = useAppSelector(
-    (state) => state.members.currentMember
-  );
-  const currentUser = auth.currentUser;
 
   useEffect(() => {
     setIsArchived(task.isArchived);
@@ -48,39 +35,8 @@ export default function TaskDetailsModal({
 
     setIsArchived(newStatus);
 
-    let currentMember = currentMemberFromState;
-
-    if (!currentMember && currentUser) {
-      currentMember =
-        members.find((member) => member.userId === currentUser.uid) || null;
-
-      if (currentMember) {
-        dispatch(setCurrentMember(currentMember));
-      }
-    }
-
-    if (currentMember) {
-      if (newStatus) {
-        const completionDate = new Date();
-
-        dispatch(
-          addCompletedTask({
-            memberId: currentMember.id,
-            taskId: task.id,
-            date: completionDate,
-          })
-        );
-      } else {
-        dispatch(
-          removeCompletedTasksByTaskId({
-            taskId: task.id,
-            memberId: currentMember.id,
-          })
-        );
-      }
-    }
-
     onArchivedStatusChange(task.id, newStatus);
+
     onClose();
   };
 
