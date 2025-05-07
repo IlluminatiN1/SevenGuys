@@ -11,7 +11,7 @@ export type MemberCreate = Omit<Member, "id">;
 
 export interface Emoji {
   id: string;
-  name: string;
+  icon: string;
   color: string;
 }
 

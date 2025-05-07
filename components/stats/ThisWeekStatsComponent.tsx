@@ -1,12 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   getFirestore,
   query,
-  where,
+  where
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
@@ -35,10 +33,14 @@ export default function ThisWeekTotalStatsComponent() {
       const userId = auth.currentUser?.uid;
       if (!userId) return;
 
-      const memberDocRef = doc(firestore, "members", userId);
-      const memberDoc = await getDoc(memberDocRef);
-      const memberData = memberDoc.data() as Member;
+      const memberQuery = query(
+        collection(firestore, "members"),
+        where("userId", "==", userId)
+      );
 
+      const memberSnapshot = await getDocs(memberQuery);
+      const memberDoc = memberSnapshot.docs[0];
+      const memberData = memberDoc.data() as Member;
       const householdId = memberData?.householdId;
 
       const householdMembers = query(
@@ -52,7 +54,7 @@ export default function ThisWeekTotalStatsComponent() {
         ...doc.data(),
       })) as Member[];
 
-      const taskCollectionRef = collection(firestore, "Tasks");
+      const taskCollectionRef = collection(firestore, "task");
       const taskQuery = query(
         taskCollectionRef,
         where("householdId", "==", householdId)
@@ -64,7 +66,7 @@ export default function ThisWeekTotalStatsComponent() {
         ...doc.data(),
       })) as Task[];
 
-      const completedTaskCollectionRef = collection(firestore, "CompletedTask");
+      const completedTaskCollectionRef = collection(firestore, "completedtask");
       const completedTaskQuery = query(
         completedTaskCollectionRef,
         where(
@@ -97,7 +99,7 @@ export default function ThisWeekTotalStatsComponent() {
             name: memberData?.name || "Unknown Member",
             score: prevScore + (task.score || 0),
             color: emoji?.color,
-            emojiName: emoji?.name,
+            emojiName: emoji?.icon,
           });
         }
       });
@@ -109,7 +111,7 @@ export default function ThisWeekTotalStatsComponent() {
           name: member.name,
           score: 0,
           color: emoji?.color,
-          emojiName: emoji?.name,
+          emojiName: emoji?.icon,
         };
         return {
           ...memberScore,

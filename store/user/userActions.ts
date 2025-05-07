@@ -9,7 +9,7 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
 
 type AuthData = {
-  id: string;
+  id?: string;
   email: string;
   password: string;
   username?: string;

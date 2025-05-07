@@ -1,14 +1,14 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { getAuth } from "firebase/auth";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../Navigator/RootStackNavigator";
 import { Emoji } from "../data/data";
-import { fetchEmoji } from "../utils/emoji";
 import { useAppDispatch } from "../store/hooks";
 import { createHousehold } from "../store/household/houseHoldActions";
+import { fetchEmoji } from "../utils/emoji";
 // Importera vår valideringsfunktion här för hushållsnamn (kommer implementeras senare)
 // import { validateHouseholdName } from "../utils/validations/household/HouseholdNameValidator";
 type Props = NativeStackScreenProps<RootStackParamList, "CreateHousehold">;
@@ -98,7 +98,7 @@ export default function CreateHouseholdScreen(props: Props) {
         {emojis.map((emoji, index) => (
           <MaterialCommunityIcons
             key={index}
-            name={emoji.name as keyof typeof MaterialCommunityIcons.glyphMap}
+            name={emoji.icon as keyof typeof MaterialCommunityIcons.glyphMap}
             size={30}
             color={emoji.color}
             style={[

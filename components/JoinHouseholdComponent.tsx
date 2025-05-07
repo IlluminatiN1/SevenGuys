@@ -195,7 +195,7 @@ const JoinHouseholdPopup = ({
           {emojis.map((emoji, index) => (
             <MaterialCommunityIcons
               key={index}
-              name={emoji.name as keyof typeof MaterialCommunityIcons.glyphMap}
+              name={emoji.icon as keyof typeof MaterialCommunityIcons.glyphMap}
               size={30}
               color={emoji.color}
               style={[

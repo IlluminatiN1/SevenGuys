@@ -34,13 +34,15 @@ export default function ThisWeekIndividualTaskStatComponent() {
       const userId = auth.currentUser?.uid;
       if (!userId) return;
 
-      const memberSnapshot = await getDocs(
-        query(collection(firestore, "members"), where("id", "==", userId))
+      const memberQuery = query(
+        collection(firestore, "members"),
+        where("userId", "==", userId)
       );
-      const memberData = memberSnapshot.docs[0]?.data() as Member;
-      if (!memberData?.householdId) return;
+      const memberSnapshot = await getDocs(memberQuery);
 
+      const memberData = memberSnapshot.docs[0]?.data() as Member;
       const householdId = memberData.householdId;
+      if (!memberData?.householdId) return;
 
       const [membersSnapshot, tasksSnapshot, completedTasksSnapshot] =
         await Promise.all([
@@ -52,11 +54,11 @@ export default function ThisWeekIndividualTaskStatComponent() {
           ),
           getDocs(
             query(
-              collection(firestore, "Tasks"),
+              collection(firestore, "task"),
               where("householdId", "==", householdId)
             )
           ),
-          getDocs(collection(firestore, "CompletedTask")),
+          getDocs(collection(firestore, "completedtask")),
         ]);
 
       const members: Member[] = membersSnapshot.docs.map((doc) => ({
@@ -94,7 +96,7 @@ export default function ThisWeekIndividualTaskStatComponent() {
                 name: member.name,
                 score: totalScore,
                 color: emoji?.color,
-                emojiName: emoji?.name,
+                emojiName: emoji?.icon,
               };
             })
             .filter((member) => member.score > 0);
