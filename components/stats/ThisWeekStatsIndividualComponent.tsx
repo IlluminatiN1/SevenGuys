@@ -92,11 +92,20 @@ export default function ThisWeekIndividualTaskStatComponent() {
                 memberCompletedTasks.length * (task.score || 0);
               const emoji = emojis.find((e) => e.id === member.emojiId);
 
+              const lastCompletedTask = memberCompletedTasks.sort(
+          (a, b) =>
+            new Date(b.date).getTime() -
+            new Date(a.date).getTime()
+        )[0];
+
+
               return {
                 name: member.name,
                 score: totalScore,
                 color: emoji?.color,
                 emojiName: emoji?.icon,
+                lastCompletedTask,
+                date: lastCompletedTask?.date,
               };
             })
             .filter((member) => member.score > 0);
@@ -142,6 +151,13 @@ export default function ThisWeekIndividualTaskStatComponent() {
             center={[25, 10]}
           />
           <Text style={s.taskTitle}>{task.taskName}</Text>
+      {task.energy.map((member, index) => (
+        <Text key={index} >
+          {member.lastCompletedTask
+            ? `Completed: ${new Date(member.lastCompletedTask.date).toLocaleDateString()}`
+            : "Not completed yet"}
+        </Text>
+      ))}
         </View>
       )}
     />
