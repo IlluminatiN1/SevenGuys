@@ -21,7 +21,7 @@
 - [x] En användare ska kunna ange sitt namn. \*
 - [x] En användare ska kunna välja en avatar (emoji-djur + färg) från en fördefinierad lista. \*
 - [x] Valda avatarer ska inte kunna väljas av andra användare i hushållet. \*
-- [ ] Avataren ska användas i appen för att visa vad användaren har gjort. \*
+- [x] Avataren ska användas i appen för att visa vad användaren har gjort. \*
 
 #### Sysslor:
 
@@ -31,9 +31,9 @@
 
 #### Dagsvyn:
 
-- [ ] Alla sysslor ska listas i en dagsvy och ge en översikt kring vad som behöver göras. \*
-- [ ] Utöver sysslans namn ska även vem/vilka som har gjort sysslan visas, hur många dagar sedan sysslan gjordes senast samt om den är försenad. \*
-- [ ] När en användare väljer en syssla ska beskrivningen av sysslan visas och det ska även med ett enkelt tryck gå att markera sysslan som gjord. \*
+- [x] Alla sysslor ska listas i en dagsvy och ge en översikt kring vad som behöver göras. \*
+- [?] Utöver sysslans namn ska även vem/vilka som har gjort sysslan visas, **hur många dagar sedan sysslan gjordes senast samt om den är försenad**. \*
+- [x] När en användare väljer en syssla ska beskrivningen av sysslan visas och det ska även med ett enkelt tryck gå att markera sysslan som gjord. \*
 
 #### Statistik:
 
