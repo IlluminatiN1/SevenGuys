@@ -5,7 +5,7 @@ import {
   getDocs,
   getFirestore,
   query,
-  where
+  where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
@@ -29,7 +29,10 @@ export default function ThisWeekTotalStatsComponent() {
     };
     loadEmojis();
   }, []);
-  const refreshFlag = useAppSelector((state) => state.completedTasks.refreshFlag);
+  const refreshFlag = useAppSelector(
+    (state) => state.completedTasks.refreshFlag
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       const userId = auth.currentUser?.uid;
@@ -83,8 +86,8 @@ export default function ThisWeekTotalStatsComponent() {
       ) as CompletedTask[];
 
       const now = new Date();
-      const weekStart = startOfWeek(now, {weekStartsOn: 1});
-      const weekEnd = endOfWeek(now, {weekStartsOn: 1});
+      const weekStart = startOfWeek(now, { weekStartsOn: 1 });
+      const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
 
       const completedTasksThisWeek = completedTasks.filter((task) => {
         const dateString = (task as any).date;
@@ -167,7 +170,7 @@ export default function ThisWeekTotalStatsComponent() {
               />
             </View>
             <Text style={s.memberName}>
-              {member.name ? member.name.slice(0, 3) : "NoName"}: {member.score}
+             {member.score}p
             </Text>
           </View>
         ))}
@@ -189,7 +192,7 @@ export default function ThisWeekTotalStatsComponent() {
         />
       </View>
 
-      <Text style={s.totalTitle}>Totalt poäng: {totalScore}</Text>
+      <Text style={s.totalTitle}>Totalt: {totalScore}p</Text>
     </View>
   );
 }
