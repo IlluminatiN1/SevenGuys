@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
@@ -204,6 +204,42 @@ const TaskRow = ({
   ) => void;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [lastCompletedDays, setLastCompletedDays] = useState<number | null>(null);
+  const [isOverdue, setIsOverdue] = useState(false);
+
+  useEffect(() => {
+    const fetchLastCompletionDate = async () => {
+      try {
+        const db = getFirestore();
+        const completedTasksRef = collection(db, "completedtask");
+        const q = query(completedTasksRef, where("taskId", "==", taskId));
+        const completedTasksSnapshot = await getDocs(q);
+
+        if (completedTasksSnapshot.empty) {
+          setLastCompletedDays(null);
+          setIsOverdue(true);
+          return;
+        }
+
+        const completionDates = completedTasksSnapshot.docs
+          .map((doc) => new Date(doc.data().date))
+          .sort((a, b) => b.getTime() - a.getTime());
+
+        if (completionDates.length > 0) {
+          const daysSinceCompletion = Math.floor(
+            (new Date().getTime() - completionDates[0].getTime()) /
+              (1000 * 60 * 60 * 24)
+          );
+          setLastCompletedDays(daysSinceCompletion);
+          setIsOverdue(daysSinceCompletion > reoccurence);
+        }
+      } catch (error) {
+        console.error("Kunde inte hämta senaste utförda syssla", error);
+      }
+    };
+
+    fetchLastCompletionDate();
+  }, [taskId, reoccurence]);
 
   return (
     <View style={s.taskContainer}>
@@ -212,6 +248,13 @@ const TaskRow = ({
         <Text style={{ color: TaskArchivedStatus ? "green" : "red" }}>
           {TaskArchivedStatus ? "Utförd" : "Ej Utförd"}
         </Text>
+        {lastCompletedDays !== null ? (
+          <Text style={{ fontSize: 12, color: isOverdue ? "red" : "gray" }}>
+            {lastCompletedDays} dagar sedan {isOverdue ? "(Försenad)" : ""}
+          </Text>
+        ) : (
+          <Text style={{ fontSize: 12, color: "gray" }}>Aldrig utförd</Text>
+        )}
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setIsEditing(true)}>
         <MaterialCommunityIcons
@@ -291,7 +334,7 @@ const s = StyleSheet.create({
     borderColor: "grey",
     borderWidth: 1,
     backgroundColor: "white",
-    height: 50,
+    minHeight: 65,
   },
   addTaskButtonContainer: {
     justifyContent: "center",
