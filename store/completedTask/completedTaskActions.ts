@@ -39,9 +39,42 @@ export const addCompletedTask = createAppAsyncThunk<
       date: serializedCompletedTask.date,
     });
 
+    console.log("CompletedTask saved to Firestore:", serializedCompletedTask);
     return serializedCompletedTask;
   } catch (error) {
     return thunkAPI.rejectWithValue("Could not add completed task");
+  }
+});
+
+export const fetchCompletedTasks = createAppAsyncThunk<
+  SerializableCompletedTask[]
+>("completedTask/fetchAll", async (_, thunkAPI) => {
+  try {
+    const snapshot = await getDocs(collection(db, "completedtask"));
+    const completedTasks: SerializableCompletedTask[] = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      let dateString: string;
+
+      
+      if (data.date && typeof data.date.toDate === "function") {
+        dateString = data.date.toDate().toISOString();
+      } else if (typeof data.date === "string") {
+        dateString = data.date;
+      } else {
+        dateString = new Date().toISOString();
+      }
+
+      return {
+        id: doc.id,
+        memberId: data.memberId,
+        taskId: data.taskId,
+        date: dateString,
+      };
+    });
+    console.log("Fetched completedTasks from Firestore:", completedTasks);
+    return completedTasks;
+  } catch (error) {
+    return thunkAPI.rejectWithValue("Could not fetch completed tasks");
   }
 });
 
