@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { endOfWeek, startOfWeek } from "date-fns";
 import {
   collection,
   getDocs,
@@ -80,12 +81,22 @@ export default function ThisWeekTotalStatsComponent() {
         (doc) => ({ id: doc.id, ...doc.data() })
       ) as CompletedTask[];
 
+      const now = new Date();
+      const weekStart = startOfWeek(now, {weekStartsOn: 1});
+      const weekEnd = endOfWeek(now, {weekStartsOn: 1});
+
+      const completedTasksThisWeek = completedTasks.filter((task) => {
+        const dateString = (task as any).date;
+        const date = new Date(dateString);
+        return date >= weekStart && date <= weekEnd;
+      });
+
       const scoreMap = new Map<
         string,
         { name: string; score: number; color?: string; emojiName?: string }
       >();
 
-      completedTasks.forEach((completedTask) => {
+      completedTasksThisWeek.forEach((completedTask) => {
         const task = tasks.find((t) => t.id === completedTask.taskId);
         if (task) {
           const memberId = completedTask.memberId;
