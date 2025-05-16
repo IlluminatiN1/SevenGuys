@@ -2,13 +2,12 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconButton, Surface } from "react-native-paper";
-import { db } from "../config/firebase";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { auth, db } from "../config/firebase";
 import {
   addCompletedTask,
   removeCompletedTasksByTaskId,
 } from "../store/completedTask/completedTaskActions";
-import { auth } from "../config/firebase";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setCurrentMember } from "../store/member/memberSlice";
 
 export default function TaskDetailsModal({
@@ -16,6 +15,7 @@ export default function TaskDetailsModal({
   onClose,
   task,
   onArchivedStatusChange,
+  onRefresh,
 }: {
   isVisible: boolean;
   onClose: () => void;
@@ -28,6 +28,7 @@ export default function TaskDetailsModal({
     isArchived: boolean;
   };
   onArchivedStatusChange: (taskId: string, newStatus: boolean) => void;
+  onRefresh?: () => void;
 }) {
   const [isArchived, setIsArchived] = useState(task.isArchived);
   const dispatch = useAppDispatch();
@@ -81,6 +82,9 @@ export default function TaskDetailsModal({
     }
 
     onArchivedStatusChange(task.id, newStatus);
+    if(onRefresh) {
+      onRefresh();
+    }
     onClose();
   };
 

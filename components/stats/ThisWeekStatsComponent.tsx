@@ -12,6 +12,7 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { auth } from "../../config/firebase";
 import { CompletedTask, Emoji, Member, Task } from "../../data/data";
+import { useAppSelector } from "../../store/hooks";
 import { fetchEmoji } from "../../utils/emoji";
 
 const screenWidth = Dimensions.get("window").width;
@@ -28,7 +29,7 @@ export default function ThisWeekTotalStatsComponent() {
     };
     loadEmojis();
   }, []);
-
+  const refreshFlag = useAppSelector((state) => state.completedTasks.refreshFlag);
   useEffect(() => {
     const fetchData = async () => {
       const userId = auth.currentUser?.uid;
@@ -137,7 +138,7 @@ export default function ThisWeekTotalStatsComponent() {
     };
 
     fetchData();
-  }, [emojis]);
+  }, [emojis, refreshFlag]);
 
   const totalScore = memberScores.reduce(
     (sum, member) => sum + member.score,

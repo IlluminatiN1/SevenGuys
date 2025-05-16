@@ -11,6 +11,7 @@ import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { auth } from "../../config/firebase";
 import { CompletedTask, Emoji, Member, Task } from "../../data/data";
+import { useAppSelector } from "../../store/hooks";
 import { fetchEmoji } from "../../utils/emoji";
 
 const screenWidth = Dimensions.get("window").width;
@@ -21,6 +22,7 @@ export default function ThisWeekIndividualTaskStatComponent() {
     { taskName: string; energy: any[] }[]
   >([]);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
+  const refreshFlag = useAppSelector((state) => state.completedTasks.refreshFlag);
 
   useEffect(() => {
     const loadEmojis = async () => {
@@ -122,7 +124,7 @@ export default function ThisWeekIndividualTaskStatComponent() {
     };
 
     fetchData();
-  }, [emojis]);
+  }, [emojis, refreshFlag]);
 
   return (
     <FlatList
