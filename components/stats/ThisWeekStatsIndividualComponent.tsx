@@ -1,3 +1,4 @@
+import { endOfWeek, startOfWeek } from "date-fns";
 import {
   collection,
   getDocs,
@@ -71,12 +72,19 @@ export default function ThisWeekIndividualTaskStatComponent() {
         ...doc.data(),
       })) as Task[];
 
+      const now = new Date();
+      const weekStart = startOfWeek(now, {weekStartsOn: 1});
+      const weekEnd = endOfWeek(now, {weekStartsOn: 1});
+
       const completedTasks: CompletedTask[] = completedTasksSnapshot.docs.map(
         (doc) => ({
           id: doc.id,
           ...doc.data(),
-        })
-      ) as CompletedTask[];
+        })).filter((task) => {
+          const dateString = (task as any).date;
+          const date = new Date(dateString);
+          return date >= weekStart && date <= weekEnd;
+        }) as CompletedTask[];
 
       const calculatedTasks = tasks
         .map((task) => {
