@@ -167,7 +167,7 @@ export default function ThisWeekTotalStatsComponent() {
               />
             </View>
             <Text style={s.memberName}>
-              {member.name ? member.name.slice(0, 3) : "NoName"}: {member.score}
+              {member.score}p
             </Text>
           </View>
         ))}
@@ -189,7 +189,7 @@ export default function ThisWeekTotalStatsComponent() {
         />
       </View>
 
-      <Text style={s.totalTitle}>Totalt poäng: {totalScore}</Text>
+      <Text style={s.totalTitle}>Totalt: {totalScore}p</Text>
     </View>
   );
 }
