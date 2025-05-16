@@ -30,6 +30,7 @@ export default function HouseholdScreen() {
   const tasks = useAppSelector((state) => state.tasks.list);
   const dispatch = useAppDispatch();
   const [taskList, setTaskList] = useState(tasks);
+  const [refreshFlag, setRefreshFlag] = useState(0);
 
   const selectedHousehold = useAppSelector((state) => state.households.current);
 
@@ -89,7 +90,10 @@ export default function HouseholdScreen() {
     if (selectedHousehold) {
       dispatch(fetchTasks(selectedHousehold.id));
     }
-  }, [dispatch, selectedHousehold]);
+  }, [dispatch, selectedHousehold, refreshFlag]);
+  const onRefresh = () => {
+    setRefreshFlag(prev => prev + 1);
+  }
 
   useEffect(() => {
     setTaskList(tasks);
@@ -172,6 +176,7 @@ export default function HouseholdScreen() {
           onClose={hideDetailsModal}
           task={selectedTask}
           onArchivedStatusChange={handleArchivedStatusChange}
+          onRefresh={onRefresh}
         />
       )}
     </View>
