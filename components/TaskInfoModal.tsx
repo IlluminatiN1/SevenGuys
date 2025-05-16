@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   addCompletedTask,
   removeCompletedTasksByTaskId,
+  fetchCompletedTasks
 } from "../store/completedTask/completedTaskActions";
 import { auth } from "../config/firebase";
 import { setCurrentMember } from "../store/member/memberSlice";
@@ -43,16 +44,38 @@ export default function TaskDetailsModal({
     setIsArchived(task.isArchived);
   }, [task]);
 
+    useEffect(() => {
+    dispatch(fetchCompletedTasks());
+  }, [dispatch]);
+
   useEffect(() => {
-  const completedTask = completedTasks.find(
-    (task) => task.taskId === task.id
-  );
-  if (completedTask) {
-    setCompletionDate(completedTask.date);
-  } else {
-    setCompletionDate(null);
-  }
-}, [completedTasks, task]);
+  console.log("Redux completedTasks:", completedTasks);
+}, [completedTasks]);
+
+  useEffect(() => {
+    let currentMember = currentMemberFromState;
+    if (!currentMember && currentUser) {
+      currentMember =
+        members.find((member) => member.userId === currentUser.uid) || null;
+    }
+    if (currentMember) {
+      const memberCompletedTasks = completedTasks
+        .filter(
+          (t) => t.taskId === task.id && t.memberId === currentMember.id
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+      if (memberCompletedTasks.length > 0) {
+        setCompletionDate(memberCompletedTasks[0].date);
+      } else {
+        setCompletionDate(null);
+      }
+    } else {
+      setCompletionDate(null);
+    }
+  }, [completedTasks, task, members, currentMemberFromState, currentUser]);
 
   const toggleTaskArchivedStatus = async () => {
     const newStatus = !isArchived;

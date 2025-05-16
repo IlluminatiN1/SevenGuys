@@ -3,6 +3,7 @@ import { initialState } from "./completedTaskState";
 import {
   addCompletedTask,
   removeCompletedTasksByTaskId,
+  fetchCompletedTasks
 } from "./completedTaskActions";
 import { CompletedTask } from "../../data/data";
 
@@ -28,6 +29,10 @@ const completedTaskSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(addCompletedTask.fulfilled, (state, action) => {
       state.list.push(action.payload);
+    });
+
+    builder.addCase(fetchCompletedTasks.fulfilled, (state, action) => {
+      state.list = action.payload;
     });
 
     builder.addCase(removeCompletedTasksByTaskId.fulfilled, (state, action) => {
