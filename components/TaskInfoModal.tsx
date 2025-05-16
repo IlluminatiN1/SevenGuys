@@ -32,6 +32,8 @@ export default function TaskDetailsModal({
   const [isArchived, setIsArchived] = useState(task.isArchived);
   const dispatch = useAppDispatch();
   const members = useAppSelector((state) => state.members.members);
+  const [completionDate, setCompletionDate] = useState<string | null>(null);
+  const completedTasks = useAppSelector((state) => state.completedTasks.list);
   const currentMemberFromState = useAppSelector(
     (state) => state.members.currentMember
   );
@@ -40,6 +42,17 @@ export default function TaskDetailsModal({
   useEffect(() => {
     setIsArchived(task.isArchived);
   }, [task]);
+
+  useEffect(() => {
+  const completedTask = completedTasks.find(
+    (task) => task.taskId === task.id
+  );
+  if (completedTask) {
+    setCompletionDate(completedTask.date);
+  } else {
+    setCompletionDate(null);
+  }
+}, [completedTasks, task]);
 
   const toggleTaskArchivedStatus = async () => {
     const newStatus = !isArchived;
@@ -108,6 +121,14 @@ export default function TaskDetailsModal({
             <Text style={s.label}>Poängvärde:</Text>
             <Text style={s.inlineValue}>{task.score}</Text>
           </View>
+          {completionDate && isArchived && (
+            <View style={s.row}>
+              <Text style={s.label}>Slutförd:</Text>
+              <Text style={s.inlineValue}>
+                {new Date(completionDate).toLocaleDateString()}
+              </Text>
+            </View>
+          )}
           <TouchableOpacity
             style={[
               s.saveButton,

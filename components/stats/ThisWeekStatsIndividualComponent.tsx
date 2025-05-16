@@ -105,7 +105,6 @@ export default function ThisWeekIndividualTaskStatComponent() {
                 color: emoji?.color,
                 emojiName: emoji?.icon,
                 lastCompletedTask,
-                date: lastCompletedTask?.date,
               };
             })
             .filter((member) => member.score > 0);
@@ -153,9 +152,7 @@ export default function ThisWeekIndividualTaskStatComponent() {
           <Text style={s.taskTitle}>{task.taskName}</Text>
       {task.energy.map((member, index) => (
         <Text key={index} >
-          {member.lastCompletedTask
-            ? `Completed: ${new Date(member.lastCompletedTask.date).toLocaleDateString()}`
-            : "Not completed yet"}
+          
         </Text>
       ))}
         </View>
